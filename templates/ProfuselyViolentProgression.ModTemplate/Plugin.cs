@@ -2,6 +2,7 @@
 using BepInEx.Unity.IL2CPP;
 using HarmonyLib;
 using HookDOTS;
+using ProfuselyViolentProgression.Core.Utilities;
 #if(UseVCF)
 using VampireCommandFramework;
 #endif
@@ -21,6 +22,7 @@ public class Plugin : BasePlugin
     public override void Load()
     {
         // Plugin startup logic
+        LogUtil.Init(Log);
         Log.LogInfo($"Plugin {MyPluginInfo.PLUGIN_GUID} version {MyPluginInfo.PLUGIN_VERSION} is loaded!");
 
         // Harmony patching

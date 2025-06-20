@@ -1,7 +1,7 @@
 ﻿using BepInEx;
 using BepInEx.Unity.IL2CPP;
 using HarmonyLib;
-using HookDOTS;
+using ProfuselyViolentProgression.Core.Utilities;
 
 namespace ProfuselyViolentProgression.SurgeSuppressor;
 
@@ -9,21 +9,27 @@ namespace ProfuselyViolentProgression.SurgeSuppressor;
 [BepInDependency("HookDOTS.API")]
 public class Plugin : BasePlugin
 {
-    Harmony _harmony;
-    HookDOTS.API.HookDOTS _hookDOTS;
+    private Harmony _harmony;
+    private HookDOTS.API.HookDOTS _hookDOTS;
+    private readonly SurgeSuppressorConfig cfg;
+
+    public Plugin() : base()
+    {
+        LogUtil.Init(Log);
+        cfg = new SurgeSuppressorConfig(Config);
+    }
 
     public override void Load()
     {
-        // Plugin startup logic
-        Log.LogInfo($"Plugin {MyPluginInfo.PLUGIN_GUID} version {MyPluginInfo.PLUGIN_VERSION} is loaded!");
+        SurgeSuppressorUtil.SetSettings(cfg.OnlyProtectPlayers.Value, cfg.ThrottleIntervalMilliseconds.Value);
 
-        // Harmony patching
         _harmony = new Harmony(MyPluginInfo.PLUGIN_GUID);
         _harmony.PatchAll(System.Reflection.Assembly.GetExecutingAssembly());
 
         _hookDOTS = new HookDOTS.API.HookDOTS(MyPluginInfo.PLUGIN_GUID, Log);
         _hookDOTS.RegisterAnnotatedHooks();
 
+        Log.LogInfo($"Plugin {MyPluginInfo.PLUGIN_GUID} version {MyPluginInfo.PLUGIN_VERSION} is loaded!");
     }
 
     public override bool Unload()

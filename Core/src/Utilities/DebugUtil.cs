@@ -19,6 +19,17 @@ public static class DebugUtil
         LogUtil.LogMessage("-------------------------------------------");
     }
 
+    public static void LogPrefabGuid(Entity entity)
+    {
+        var entityManager = WorldUtil.Game.EntityManager;
+        if (!entityManager.HasComponent<PrefabGUID>(entity))
+        {
+            return;
+        }
+        var prefabGuid = entityManager.GetComponentData<PrefabGUID>(entity);
+        LogUtil.LogInfo($"  PrefabGUID: {LookupPrefabName(prefabGuid)}");
+    }
+
     public static void LogBuffs(Entity entity)
     {
         var entityManager = WorldUtil.Game.EntityManager;

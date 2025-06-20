@@ -2,6 +2,7 @@
 using BepInEx.Unity.IL2CPP;
 using HarmonyLib;
 using HookDOTS;
+using ProfuselyViolentProgression.Core.Utilities;
 
 namespace ProfuselyViolentProgression.CounterConstrainer;
 
@@ -15,6 +16,7 @@ public class Plugin : BasePlugin
     public override void Load()
     {
         // Plugin startup logic
+        LogUtil.Init(Log);
         Log.LogInfo($"Plugin {MyPluginInfo.PLUGIN_GUID} version {MyPluginInfo.PLUGIN_VERSION} is loaded!");
 
         // Harmony patching
