@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <PropertyGroup>
-    <VendorPathBepInEx>vendor/VRisingGameFiles/BepInEx</VendorPathBepInEx>
+    <VendorPathBepInEx>../../vendor/VRisingGameFiles/BepInEx</VendorPathBepInEx>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="$(VendorPathBepInEx)/core/*.dll" />
@@ -38,6 +38,7 @@
   </Target>
 
   <Import Project="..\..\ModTasks.props"/>
+  <Import Project="..\..\Core\Core.projitems" Label="Shared" />
 
   <ItemGroup>
     <AssemblyMetadata Include="Reloadable" Value="True" />
