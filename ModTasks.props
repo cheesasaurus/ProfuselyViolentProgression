@@ -9,7 +9,8 @@
   "website_url": "$(WebsiteURL)",
   "description": "$(Description)",
   "dependencies": [
-      "BepInEx-BepInExPack_V_Rising-1.733.2"
+      "BepInEx-BepInExPack_V_Rising-1.733.2",
+      "cheesasaurus-HookDOTS_API-1.0.0"
   ]
 }
     ]]>

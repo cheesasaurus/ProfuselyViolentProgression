@@ -3,11 +3,11 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <AssemblyName>FrostDashFreezeFix</AssemblyName>
-    <Description>Description of your mod</Description>
+    <Description>Patches a heavily exploited bug where a 'consume chill and inflict freeze' jewel could freeze targets that weren't chilled.</Description>
     <Version>1.0.0</Version>
     <Authors>Nicholas Toby</Authors>
     <Copyright>Copyright (c) Nicholas Toby 2025</Copyright>
-    <WebsiteURL>https://github.com/cheesasaurus/ProfuselyViolentProgression/tree/master/BepInExPlugins/$(AssemblyName)</WebsiteURL>
+    <WebsiteURL>https://github.com/cheesasaurus/ProfuselyViolentProgression/tree/main/BepInExPlugins/$(AssemblyName)</WebsiteURL>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>latest</LangVersion>
     <RootNamespace>ProfuselyViolentProgression.FrostDashFreezeFix</RootNamespace>

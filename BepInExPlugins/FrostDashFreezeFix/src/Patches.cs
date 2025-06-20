@@ -16,7 +16,7 @@ public unsafe class Patches
     private static EntityQuery Query_DealDamageEvent;
 
     [EcsSystemUpdatePrefix(typeof(RecursiveGroup), onlyWhenSystemRuns: false)]
-    public static void UpdateTickCount()
+    public static void TickStartPrefix()
     {
         FreezeFixUtil.NewTickStarted();
 
@@ -52,7 +52,7 @@ public unsafe class Patches
 
     [HarmonyPatch(typeof(BuffSystem_Spawn_Server), nameof(BuffSystem_Spawn_Server.OnUpdate))]
     [HarmonyPrefix]
-    public static void Prefix(BuffSystem_Spawn_Server __instance)
+    public static void BuffSpawnPrefix(BuffSystem_Spawn_Server __instance)
     {
         var entities = __instance._Query.ToEntityArray(Allocator.Temp);
         var buffs = __instance._Query.ToComponentDataArray<Buff>(Allocator.Temp);
