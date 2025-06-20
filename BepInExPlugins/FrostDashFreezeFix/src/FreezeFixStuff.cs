@@ -1,7 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using ProfuselyViolentProgression.Core.Utilities;
 using ProjectM;
 using ProjectM.Shared;
@@ -14,12 +11,11 @@ public static class FreezeFixUtil
 {
     public static int TickCount = 0;
     public static int RecursiveGroupPassesThisTick = 0;
+    public static string RecursiveGroupTickStamp { get => $"{TickCount}-{RecursiveGroupPassesThisTick}"; }
 
     public static HashSet<Entity> HitWhileNotChilledThisTick = new();
-    public static Dictionary<Entity, Entity> FrostDashProcThisTick = new(); // todo: could be multiple events per victim 
 
     private static EntityManager EntityManager = WorldUtil.Game.EntityManager;
-
 
     static PrefabGUID NullPrefabGUID = new PrefabGUID(0);
     static PrefabGUID Frost_Vampire_Buff_Chill = new PrefabGUID(27300215);
@@ -30,19 +26,13 @@ public static class FreezeFixUtil
     {
         TickCount++;
         RecursiveGroupPassesThisTick = 0;
-        FrostDashProcThisTick.Clear();
         HitWhileNotChilledThisTick.Clear();
     }
 
     public static void RecursiveGroupUpdateStarting()
     {
         RecursiveGroupPassesThisTick++;
-    }
-
-    public static string RecursiveGroupTickStamp
-    {
-        get => $"{TickCount}-{RecursiveGroupPassesThisTick}";
-    }
+    }    
 
     public static void EntityGotHitWithDamage(Entity entity)
     {
@@ -52,27 +42,12 @@ public static class FreezeFixUtil
         }
     }
 
-    public static void BuffWillBeSpawned(Entity entity)
+    public static void BuffWillBeSpawned(Entity entity, Entity entityToBuff)
     {
-        if (!TryGetBuffTarget(entity, out var entityToBuff))
+        if (HitWhileNotChilledThisTick.Contains(entityToBuff) && IsFrostDashTriggerBuff(entity))
         {
-            return;
+            RemoveFrostDashFreezeSpellMods(entity);
         }
-
-        if (IsFrostDashTriggerBuff(entity))
-        {
-            FrostDashProcThisTick.Add(entityToBuff, entity);
-        }
-    }
-
-    public static bool IsChillBuff(Entity entity)
-    {
-        if (!EntityManager.HasComponent<PrefabGUID>(entity))
-        {
-            return false;
-        }
-        var prefabGUID = EntityManager.GetComponentData<PrefabGUID>(entity);
-        return prefabGUID.Equals(Frost_Vampire_Buff_Chill);
     }
 
     public static bool IsFrostDashTriggerBuff(Entity entity)
@@ -101,30 +76,7 @@ public static class FreezeFixUtil
         return false;
     }
 
-    public static bool TryGetBuffTarget(Entity entity, out Entity targetEntity)
-    {
-        targetEntity = Entity.Null;
-        if (!EntityManager.HasComponent<Buff>(entity))
-        {
-            return false;
-        }
-        var buff = EntityManager.GetComponentData<Buff>(entity);
-        targetEntity = buff.Target;
-        return true;
-    }
-
-    public static void ModifyBadFrostDashes()
-    {
-        foreach (var (victim, ev) in FrostDashProcThisTick)
-        {
-            if (HitWhileNotChilledThisTick.Contains(victim))
-            {
-                RemoveFrostDashFreezeMods(ev);
-            }
-        }
-    }
-
-    public static void RemoveFrostDashFreezeMods(Entity entity)
+    public static void RemoveFrostDashFreezeSpellMods(Entity entity)
     {
         if (!EntityManager.HasBuffer<SpellModSetComponent>(entity))
         {

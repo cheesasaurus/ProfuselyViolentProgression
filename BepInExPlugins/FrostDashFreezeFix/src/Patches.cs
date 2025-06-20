@@ -2,10 +2,7 @@ using HarmonyLib;
 using HookDOTS.API.Attributes;
 using ProfuselyViolentProgression.Core.Utilities;
 using ProjectM;
-using ProjectM.Gameplay;
 using ProjectM.Gameplay.Systems;
-using ProjectM.UI;
-using ProjectM.WeaponCoating;
 using Unity.Collections;
 using Unity.Entities;
 
@@ -13,9 +10,10 @@ namespace ProfuselyViolentProgression.FrostDashFreezeFix;
 
 
 [HarmonyPatch]
-public unsafe class MiscPatches
+public unsafe class Patches
 {
     private static EntityManager EntityManager = WorldUtil.Game.EntityManager;
+    private static EntityQuery Query_DealDamageEvent;
 
     [EcsSystemUpdatePrefix(typeof(RecursiveGroup), onlyWhenSystemRuns: false)]
     public static void UpdateTickCount()
@@ -34,19 +32,20 @@ public unsafe class MiscPatches
     [EcsSystemUpdatePostfix(typeof(HandleGameplayEventsRecursiveSystem))]
     public static void CheckDealDamageEvents()
     {
-        // todo: don't recreate the query every call
-        var query = EntityManager.CreateEntityQuery(new EntityQueryDesc()
+        if (Query_DealDamageEvent == default)
         {
-            All = new ComponentType[] {
-                ComponentType.ReadOnly<DealDamageEvent>(),
-            },
-        });
+            Query_DealDamageEvent = EntityManager.CreateEntityQuery(new EntityQueryDesc()
+            {
+                All = new ComponentType[] {
+                    ComponentType.ReadOnly<DealDamageEvent>(),
+                },
+            });
+        }
 
-        var events = query.ToEntityArray(Allocator.Temp);
-        foreach (var eventEntity in events)
+        var dealDamageEvents = Query_DealDamageEvent.ToComponentDataArray<DealDamageEvent>(Allocator.Temp);
+        foreach (var dealDamageEvent in dealDamageEvents)
         {
-            var dealDamage = EntityManager.GetComponentData<DealDamageEvent>(eventEntity);
-            FreezeFixUtil.EntityGotHitWithDamage(dealDamage.Target);
+            FreezeFixUtil.EntityGotHitWithDamage(dealDamageEvent.Target);
         }
     }
 
@@ -55,12 +54,13 @@ public unsafe class MiscPatches
     [HarmonyPrefix]
     public static void Prefix(BuffSystem_Spawn_Server __instance)
     {
-        var events = __instance._Query.ToEntityArray(Allocator.Temp);
-        foreach (var entity in events)
+        var entities = __instance._Query.ToEntityArray(Allocator.Temp);
+        var buffs = __instance._Query.ToComponentDataArray<Buff>(Allocator.Temp);
+
+        for (var i = 0; i < entities.Length; i++)
         {
-            FreezeFixUtil.BuffWillBeSpawned(entity);
+            FreezeFixUtil.BuffWillBeSpawned(entities[i], buffs[i].Target);
         }
-        FreezeFixUtil.ModifyBadFrostDashes();
     }
 
 }
