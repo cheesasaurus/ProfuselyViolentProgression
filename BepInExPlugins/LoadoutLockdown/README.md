@@ -2,8 +2,82 @@
 
 ⚠️WIP⚠️
 
+Restrict (or unrestrict) equipping gear, both in and out of combat. Highly configurable.
 
-### Support
+### Some example uses
+- Allow equipping a fishing pole from your inventory.
+- Disallow swapping armour or amulets during pvp combat.
+- Forbid disliked weapons from being equipped.
+- Limit how many hotbar slots can be used for weapons.
+- Remove all vanilla restrictions, and menu-swap any gear during pvp.
+
+Note: when something is disallowed, a message comes up saying "No free action bar slots".\
+This is a preset localised message. It's not always the correct thing to say, but AFAIK this can't be changed from the server side.
+
+
+## Installation
+
+- Install [BepInEx](https://v-rising.thunderstore.io/package/BepInEx/BepInExPack_V_Rising/).
+- Install [HookDOTS](https://thunderstore.io/c/v-rising/p/cheesasaurus/HookDOTS_API/).
+- Extract `LoadoutLockdown.dll` into _`(VRising folder)/BepInEx/plugins`_.
+
+
+## Configuration
+
+Configuration files are created after the mod runs.
+
+### Main config
+
+The following configuration settings are available in `(VRisingFolder)/BepInEx/config/LoadoutLockdown.cfg`.
+
+- `RulesetFilePath` [default `rulesets/MyConfig.yml`]: The location of the ruleset file to use for configuration.
+
+### Rulesets
+
+There are 5 initial rulesets found in `(VRisingFolder)/BepInEx/config/LoadoutLockdown/rulesets/`
+
+- `MyConfig` - The default ruleset used. Feel free to edit it.
+- `Example_Default` - Default ruleset used to initially set up MyConfig.
+- `Example_FishersFantasy` - Same behaviour as the vanilla game, but with fishing pole restrictions lifted.
+- `Example_CrutchersCrucible` - "Bans" some overperforming crutch weapons. Imposes tradeoffs with weapon selection.
+- `Example_SweatlordsSwag` - Lifts all restrictions. Menu-swap between 15 weapons and 3 amulets if you want.
+
+Any filenames starting with `Example_` are examples and will be overwritten. Don't change these; copy them to your own files.
+
+In case you don't have LoadoutLockdown installed yet, and want to see what a ruleset looks like: [CrutchersCrucible.yml](https://github.com/cheesasaurus/ProfuselyViolentProgression/tree/main/BepInExPlugins/LoadoutLockdown/resources/presets/CrutchersCrucible.yml)
+
+### Explanation of rules
+
+- `RequiresHotbarSlot` - If true, requires the gear to be in a valid hotbar slot to use it. Not relevant for things with a designated slot, such as a cape.
+- `AllowMenuInsertDuringPvp` - If true, allows the gear to be equipped when there is an open slot for it, during pvp.
+- `AllowMenuSwapDuringPvp` - If true, allows the gear to be moved in/out of a slot, during pvp.
+
+### Forbidden gear
+A `forbidden` piece of gear is never allowed to be used. (And none of the above rules apply).
+
+Broad types of gear can be forbidden (for example, all slashers).\
+As well as specific gear pieces, like "The Thousand Storms".
+
+A searchable list of prefabs (for identifying specific gear) can be found [here](https://wiki.vrisingmods.com/prefabs/Item).
+
+
+If you do decide to forbid gear, I would recommend setting up some kind of exchange system to "cash in" unusable weapon drops from rifts.\
+[Penumbra](https://thunderstore.io/c/v-rising/p/zfolmt/Penumbra/) can help with this.
+
+### Weapon Slots
+
+This is a little-known vanilla setting, which LoadoutLockdown overrides.\
+Slots in the action bar are counted from left to right. Equipping a weapon which doesnt sit in a valid slot is disallowed.
+
+For example, with `WeaponSlots` set to `3`, any weapons in slots [4, 5, 6, 7, 8] cannot be equipped. The same applies to weapons in the main inventory.
+
+The `RequiresHotbarSlot` rule can be used to let a specific type of weapon (such as the fishing rod) bypass this restriction.
+
+
+
+
+
+## Support
 
 Join the [modding community](https://vrisingmods.com/discord).
 

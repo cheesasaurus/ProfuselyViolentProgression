@@ -1,0 +1,144 @@
+# The default settings used to set up MyConfig.yml. Intended for experienced pc gamers, using a keyboard and mmo-mouse.
+
+WeaponSlots: 8
+
+ForbiddenByType:
+    # True = Forbidden.
+    # False = Not forbidden by type.
+    - Bag: False
+    - Cloak: False
+    - FishingPole: False
+    - Headgear: False
+    - MagicSource: False
+    - ArmourTypes:
+        - Chest: False
+        - Legs: False
+        - Gloves: False
+        - Footgear: False
+    - WeaponTypes:
+        - Axes: False
+        - Claws: False
+        - Crossbow: False
+        - Daggers: False
+        - Greatsword: False
+        - Longbow: False
+        - Mace: False
+        - Pistols: False
+        - Reaper: False
+        - Slashers: False
+        - Spear: False
+        - Sword: False
+        - Twinblades: False
+        - Whip: False
+
+ForbiddenByPrefab:
+    # Artifacts are listed for convenience, but any valid prefab can be added.
+    # True = Forbidden.
+    # False = Not forbidden by prefab.
+    - Item_Weapon_Axe_Unique_T08_Variation01: False         # The Red Twins
+    - Item_Weapon_Claws_Unique_T08_Variation01: False       # Talons of the Lich Beast
+    - Item_Weapon_Crossbow_Unique_T08_Variation01: False    # The Siren's Wail
+    - Item_Weapon_Daggers_Unique_T08_Variation01: False     # The Wraithblades
+    - Item_Weapon_GreatSword_Unique_T08_Variation01: False  # Apocalypse
+    - Item_Weapon_Longbow_Unique_T08_Variation01: False     # Oaksong
+    - Item_Weapon_Mace_Unique_T08_Variation01: False        # Hand of Winter
+    - Item_Weapon_Pistols_Unique_T08_Variation01: False     # The Endbringers
+    - Item_Weapon_Reaper_Unique_T08_Variation01: False      # Mortira's Lament
+    - Item_Weapon_Slashers_Unique_T08_Variation01: False    # Cloud Dancers
+    - Item_Weapon_Slashers_Unique_T08_Variation02: False    # Wings of the Fallen
+    - Item_Weapon_Spear_Unique_T08_Variation01: False       # The Thousand Storms
+    - Item_Weapon_Sword_Unique_T08_Variation01: False       # The Gravecaller
+    - Item_Weapon_TwinBlades_Unique_T08_Variation01: False  # The Fate Dancers
+    - Item_Weapon_Whip_Unique_T08_Variation01: False        # The Morning Star
+
+
+RulesByType:
+    - Bag:
+        - AllowMenuInsertDuringPvp: True
+        - AllowMenuSwapDuringPvp: True
+    - Cloak:
+        - AllowMenuInsertDuringPvp: True
+        - AllowMenuSwapDuringPvp: True
+    - FishingPole:
+        - RequiresHotbarSlot: False
+        - AllowMenuInsertDuringPvp: True
+        - AllowMenuSwapDuringPvp: True
+    - Headgear:
+        - AllowMenuInsertDuringPvp: True
+        - AllowMenuSwapDuringPvp: True
+    - MagicSource:
+        - AllowMenuInsertDuringPvp: True
+        - AllowMenuSwapDuringPvp: False
+    - ArmourTypes:
+        - Chest:
+            - AllowMenuInsertDuringPvp: True
+            - AllowMenuSwapDuringPvp: False
+        - Legs:
+            - AllowMenuInsertDuringPvp: True
+            - AllowMenuSwapDuringPvp: False
+        - Gloves:
+            - AllowMenuInsertDuringPvp: True
+            - AllowMenuSwapDuringPvp: False
+        - Footgear:
+            - AllowMenuInsertDuringPvp: True
+            - AllowMenuSwapDuringPvp: False
+    - WeaponTypes:
+        - Axes:
+            - RequiresHotbarSlot: True
+            - AllowMenuInsertDuringPvp: True
+            - AllowMenuSwapDuringPvp: False
+        - Claws:
+            - RequiresHotbarSlot: True
+            - AllowMenuInsertDuringPvp: True
+            - AllowMenuSwapDuringPvp: False
+        - Crossbow:
+            - RequiresHotbarSlot: True
+            - AllowMenuInsertDuringPvp: True
+            - AllowMenuSwapDuringPvp: False
+        - Daggers:
+            - RequiresHotbarSlot: True
+            - AllowMenuInsertDuringPvp: True
+            - AllowMenuSwapDuringPvp: False
+        - Greatsword:
+            - RequiresHotbarSlot: True
+            - AllowMenuInsertDuringPvp: True
+            - AllowMenuSwapDuringPvp: False
+        - Longbow:
+            - RequiresHotbarSlot: True
+            - AllowMenuInsertDuringPvp: True
+            - AllowMenuSwapDuringPvp: False
+        - Mace:
+            - RequiresHotbarSlot: True
+            - AllowMenuInsertDuringPvp: True
+            - AllowMenuSwapDuringPvp: False
+        - Pistols:
+            - RequiresHotbarSlot: True
+            - AllowMenuInsertDuringPvp: True
+            - AllowMenuSwapDuringPvp: False
+        - Reaper:
+            - RequiresHotbarSlot: True
+            - AllowMenuInsertDuringPvp: True
+            - AllowMenuSwapDuringPvp: False
+        - Slashers:
+            - RequiresHotbarSlot: True
+            - AllowMenuInsertDuringPvp: True
+            - AllowMenuSwapDuringPvp: False
+        - Spear:
+            - RequiresHotbarSlot: True
+            - AllowMenuInsertDuringPvp: True
+            - AllowMenuSwapDuringPvp: False
+        - Sword:
+            - RequiresHotbarSlot: True
+            - AllowMenuInsertDuringPvp: True
+            - AllowMenuSwapDuringPvp: False
+        - Twinblades:
+            - RequiresHotbarSlot: True
+            - AllowMenuInsertDuringPvp: True
+            - AllowMenuSwapDuringPvp: False
+        - Whip:
+            - RequiresHotbarSlot: True
+            - AllowMenuInsertDuringPvp: True
+            - AllowMenuSwapDuringPvp: False      
+
+
+FormatVersion: 1 # do not change the FormatVersion number; it informs the mod of how to parse the config.
