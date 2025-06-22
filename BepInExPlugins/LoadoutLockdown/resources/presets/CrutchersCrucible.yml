@@ -2,34 +2,94 @@
 
 WeaponSlots: 3
 
-ForbiddenByType:
-    # True = Forbidden.
-    # False = Not forbidden by type.
-    - Bag: False
-    - Cloak: False
-    - FishingPole: False
-    - Headgear: False
-    - MagicSource: False
+RulesByType:
+    - Bag:
+        - Forbidden: False
+        - FromMenuDuringPVP: AllowSwapIntoFilledSlot
+    - Cloak:
+        - Forbidden: False
+        - FromMenuDuringPVP: AllowSwapIntoFilledSlot
+    - FishingPole:
+        - Forbidden: False
+        - RequiresHotbarSlot: False
+        - FromMenuDuringPVP: AllowSwapIntoFilledSlot
+    - Headgear:
+        - Forbidden: False
+        - FromMenuDuringPVP: AllowSwapIntoFilledSlot
+    - MagicSource:
+        - Forbidden: False
+        - FromMenuDuringPVP: AllowSwapIntoWastedSlot
     - ArmourTypes:
-        - Chest: False
-        - Legs: False
-        - Gloves: False
-        - Footgear: False
+        - Chest:
+            - Forbidden: False
+            - FromMenuDuringPVP: AllowSwapIntoWastedSlot
+        - Legs:
+            - Forbidden: False
+            - FromMenuDuringPVP: AllowSwapIntoWastedSlot
+        - Gloves:
+            - Forbidden: False
+            - FromMenuDuringPVP: AllowSwapIntoWastedSlot
+        - Footgear:
+            - Forbidden: False
+            - FromMenuDuringPVP: AllowSwapIntoWastedSlot
     - WeaponTypes:
-        - Axes: False
-        - Claws: False
-        - Crossbow: False
-        - Daggers: False
-        - Greatsword: False
-        - Longbow: False
-        - Mace: False
-        - Pistols: True
-        - Reaper: False
-        - Slashers: True
-        - Spear: False
-        - Sword: False
-        - Twinblades: False
-        - Whip: True
+        - Axes:
+            - Forbidden: False
+            - RequiresHotbarSlot: True
+            - FromMenuDuringPVP: AllowSwapIntoWastedSlot
+        - Claws:
+            - Forbidden: False
+            - RequiresHotbarSlot: True
+            - FromMenuDuringPVP: AllowSwapIntoWastedSlot
+        - Crossbow:
+            - Forbidden: False
+            - RequiresHotbarSlot: True
+            - FromMenuDuringPVP: AllowSwapIntoWastedSlot
+        - Daggers:
+            - Forbidden: False
+            - RequiresHotbarSlot: True
+            - FromMenuDuringPVP: AllowSwapIntoWastedSlot
+        - Greatsword:
+            - Forbidden: False
+            - RequiresHotbarSlot: True
+            - FromMenuDuringPVP: AllowSwapIntoWastedSlot
+        - Longbow:
+            - Forbidden: False
+            - RequiresHotbarSlot: True
+            - FromMenuDuringPVP: AllowSwapIntoWastedSlot
+        - Mace:
+            - Forbidden: False
+            - RequiresHotbarSlot: True
+            - FromMenuDuringPVP: AllowSwapIntoWastedSlot
+        - Pistols:
+            - Forbidden: True
+            - RequiresHotbarSlot: True
+            - FromMenuDuringPVP: AllowSwapIntoWastedSlot
+        - Reaper:
+            - Forbidden: False
+            - RequiresHotbarSlot: True
+            - FromMenuDuringPVP: AllowSwapIntoWastedSlot
+        - Slashers:
+            - Forbidden: True
+            - RequiresHotbarSlot: True
+            - FromMenuDuringPVP: AllowSwapIntoWastedSlot
+        - Spear:
+            - Forbidden: False
+            - RequiresHotbarSlot: True
+            - FromMenuDuringPVP: AllowSwapIntoWastedSlot
+        - Sword:
+            - Forbidden: False
+            - RequiresHotbarSlot: True
+            - FromMenuDuringPVP: AllowSwapIntoWastedSlot
+        - Twinblades:
+            - Forbidden: False
+            - RequiresHotbarSlot: True
+            - FromMenuDuringPVP: AllowSwapIntoWastedSlot
+        - Whip:
+            - Forbidden: True
+            - RequiresHotbarSlot: True
+            - FromMenuDuringPVP: AllowSwapIntoWastedSlot
+
 
 ForbiddenByPrefab:
     # Artifacts are listed for convenience, but any valid prefab can be added.
@@ -50,98 +110,6 @@ ForbiddenByPrefab:
     - Item_Weapon_Sword_Unique_T08_Variation01: False       # The Gravecaller
     - Item_Weapon_TwinBlades_Unique_T08_Variation01: False  # The Fate Dancers
     - Item_Weapon_Whip_Unique_T08_Variation01: False        # The Morning Star
-
-
-RulesByType:
-    - Bag:
-        - AllowMenuInsertDuringPvp: True
-        - AllowMenuSwapDuringPvp: True
-    - Cloak:
-        - AllowMenuInsertDuringPvp: True
-        - AllowMenuSwapDuringPvp: True
-    - FishingPole:
-        - RequiresHotbarSlot: False
-        - AllowMenuInsertDuringPvp: True
-        - AllowMenuSwapDuringPvp: True
-    - Headgear:
-        - AllowMenuInsertDuringPvp: True
-        - AllowMenuSwapDuringPvp: True
-    - MagicSource:
-        - AllowMenuInsertDuringPvp: True
-        - AllowMenuSwapDuringPvp: False
-    - ArmourTypes:
-        - Chest:
-            - AllowMenuInsertDuringPvp: True
-            - AllowMenuSwapDuringPvp: False
-        - Legs:
-            - AllowMenuInsertDuringPvp: True
-            - AllowMenuSwapDuringPvp: False
-        - Gloves:
-            - AllowMenuInsertDuringPvp: True
-            - AllowMenuSwapDuringPvp: False
-        - Footgear:
-            - AllowMenuInsertDuringPvp: True
-            - AllowMenuSwapDuringPvp: False
-    - WeaponTypes:
-        - Axes:
-            - RequiresHotbarSlot: True
-            - AllowMenuInsertDuringPvp: True
-            - AllowMenuSwapDuringPvp: False
-        - Claws:
-            - RequiresHotbarSlot: True
-            - AllowMenuInsertDuringPvp: True
-            - AllowMenuSwapDuringPvp: False
-        - Crossbow:
-            - RequiresHotbarSlot: True
-            - AllowMenuInsertDuringPvp: True
-            - AllowMenuSwapDuringPvp: False
-        - Daggers:
-            - RequiresHotbarSlot: True
-            - AllowMenuInsertDuringPvp: True
-            - AllowMenuSwapDuringPvp: False
-        - Greatsword:
-            - RequiresHotbarSlot: True
-            - AllowMenuInsertDuringPvp: True
-            - AllowMenuSwapDuringPvp: False
-        - Longbow:
-            - RequiresHotbarSlot: True
-            - AllowMenuInsertDuringPvp: True
-            - AllowMenuSwapDuringPvp: False
-        - Mace:
-            - RequiresHotbarSlot: True
-            - AllowMenuInsertDuringPvp: True
-            - AllowMenuSwapDuringPvp: False
-        - Pistols:
-            # Pistols are forbidden, so none of this matters. It's here for reference.
-            - RequiresHotbarSlot: True
-            - AllowMenuInsertDuringPvp: True
-            - AllowMenuSwapDuringPvp: False
-        - Reaper:
-            - RequiresHotbarSlot: True
-            - AllowMenuInsertDuringPvp: True
-            - AllowMenuSwapDuringPvp: False
-        - Slashers:
-            # Slashers are forbidden, so none of this matters. It's here for reference.
-            - RequiresHotbarSlot: True
-            - AllowMenuInsertDuringPvp: True
-            - AllowMenuSwapDuringPvp: False
-        - Spear:
-            - RequiresHotbarSlot: True
-            - AllowMenuInsertDuringPvp: True
-            - AllowMenuSwapDuringPvp: False
-        - Sword:
-            - RequiresHotbarSlot: True
-            - AllowMenuInsertDuringPvp: True
-            - AllowMenuSwapDuringPvp: False
-        - Twinblades:
-            - RequiresHotbarSlot: True
-            - AllowMenuInsertDuringPvp: True
-            - AllowMenuSwapDuringPvp: False
-        - Whip:
-            # Whips are forbidden, so none of this matters. It's here for reference.
-            - RequiresHotbarSlot: True
-            - AllowMenuInsertDuringPvp: True
-            - AllowMenuSwapDuringPvp: False      
 
 
 FormatVersion: 1 # do not change the FormatVersion number; it informs the mod of how to parse the config.

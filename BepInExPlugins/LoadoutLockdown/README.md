@@ -49,11 +49,13 @@ In case you don't have LoadoutLockdown installed yet, and want to see what a rul
 ### Explanation of rules
 
 - `RequiresHotbarSlot` - If true, requires the gear to be in a valid hotbar slot to use it. Not relevant for things with a designated slot, such as a cape.
-- `AllowMenuInsertDuringPvp` - If true, allows the gear to be equipped when there is an open slot for it, during pvp.
-- `AllowMenuSwapDuringPvp` - If true, allows the gear to be moved in/out of a slot, during pvp.
+- `FromMenuDuringPVP` - Allowed values:
+  - `AllowSwapIntoWastedSlot` - During pvp, the gear can only be inserted into an empty slot, or take the place of "junk" in the slot. (i.e. a non-weapon in a hotbar slot)
+  - `AllowSwapIntoFilledSlot` - During pvp, the gear can be put into any slot regardless of what's already in it.
+- `Forbidden` - If true, the gear can **never** be equipped.
 
 ### Forbidden gear
-A `forbidden` piece of gear is never allowed to be used. (And none of the above rules apply).
+A `forbidden` piece of gear is **never** allowed to be equipped.
 
 Broad types of gear can be forbidden (for example, all slashers).\
 As well as specific gear pieces, like "The Thousand Storms".
@@ -72,9 +74,6 @@ Slots in the action bar are counted from left to right. Equipping a weapon which
 For example, with `WeaponSlots` set to `3`, any weapons in slots [4, 5, 6, 7, 8] cannot be equipped. The same applies to weapons in the main inventory.
 
 The `RequiresHotbarSlot` rule can be used to let a specific type of weapon (such as the fishing rod) bypass this restriction.
-
-
-
 
 
 ## Support

@@ -2,9 +2,8 @@
 
 RulesByType:
     - FishingPole:
+        - Forbidden: False
         - RequiresHotbarSlot: False
-        - AllowMenuInsertDuringPvp: True
-        - AllowMenuSwapDuringPvp: True
-
+        - FromMenuDuringPVP: AllowSwapIntoWastedSlot
 
 FormatVersion: 1 # do not change the FormatVersion number; it informs the mod of how to parse the config.
