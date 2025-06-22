@@ -29,6 +29,10 @@
     <Reference Include="$(VendorPathBepInEx)/interop/*.dll" />
   </ItemGroup>
 
+  <ItemGroup>
+    <EmbeddedResource Include="resources/**/**"/>
+  </ItemGroup>
+
   <Target Name="PrepareLibsForDist" AfterTargets="Publish">
     <PropertyGroup>
       <PublishPath>$(OutputPath)/publish</PublishPath>

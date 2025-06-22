@@ -3,6 +3,8 @@ using HookDOTS.API.Attributes;
 using ProfuselyViolentProgression.Core.Utilities;
 using ProjectM;
 using ProjectM.Gameplay.Systems;
+using ProjectM.Network;
+using Stunlock.Core;
 using Unity.Collections;
 using Unity.Entities;
 
@@ -18,8 +20,9 @@ public unsafe class Patches
 
     [HarmonyPatch(typeof(NewWeaponEquipmentRestrictionsUtility), nameof(NewWeaponEquipmentRestrictionsUtility.IsValidWeaponEquip))]
     [HarmonyPrefix]
-    public static bool PrefixThingy(ref bool __result)
+    public static bool IsValidWeaponEquip_Prefix(ref bool __result, EntityManager entityManager, EquippableData equippableData, EquipItemEvent equipItem, ServerRootPrefabCollection serverRootPrefabs, Entity character, NativeParallelHashMap<PrefabGUID, ItemData> itemHashLookupMap, int weaponSlots)
     {
+        DebugUtil.LogComponentTypes(character);
         LogUtil.LogWarning("The thing is happening");
         //__result = false;
         //return false;
@@ -28,7 +31,7 @@ public unsafe class Patches
 
     [HarmonyPatch(typeof(NewWeaponEquipmentRestrictionsUtility), nameof(NewWeaponEquipmentRestrictionsUtility.IsValidWeaponEquip))]
     [HarmonyPostfix]
-    public static void PostfixThingy(ref bool __result)
+    public static void IsValidWeaponEquip_Postfix(ref bool __result)
     {
         //__result = false;
         LogUtil.LogInfo($"__result: {__result}");

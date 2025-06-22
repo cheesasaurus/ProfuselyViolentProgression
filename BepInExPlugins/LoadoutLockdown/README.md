@@ -30,7 +30,7 @@ Configuration files are created after the mod runs.
 
 The following configuration settings are available in `(VRisingFolder)/BepInEx/config/LoadoutLockdown.cfg`.
 
-- `RulesetFilePath` [default `rulesets/MyConfig.yml`]: The location of the ruleset file to use for configuration.
+- `RulesetFilePath` [default `rulesets/MyConfig.jsonc`]: The location of the ruleset file to use for configuration.
 
 ### Rulesets
 
@@ -44,7 +44,7 @@ There are 5 initial rulesets found in `(VRisingFolder)/BepInEx/config/LoadoutLoc
 
 Any filenames starting with `Example_` are examples and will be overwritten. Don't change these; copy them to your own files.
 
-In case you don't have LoadoutLockdown installed yet, and want to see what a ruleset looks like: [CrutchersCrucible.yml](https://github.com/cheesasaurus/ProfuselyViolentProgression/tree/main/BepInExPlugins/LoadoutLockdown/resources/presets/CrutchersCrucible.yml)
+In case you don't have LoadoutLockdown installed yet, and want to see what a ruleset looks like: [CrutchersCrucible.jsonc](https://github.com/cheesasaurus/ProfuselyViolentProgression/tree/main/BepInExPlugins/LoadoutLockdown/resources/presets/CrutchersCrucible.jsonc)
 
 ### Explanation of rules
 
@@ -71,7 +71,7 @@ If you do decide to forbid gear, I would recommend setting up some kind of excha
 This is a little-known vanilla setting, which LoadoutLockdown overrides.\
 Slots in the action bar are counted from left to right. Equipping a weapon which doesnt sit in a valid slot is disallowed.
 
-For example, with `WeaponSlots` set to `3`, any weapons in slots [4, 5, 6, 7, 8] cannot be equipped. The same applies to weapons in the main inventory.
+For example, with `WeaponSlots` set to `3`, any weapons in slots [4, 5, 6, 7, 8] cannot be equipped. Weapons in the main inventory also cannot be equipped.
 
 The `RequiresHotbarSlot` rule can be used to let a specific type of weapon (such as the fishing rod) bypass this restriction.
 

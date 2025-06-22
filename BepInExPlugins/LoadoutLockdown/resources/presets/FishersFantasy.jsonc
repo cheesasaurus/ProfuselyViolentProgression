@@ -1,0 +1,12 @@
+// Same behaviour as the vanilla game, but with fishing pole restrictions lifted.
+{
+    
+    "RulesByType": {
+        "FishingPole": {
+            "Forbidden": false,
+            "FromMenuDuringPVP": "AllowSwapIntoWastedSlot",
+            "RequiresHotbarSlot": false
+        },
+    },
+
+}

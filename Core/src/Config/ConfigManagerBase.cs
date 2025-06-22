@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Reflection;
+using ProfuselyViolentProgression.Core.Utilities;
 
 namespace ProfuselyViolentProgression.Core.Config;
 
@@ -22,7 +23,7 @@ public abstract class ConfigManagerBase<TConfig> : IConfigManager<TConfig>
     public ConfigManagerBase(string pluginGUID, string filename)
     {
         _filename = filename;
-        var _absoluteFileDir = Path.Combine(BepInEx.Paths.ConfigPath, pluginGUID);
+        _absoluteFileDir = Path.Combine(BepInEx.Paths.ConfigPath, pluginGUID);
         Directory.CreateDirectory(_absoluteFileDir);
         _absoluteFilePath = Path.Combine(_absoluteFileDir, filename);
         InitFileWatcher();

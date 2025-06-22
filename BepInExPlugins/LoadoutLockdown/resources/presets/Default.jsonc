@@ -1,0 +1,139 @@
+// The default settings used to set up MyConfig.jsonc
+// Intended for experienced pc gamers, using a keyboard and mmo-mouse.
+{
+    "WeaponSlots": 8,
+
+    "RulesByType": {
+        "Bag": {
+            "Forbidden": false,
+            "FromMenuDuringPVP": "AllowSwapIntoFilledSlot"
+        },
+        "Cloak": {
+            "Forbidden": false,
+            "FromMenuDuringPVP": "AllowSwapIntoFilledSlot"
+        },
+        "FishingPole": {
+            "Forbidden": false,
+            "FromMenuDuringPVP": "AllowSwapIntoFilledSlot",
+            "RequiresHotbarSlot": false
+        },
+        "Headgear": {
+            "Forbidden": false,
+            "FromMenuDuringPVP": "AllowSwapIntoFilledSlot"
+        },
+        "MagicSource": {
+            "Forbidden": false,
+            "FromMenuDuringPVP": "AllowSwapIntoWastedSlot"
+        },
+        "ArmorTypes": {
+            "Chest": {
+                "Forbidden": false,
+                "FromMenuDuringPVP": "AllowSwapIntoWastedSlot"
+            },
+            "Legs": {
+                "Forbidden": false,
+                "FromMenuDuringPVP": "AllowSwapIntoWastedSlot"
+            },
+            "Gloves": {
+                "Forbidden": false,
+                "FromMenuDuringPVP": "AllowSwapIntoWastedSlot"
+            },
+            "Footgear": {
+                "Forbidden": false,
+                "FromMenuDuringPVP": "AllowSwapIntoWastedSlot"
+            },
+        },
+        "WeaponTypes": {
+            "Axes": {
+                "Forbidden": false,
+                "FromMenuDuringPVP": "AllowSwapIntoWastedSlot",
+                "RequiresHotbarSlot": true
+            },
+            "Claws": {
+                "Forbidden": false,
+                "FromMenuDuringPVP": "AllowSwapIntoWastedSlot",
+                "RequiresHotbarSlot": true
+            },
+            "Crossbow": {
+                "Forbidden": false,
+                "FromMenuDuringPVP": "AllowSwapIntoWastedSlot",
+                "RequiresHotbarSlot": true
+            },
+            "Daggers": {
+                "Forbidden": false,
+                "FromMenuDuringPVP": "AllowSwapIntoWastedSlot",
+                "RequiresHotbarSlot": true
+            },
+            "Greatsword": {
+                "Forbidden": false,
+                "FromMenuDuringPVP": "AllowSwapIntoWastedSlot",
+                "RequiresHotbarSlot": true
+            },
+            "Longbow": {
+                "Forbidden": false,
+                "FromMenuDuringPVP": "AllowSwapIntoWastedSlot",
+                "RequiresHotbarSlot": true
+            },
+            "Mace": {
+                "Forbidden": false,
+                "FromMenuDuringPVP": "AllowSwapIntoWastedSlot",
+                "RequiresHotbarSlot": true
+            },
+            "Pistols": {
+                "Forbidden": false,
+                "FromMenuDuringPVP": "AllowSwapIntoWastedSlot",
+                "RequiresHotbarSlot": true
+            },
+            "Reaper": {
+                "Forbidden": false,
+                "FromMenuDuringPVP": "AllowSwapIntoWastedSlot",
+                "RequiresHotbarSlot": true
+            },
+            "Slashers": {
+                "Forbidden": false,
+                "FromMenuDuringPVP": "AllowSwapIntoWastedSlot",
+                "RequiresHotbarSlot": true
+            },
+            "Spear": {
+                "Forbidden": false,
+                "FromMenuDuringPVP": "AllowSwapIntoWastedSlot",
+                "RequiresHotbarSlot": true
+            },
+            "Sword": {
+                "Forbidden": false,
+                "FromMenuDuringPVP": "AllowSwapIntoWastedSlot",
+                "RequiresHotbarSlot": true
+            },
+            "Twinblades": {
+                "Forbidden": false,
+                "FromMenuDuringPVP": "AllowSwapIntoWastedSlot",
+                "RequiresHotbarSlot": true
+            },
+            "Whip": {
+                "Forbidden": false,
+                "FromMenuDuringPVP": "AllowSwapIntoWastedSlot",
+                "RequiresHotbarSlot": true
+            },
+        },
+    },
+
+    // Artifacts are listed for convenience, but any valid prefab can be added.
+    "ForbiddenByPrefab": [
+        //"Item_Weapon_Axe_Unique_T08_Variation01",         // The Red Twins
+        //"Item_Weapon_Claws_Unique_T08_Variation01",       // Talons of the Lich Beast
+        //"Item_Weapon_Crossbow_Unique_T08_Variation01",    // The Siren's Wail
+        //"Item_Weapon_Daggers_Unique_T08_Variation01",     // The Wraithblades
+        //"Item_Weapon_GreatSword_Unique_T08_Variation01",  // Apocalypse
+        //"Item_Weapon_Longbow_Unique_T08_Variation01",     // Oaksong
+        //"Item_Weapon_Mace_Unique_T08_Variation01",        // Hand of Winter
+        //"Item_Weapon_Pistols_Unique_T08_Variation01",     // The Endbringers
+        //"Item_Weapon_Reaper_Unique_T08_Variation01",      // Mortira's Lament
+        //"Item_Weapon_Slashers_Unique_T08_Variation01",    // Cloud Dancers
+        //"Item_Weapon_Slashers_Unique_T08_Variation02",    // Wings of the Fallen
+        //"Item_Weapon_Spear_Unique_T08_Variation01",       // The Thousand Storms
+        //"Item_Weapon_Sword_Unique_T08_Variation01",       // The Gravecaller
+        //"Item_Weapon_TwinBlades_Unique_T08_Variation01",  // The Fate Dancers
+        //"Item_Weapon_Whip_Unique_T08_Variation01",        // The Morning Star
+    ],
+    
+}

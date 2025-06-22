@@ -1,0 +1,138 @@
+// Removes all restrictions
+{
+    "WeaponSlots": 8,
+
+    "RulesByType": {
+        "Bag": {
+            "Forbidden": false,
+            "FromMenuDuringPVP": "AllowSwapIntoFilledSlot"
+        },
+        "Cloak": {
+            "Forbidden": false,
+            "FromMenuDuringPVP": "AllowSwapIntoFilledSlot"
+        },
+        "FishingPole": {
+            "Forbidden": false,
+            "FromMenuDuringPVP": "AllowSwapIntoFilledSlot",
+            "RequiresHotbarSlot": false
+        },
+        "Headgear": {
+            "Forbidden": false,
+            "FromMenuDuringPVP": "AllowSwapIntoFilledSlot"
+        },
+        "MagicSource": {
+            "Forbidden": false,
+            "FromMenuDuringPVP": "AllowSwapIntoFilledSlot"
+        },
+        "ArmorTypes": {
+            "Chest": {
+                "Forbidden": false,
+                "FromMenuDuringPVP": "AllowSwapIntoFilledSlot"
+            },
+            "Legs": {
+                "Forbidden": false,
+                "FromMenuDuringPVP": "AllowSwapIntoFilledSlot"
+            },
+            "Gloves": {
+                "Forbidden": false,
+                "FromMenuDuringPVP": "AllowSwapIntoFilledSlot"
+            },
+            "Footgear": {
+                "Forbidden": false,
+                "FromMenuDuringPVP": "AllowSwapIntoFilledSlot"
+            },
+        },
+        "WeaponTypes": {
+            "Axes": {
+                "Forbidden": false,
+                "FromMenuDuringPVP": "AllowSwapIntoFilledSlot",
+                "RequiresHotbarSlot": false
+            },
+            "Claws": {
+                "Forbidden": false,
+                "FromMenuDuringPVP": "AllowSwapIntoFilledSlot",
+                "RequiresHotbarSlot": false
+            },
+            "Crossbow": {
+                "Forbidden": false,
+                "FromMenuDuringPVP": "AllowSwapIntoFilledSlot",
+                "RequiresHotbarSlot": false
+            },
+            "Daggers": {
+                "Forbidden": false,
+                "FromMenuDuringPVP": "AllowSwapIntoFilledSlot",
+                "RequiresHotbarSlot": false
+            },
+            "Greatsword": {
+                "Forbidden": false,
+                "FromMenuDuringPVP": "AllowSwapIntoFilledSlot",
+                "RequiresHotbarSlot": false
+            },
+            "Longbow": {
+                "Forbidden": false,
+                "FromMenuDuringPVP": "AllowSwapIntoFilledSlot",
+                "RequiresHotbarSlot": false
+            },
+            "Mace": {
+                "Forbidden": false,
+                "FromMenuDuringPVP": "AllowSwapIntoFilledSlot",
+                "RequiresHotbarSlot": false
+            },
+            "Pistols": {
+                "Forbidden": false,
+                "FromMenuDuringPVP": "AllowSwapIntoFilledSlot",
+                "RequiresHotbarSlot": false
+            },
+            "Reaper": {
+                "Forbidden": false,
+                "FromMenuDuringPVP": "AllowSwapIntoFilledSlot",
+                "RequiresHotbarSlot": false
+            },
+            "Slashers": {
+                "Forbidden": false,
+                "FromMenuDuringPVP": "AllowSwapIntoFilledSlot",
+                "RequiresHotbarSlot": false
+            },
+            "Spear": {
+                "Forbidden": false,
+                "FromMenuDuringPVP": "AllowSwapIntoFilledSlot",
+                "RequiresHotbarSlot": false
+            },
+            "Sword": {
+                "Forbidden": false,
+                "FromMenuDuringPVP": "AllowSwapIntoFilledSlot",
+                "RequiresHotbarSlot": false
+            },
+            "Twinblades": {
+                "Forbidden": false,
+                "FromMenuDuringPVP": "AllowSwapIntoFilledSlot",
+                "RequiresHotbarSlot": false
+            },
+            "Whip": {
+                "Forbidden": false,
+                "FromMenuDuringPVP": "AllowSwapIntoFilledSlot",
+                "RequiresHotbarSlot": false
+            },
+        },
+    },
+
+    // Artifacts are listed for convenience, but any valid prefab can be added.
+    "ForbiddenByPrefab": [
+        //"Item_Weapon_Axe_Unique_T08_Variation01",         // The Red Twins
+        //"Item_Weapon_Claws_Unique_T08_Variation01",       // Talons of the Lich Beast
+        //"Item_Weapon_Crossbow_Unique_T08_Variation01",    // The Siren's Wail
+        //"Item_Weapon_Daggers_Unique_T08_Variation01",     // The Wraithblades
+        //"Item_Weapon_GreatSword_Unique_T08_Variation01",  // Apocalypse
+        //"Item_Weapon_Longbow_Unique_T08_Variation01",     // Oaksong
+        //"Item_Weapon_Mace_Unique_T08_Variation01",        // Hand of Winter
+        //"Item_Weapon_Pistols_Unique_T08_Variation01",     // The Endbringers
+        //"Item_Weapon_Reaper_Unique_T08_Variation01",      // Mortira's Lament
+        //"Item_Weapon_Slashers_Unique_T08_Variation01",    // Cloud Dancers
+        //"Item_Weapon_Slashers_Unique_T08_Variation02",    // Wings of the Fallen
+        //"Item_Weapon_Spear_Unique_T08_Variation01",       // The Thousand Storms
+        //"Item_Weapon_Sword_Unique_T08_Variation01",       // The Gravecaller
+        //"Item_Weapon_TwinBlades_Unique_T08_Variation01",  // The Fate Dancers
+        //"Item_Weapon_Whip_Unique_T08_Variation01",        // The Morning Star
+    ],
+    
+}
