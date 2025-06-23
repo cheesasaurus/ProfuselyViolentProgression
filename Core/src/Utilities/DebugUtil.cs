@@ -1,3 +1,4 @@
+using System.Text.Json;
 using ProjectM;
 using ProjectM.Shared;
 using Stunlock.Core;
@@ -85,6 +86,30 @@ public static class DebugUtil
             LogUtil.LogInfo($"    3:{LookupPrefabName(buff.Buff3)}");
             LogUtil.LogInfo($"    spellModSource:{buff.CustomAbilitySpellModsSource}");
             LogUtil.LogInfo("     ----");
+        }
+    }
+
+    public static void LogHitColliderCast(Entity entity)
+    {
+        var entityManager = WorldUtil.Game.EntityManager;
+        if (!entityManager.HasBuffer<HitColliderCast>(entity))
+        {
+            return;
+        }
+        LogUtil.LogInfo($"  HitColliderCast [Buffer]:");
+        var buffer = entityManager.GetBuffer<HitColliderCast>(entity);
+        for (var i = 0; i < buffer.Length; i++)
+        {
+            var hcc = buffer[i];
+            LogUtil.LogInfo($"    HitColliderCast [{i}]");
+            LogUtil.LogInfo($"      CollisionCheckType: {hcc.CollisionCheckType}");
+            LogUtil.LogInfo($"      PrimaryFilterFlags: {hcc.PrimaryFilterFlags}");
+            LogUtil.LogInfo($"      PrimaryTargets_Count: {hcc.PrimaryTargets_Count}");
+            LogUtil.LogInfo($"      SecondaryTargets_Count: {hcc.SecondaryTargets_Count}");
+            LogUtil.LogInfo($"      ContinuousCollision: {hcc.ContinuousCollision}");
+            LogUtil.LogInfo($"      CanHitThroughBlockSpellCollision: {hcc.CanHitThroughBlockSpellCollision}");
+            LogUtil.LogInfo($"      IgnoreImmaterial: {hcc.IgnoreImmaterial}");
+            LogUtil.LogInfo("    ----");
         }
     }
 
