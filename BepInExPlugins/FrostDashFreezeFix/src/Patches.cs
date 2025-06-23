@@ -18,7 +18,7 @@ public unsafe class Patches
     [EcsSystemUpdatePrefix(typeof(RecursiveGroup), onlyWhenSystemRuns: false)]
     public static void TickStartPrefix()
     {
-        FreezeFixUtil.NewTickStarted();
+        FixDashAttackTriggersUtil.NewTickStarted();
 
     }
 
@@ -26,7 +26,7 @@ public unsafe class Patches
     [HarmonyPrefix]
     public static void TrackRecursiveUpdates()
     {
-        FreezeFixUtil.RecursiveGroupUpdateStarting();
+        FixDashAttackTriggersUtil.RecursiveGroupUpdateStarting();
     }
 
     [EcsSystemUpdatePostfix(typeof(HandleGameplayEventsRecursiveSystem))]
@@ -45,7 +45,7 @@ public unsafe class Patches
         var dealDamageEvents = Query_DealDamageEvent.ToComponentDataArray<DealDamageEvent>(Allocator.Temp);
         foreach (var dealDamageEvent in dealDamageEvents)
         {
-            FreezeFixUtil.EntityGotHitWithDamage(dealDamageEvent.Target);
+            FixDashAttackTriggersUtil.EntityGotHitWithSomethingDamaging(dealDamageEvent.Target);
         }
     }
 
@@ -59,7 +59,7 @@ public unsafe class Patches
 
         for (var i = 0; i < entities.Length; i++)
         {
-            FreezeFixUtil.BuffWillBeSpawned(entities[i], buffs[i].Target);
+            FixDashAttackTriggersUtil.BuffWillBeSpawned(entities[i], buffs[i].Target);
         }
     }
 

@@ -94,7 +94,7 @@ public static class DebugUtil
         var prefabLookupMap = prefabCollectionSystem._PrefabLookupMap;
         if (prefabLookupMap.GuidToEntityMap.ContainsKey(prefabGuid))
         {
-            return $"{prefabLookupMap.GetName(prefabGuid)} PrefabGuid({prefabGuid.GuidHash})";
+            return $"{prefabLookupMap.GetName(prefabGuid)} PrefabGUID({prefabGuid.GuidHash})";
         }
         return $"GUID Not Found {prefabGuid._Value}";
     }
