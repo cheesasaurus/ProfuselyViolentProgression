@@ -11,7 +11,7 @@ public static class SurgeSuppressorUtil
     public static int RecursiveGroupPassesThisTick = 0;
     public static string RecursiveGroupTickStamp { get => $"{TickCount}-{RecursiveGroupPassesThisTick}"; }
     private static MultiThrottle<Entity> ShockThrottle = new(milliseconds: 250);
-    private static EntityManager EntityManager = WorldUtil.Game.EntityManager;
+    private static EntityManager EntityManager => WorldUtil.Game.EntityManager;
     public static PrefabGUID Storm_Vampire_Buff_Static = new PrefabGUID(-1576512627);
     private static bool OnlyProtectPlayers = true;
 
