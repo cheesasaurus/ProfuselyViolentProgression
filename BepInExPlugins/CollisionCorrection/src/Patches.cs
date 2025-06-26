@@ -15,7 +15,7 @@ public unsafe class Patches
     private static EntityManager EntityManager = WorldUtil.Game.EntityManager;
     private static EntityQuery Query_;
 
-    [EcsSystemUpdatePostfix(typeof(HandleGameplayEventsRecursiveSystem))]
+    //[EcsSystemUpdatePostfix(typeof(HandleGameplayEventsRecursiveSystem))]
     public static void CheckDealDamageEvents()
     {
         if (Query_ == default)
@@ -43,11 +43,57 @@ public unsafe class Patches
     //{
     //    var entities = __instance._Query.ToEntityArray(Allocator.Temp);
     //    var buffs = __instance._Query.ToComponentDataArray<Buff>(Allocator.Temp);
-//
+    //
     //    for (var i = 0; i < entities.Length; i++)
     //    {
     //        //FixDashAttackTriggersUtil.BuffWillBeSpawned(entities[i], buffs[i].Target);
     //    }
     //}
+
+
+    [HarmonyPatch(typeof(HitCastColliderSystem_OnUpdate), nameof(HitCastColliderSystem_OnUpdate.OnUpdate))]
+    [HarmonyPrefix]
+    public static void HitCastColliderSystem_OnUpdate_Prefix(HitCastColliderSystem_OnUpdate __instance)
+    {
+        var query = __instance.__query_911162766_0;
+
+        var entities = query.ToEntityArray(Allocator.Temp);
+        for (var i = 0; i < entities.Length; i++)
+        {
+            var entity = entities[i];
+            DebugUtil.LogCreateGameplayEventsOnHit(entity);
+            //DebugUtil.LogGameplayEventListeners(entity);
+            //DebugUtil.LogPlayImpactOnGameplayEvent(entity);
+            //DebugUtil.LogTriggerHitConsume(entity);
+            //DebugUtil.LogDealDamageOnGameplayEvent(entity);
+            //DoSomething(entity);
+            //DebugUtil.LogComponentTypes(entity);
+
+        }
+    }
+
+    private static void DoSomething(Entity entity)
+    {
+        if (!EntityManager.HasBuffer<HitColliderCast>(entity))
+        {
+            return;
+        }
+        var buffer = EntityManager.GetBuffer<HitColliderCast>(entity);
+
+        for (var i = 0; i < buffer.Length; i++)
+        {
+            var hcc = buffer[i];
+            //hcc.CanHitThroughBlockSpellCollision = false;
+            //hcc.PrimaryTargets_Count = 2;
+            //hcc.SecondaryTargets_Count = 0;
+            buffer[i] = hcc;
+        }
+        DebugUtil.LogHitColliderCast(entity);
+    }
+
+    private static void DoSomething2(Entity entity)
+    {
+        DebugUtil.LogSpellModSet(entity);
+    }
 
 }

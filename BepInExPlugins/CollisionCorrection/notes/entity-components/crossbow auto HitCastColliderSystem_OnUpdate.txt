@@ -1,0 +1,55 @@
+ProjectM.EntityOwner
+ProjectM.EntityCreator
+ProjectM.AbilityOwner
+ProjectM.GetOwnerRotation
+ProjectM.GetTranslationOnSpawn
+ProjectM.OffsetTranslationOnSpawn
+ProjectM.ProjectileSnapToHeight
+ProjectM.RagdollForceSource
+ProjectM.DestroyData
+ProjectM.DestroyState
+ProjectM.Age
+ProjectM.LifeTime
+ProjectM.Projectile
+ProjectM.ProjectileDestroyData
+ProjectM.SpellMovement
+ProjectM.LastTranslation
+ProjectM.ManualFirstFrameLastTranslation
+ProjectM.Velocity
+ProjectM.Team
+ProjectM.Network.Networked
+ProjectM.Network.UpToDateUserBitMask
+ProjectM.Network.FrameChanged
+ProjectM.Network.NetworkSnapshot
+ProjectM.Shared.SpellModSetComponent
+Unity.Transforms.Rotation
+Unity.Transforms.Translation
+Unity.Transforms.LocalToWorld
+Unity.Transforms.LocalTransform
+ProjectM.TeamReference
+ProjectM.Network.NetworkId
+Stunlock.Core.PrefabGUID
+ProjectM.HitTrigger [Buffer]
+ProjectM.CreateGameplayEventsOnDestroy [Buffer]
+ProjectM.CreateGameplayEventsOnHit [Buffer]
+ProjectM.CreateGameplayEventsOnSpawn [Buffer]
+ProjectM.ApplyBuffOnGameplayEvent [Buffer]
+ProjectM.DestroyOnGameplayEvent [Buffer]
+ProjectM.GameplayEventIdMapping [Buffer]
+ProjectM.PlayImpactOnGameplayEvent [Buffer]
+ProjectM.PlaySequenceOnGameplayEvent [Buffer]
+ProjectM.RemoveBuffOnGameplayEvent [Buffer]
+ProjectM.RemoveBuffOnGameplayEventEntry [Buffer]
+ProjectM.TriggerHitConsume [Buffer]
+ProjectM.HitColliderCast [Buffer]
+ProjectM.DealDamageOnGameplayEvent [Buffer]
+ProjectM.GameplayEventListeners [Buffer]
+ProjectM.Network.NetSnapshot [Buffer]
+ProjectM.Network.SnapshotFrameChangedBuffer [Buffer]
+ProjectM.Shared.SpellModArithmetic [Buffer]
+ProjectM.GetOwnerRotationOnlyOnSpawnTag
+ProjectM.GetOwnerTeamOnSpawn
+ProjectM.HitColliderCast+CollisionCastOnUpdate
+Unity.Entities.Simulate
+Unity.Entities.BlobAssetOwner
+ProjectM.Network.NetworkSnapshotType
