@@ -14,14 +14,44 @@ internal class LoadoutLockdownService
     public static LoadoutLockdownService Instance;
 
     private LoadoutLockdownConfig _config;
-    private EntityManager EntityManager = WorldUtil.Game.EntityManager;
+    private EntityManager EntityManager => WorldUtil.Server.EntityManager;
 
     private int _maxWeaponSlotIndex => _config.WeaponSlots - 1;
+    private HashSet<PrefabGUID> _forbiddenByPrefab = new();
 
     public LoadoutLockdownService(LoadoutLockdownConfig config)
     {
         _config = config;
-        // todo: prefabs
+        InitForbiddenByPrefab();
+    }
+
+    private void InitForbiddenByPrefab()
+    {
+        foreach (string prefabName in _config.ForbiddenByPrefab)
+        {
+            if (SpawnablePrefabLookup.TryGetValue(prefabName, out var prefabGUID))
+            {
+                _forbiddenByPrefab.Add(prefabGUID);
+            }
+            else
+            {
+                LogUtil.LogWarning($"Unrecognized prefab in ForbiddenByPrefab: {prefabName}");
+            }
+        }
+    }
+
+    private Il2CppSystem.Collections.Generic.Dictionary<string, PrefabGUID> _spawnablePrefabLookup;
+    private Il2CppSystem.Collections.Generic.Dictionary<string, PrefabGUID> SpawnablePrefabLookup
+    {
+        get
+        {
+            if (_spawnablePrefabLookup is null)
+            {
+                var prefabCollectionSystem = WorldUtil.Server.GetExistingSystemManaged<PrefabCollectionSystem>();
+                _spawnablePrefabLookup = prefabCollectionSystem.SpawnableNameToPrefabGuidDictionary;
+            }
+            return _spawnablePrefabLookup;
+        }
     }
 
     public bool IsEquipmentForbidden(Entity entity)
@@ -44,10 +74,7 @@ internal class LoadoutLockdownService
             return false;
         }
         var prefabGUID = EntityManager.GetComponentData<PrefabGUID>(entity);
-        // todo: check prefab guid
-
-
-        return false;
+        return _forbiddenByPrefab.Contains(prefabGUID);
     }
 
     public bool IsEquippableWithoutSlot(Entity entity)

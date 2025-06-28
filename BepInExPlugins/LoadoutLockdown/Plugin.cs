@@ -15,10 +15,13 @@ public class Plugin : BasePlugin
     HookDOTS.API.HookDOTS _hookDOTS;
     ConfigManagerJSON<LoadoutLockdownConfig> ConfigManager;
 
+    // todo: config the config
+
+    private bool _initialized = false;
+
     public override void Load()
     {
         LogUtil.Init(Log);
-        Log.LogInfo($"Plugin {MyPluginInfo.PLUGIN_GUID} version {MyPluginInfo.PLUGIN_VERSION} is loaded!");
 
         _harmony = new Harmony(MyPluginInfo.PLUGIN_GUID);
         _harmony.PatchAll(System.Reflection.Assembly.GetExecutingAssembly());
@@ -29,21 +32,19 @@ public class Plugin : BasePlugin
         ConfigManager = new ConfigManagerJSON<LoadoutLockdownConfig>(MyPluginInfo.PLUGIN_GUID, "MyConfig.jsonc", Log);
         var presets = "ProfuselyViolentProgression.LoadoutLockdown.resources.presets";
         ConfigManager.CreateMainFile_FromResource($"{presets}.Default.jsonc");
-        ConfigManager.CreateExampleFile_FromResource($"{presets}.Default.jsonc", "Example_Default.jsonc");
-        ConfigManager.CreateExampleFile_FromResource($"{presets}.FishersFantasy.jsonc", "Example_FishersFantasy.jsonc");
-        ConfigManager.CreateExampleFile_FromResource($"{presets}.CrutchersCrucible.jsonc", "Example_CrutchersCrucible.jsonc");
-        ConfigManager.CreateExampleFile_FromResource($"{presets}.SweatlordsSwag.jsonc", "Example_SweatlordsSwag.jsonc");
-        ConfigManager.ConfigUpdated += HandleConfigChanged;
+        ConfigManager.CreateExampleFile_FromResource($"{presets}.Default.jsonc", "Example_Default.jsonc", overwrite: true);
+        ConfigManager.CreateExampleFile_FromResource($"{presets}.FishersFantasy.jsonc", "Example_FishersFantasy.jsonc", overwrite: true);
+        ConfigManager.CreateExampleFile_FromResource($"{presets}.CrutchersCrucible.jsonc", "Example_CrutchersCrucible.jsonc", overwrite: true);
+        ConfigManager.CreateExampleFile_FromResource($"{presets}.SweatlordsSwag.jsonc", "Example_SweatlordsSwag.jsonc", overwrite: true);
 
-        if (ConfigManager.TryLoadConfig(out var config))
-        {
-            LoadoutLockdownService.Instance = new LoadoutLockdownService(config);
-            LogUtil.LogWarning($"does fishing pole require hotbar slot: {config.RulesByType.FishingPole.RequiresHotbarSlot}");
-        }
+        Hooks.EarlyUpdateGroup_Updated += OnEarlyUpdate;
+
+        Log.LogInfo($"Plugin {MyPluginInfo.PLUGIN_GUID} version {MyPluginInfo.PLUGIN_VERSION} is loaded!");
     }
 
     public override bool Unload()
     {
+        Hooks.EarlyUpdateGroup_Updated -= OnEarlyUpdate;
         _hookDOTS.Dispose();
         _harmony?.UnpatchSelf();
         if (ConfigManager is not null)
@@ -54,9 +55,29 @@ public class Plugin : BasePlugin
         return true;
     }
 
+    public void OnEarlyUpdate()
+    {
+        if (_initialized || !WorldUtil.IsServerInitialized)
+        {
+            return;
+        }
+        _initialized = true;
+        if (ConfigManager.TryLoadConfig(out var config))
+        {
+            SetUpLoadoutService(config);
+        }
+        ConfigManager.ConfigUpdated += HandleConfigChanged;
+    }
+
     public void HandleConfigChanged(LoadoutLockdownConfig config)
     {
+        SetUpLoadoutService(config);
+    }
+
+    public void SetUpLoadoutService(LoadoutLockdownConfig config)
+    {
         LoadoutLockdownService.Instance = new LoadoutLockdownService(config);
+        LogUtil.LogWarning($"does fishing pole require hotbar slot: {config.RulesByType.FishingPole.RequiresHotbarSlot}");
     }
 
 }
