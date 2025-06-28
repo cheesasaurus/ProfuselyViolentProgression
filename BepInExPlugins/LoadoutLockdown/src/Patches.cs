@@ -16,6 +16,10 @@ public unsafe class Patches
 {
     private static EntityManager EntityManager = WorldUtil.Game.EntityManager;
     private static EntityQuery Query;
+    private static LoadoutLockdownService LoadoutService => LoadoutLockdownService.Instance;
+
+    private const bool SKIP_ORIGINAL_METHOD = false;
+    private const bool EXECUTE_ORIGINAL_METHOD = true;
 
 
     // note: the original IsValidWeaponEquip is not just a check. it has side effects: moving the item into an open/junk slot
@@ -25,84 +29,59 @@ public unsafe class Patches
     {
         LogUtil.LogWarning("The thing is happening");
 
-        
-
-        if (InventoryUtilities.TryGetItemAtSlot(EntityManager, character, slotIndex: equipItem.SlotIndex, out InventoryBuffer itemInSlot))
+        if (LoadoutService is null)
         {
-            var itemEntity = itemInSlot.ItemEntity._Entity;
-            DebugUtil.LogComponentTypes(itemEntity);
+            return EXECUTE_ORIGINAL_METHOD;
         }
 
-
-        //DebugUtil.LogComponentTypes(character);
-        LogUtil.LogWarning("The thing is happening");
-        var prefab = DebugUtil.LookupPrefabName(equippableData.EquipmentSet);
-        LogUtil.LogDebug($"prefab: {prefab}");
-
-
-        //////////////////////////////////////
-        /// logic
-        ///
-        ///
-
-        //__result = true;
-        //return false; 
-
-        // if the service isn't ready yet, use the vanilla behaviour
-        bool IsServiceReady = false;
-        if (!IsServiceReady)
-        {
-            return true;
-        }
-
-        // if it's cosmetic, use the vanilla behaviour
         if (equipItem.IsCosmetic)
         {
-            return true;
+            return EXECUTE_ORIGINAL_METHOD;
         }
 
-        bool IsEquipmentForbidden = false;
-        if (IsEquipmentForbidden)
+        if (!InventoryUtilities.TryGetItemAtSlot(EntityManager, character, slotIndex: equipItem.SlotIndex, out InventoryBuffer itemInSlot))
+        {
+            return EXECUTE_ORIGINAL_METHOD;
+        }
+        var itemEntity = itemInSlot.ItemEntity._Entity;
+
+        if (LoadoutService.IsEquipmentForbidden(itemEntity))
         {
             __result = false;
-            return false;
+            return SKIP_ORIGINAL_METHOD;
         }
 
-        bool IsEquippableWithoutSlot = false;
-        if (IsEquippableWithoutSlot)
+        if (LoadoutService.IsEquippableWithoutSlot(itemEntity))
         {
             __result = true;
-            return false;
+            return SKIP_ORIGINAL_METHOD;
         }
 
-        bool HasOwnSlot = true;
-        if (HasOwnSlot)
+        bool isInPvPCombat = NewWeaponEquipmentRestrictionsUtility.IsInPvPCombat(EntityManager, serverRootPrefabs, character);
+
+        if (LoadoutService.HasOwnSlot(itemEntity))
         {
-            bool IsSlotWasted = false; // todo: service method
-            __result = IsSlotWasted;
+            __result = !isInPvPCombat
+                || LoadoutService.CanMenuSwapIntoFilledSlotDuringPVP(equippableData)
+                || LoadoutService.IsOwnSlotWasted(character, itemEntity);
             // if __result is true, the game will take care of swapping the equipped item into the slot.
             // but only for things that have their own designated slot
-            return false;
+            return SKIP_ORIGINAL_METHOD;
         }
 
-        bool InValidSlot = true;
-        if (InValidSlot)
+        if (LoadoutService.IsValidWeaponSlot(equipItem.SlotIndex))
         {
             __result = true;
-            return false;
+            return SKIP_ORIGINAL_METHOD;
         }
 
-        // todo: TryFindWastedSlot
-        bool HasWastedWeaponSlot = false;
-        int WastedWeaponSlotIndex = 0;
-
-        if (HasWastedWeaponSlot)
+        if (LoadoutService.TryFindWastedWeaponSlot(character, out var slotIndex))
         {
             // IsValidWeaponEquip has a side effect of swapping the item into a wasted slot,
-            // so we mimic that ourselves. But with different logic about what counts as a wasted slot.
+            // so we mimic that ourselves. But with different rules about what counts as a wasted slot.
             bool IsSlotEmpty = false;
             if (IsSlotEmpty)
-            {
+            {   
                 // move item into slot
             }
             else
@@ -110,20 +89,18 @@ public unsafe class Patches
                 // todo: swap item with whatever's in wasted slot
             }
             __result = true;
-            return false;
+            return SKIP_ORIGINAL_METHOD;
         }
 
         __result = false;
-        return false;
+        return SKIP_ORIGINAL_METHOD;
     }
 
+    // todo: remove this
     [HarmonyPatch(typeof(NewWeaponEquipmentRestrictionsUtility), nameof(NewWeaponEquipmentRestrictionsUtility.IsValidWeaponEquip))]
     [HarmonyPostfix]
     public static void IsValidWeaponEquip_Postfix(ref bool __result, EntityManager entityManager, EquippableData equippableData, EquipItemEvent equipItem, ServerRootPrefabCollection serverRootPrefabs, Entity character, NativeParallelHashMap<PrefabGUID, ItemData> itemHashLookupMap, int weaponSlots)
     {
-        //LogUtil.LogInfo($"original __result: {__result}");        
-
-        //__result = false;
         LogUtil.LogInfo($"__result: {__result}");
     }
 

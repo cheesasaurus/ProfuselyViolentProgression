@@ -35,7 +35,7 @@ public class EquippableToHotbarRules : IForbiddable, ISwappableFromMenuDuringPVP
 public class EquippableToOwnSlotRules : IForbiddable, ISwappableFromMenuDuringPVP
 {
     public bool Forbidden { get; set; } = false;
-    public FromMenuDuringPVP FromMenuDuringPVP { get; set; } = FromMenuDuringPVP.AllowSwapIntoWastedSlot;
+    public FromMenuDuringPVP FromMenuDuringPVP { get; set; } = FromMenuDuringPVP.AllowSwapIntoFilledSlot; // different from hotbar rules, because this is how the vanilla game works
 }
 
 public class RulesByType

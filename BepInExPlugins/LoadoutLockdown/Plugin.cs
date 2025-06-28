@@ -35,11 +35,11 @@ public class Plugin : BasePlugin
         ConfigManager.CreateExampleFile_FromResource($"{presets}.SweatlordsSwag.jsonc", "Example_SweatlordsSwag.jsonc");
         ConfigManager.ConfigUpdated += HandleConfigChanged;
 
-        ConfigManager.TryLoadConfig(out var config);
-        LogUtil.LogWarning($"does fishing pole require hotbar slot: {config.RulesByType.FishingPole.RequiresHotbarSlot}");
-
-        // todo: rule service
-
+        if (ConfigManager.TryLoadConfig(out var config))
+        {
+            LoadoutLockdownService.Instance = new LoadoutLockdownService(config);
+            LogUtil.LogWarning($"does fishing pole require hotbar slot: {config.RulesByType.FishingPole.RequiresHotbarSlot}");
+        }
     }
 
     public override bool Unload()
@@ -56,7 +56,7 @@ public class Plugin : BasePlugin
 
     public void HandleConfigChanged(LoadoutLockdownConfig config)
     {
-        // todo: implement
+        LoadoutLockdownService.Instance = new LoadoutLockdownService(config);
     }
 
 }
