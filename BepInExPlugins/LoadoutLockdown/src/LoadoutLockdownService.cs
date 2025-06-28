@@ -372,12 +372,6 @@ internal class LoadoutLockdownService
 
     public bool TryFindWastedWeaponSlot(Entity character, out int slotIndex)
     {
-        //if (!InventoryUtilities.TryGetMainInventoryEntity(EntityManager, character, out var mainInventoryEntity))
-        //{
-        //    slotIndex = default;
-        //    return false;
-        //}
-
         if (!InventoryUtilities.TryGetInventory(EntityManager, character, out var ibb))
         {
             slotIndex = default;
@@ -390,7 +384,6 @@ internal class LoadoutLockdownService
         var hasJunkSlot = false;
         var firstJunkSlotIndex = 0;
 
-        LogUtil.LogDebug("Scanning inventory slots");
         for (var i = 0; i <= _maxWeaponSlotIndex; i++)
         {
             if (!hasEmptySlot && ibb[i].Amount == 0)
@@ -409,13 +402,11 @@ internal class LoadoutLockdownService
         if (hasEmptySlot)
         {
             slotIndex = firstEmptySlotIndex;
-            LogUtil.LogInfo($"empty slot at index {slotIndex}");
             return true;
         }
         else if (hasJunkSlot)
         {
             slotIndex = firstJunkSlotIndex;
-            LogUtil.LogInfo($"junk slot at index {slotIndex}");
             return true;
         }
         slotIndex = default;
@@ -438,6 +429,17 @@ internal class LoadoutLockdownService
         //   Vermin Salve
 
         return false;
+    }
+
+    public void SwapItemsInSameInventory(Entity character, int slotIndexA, int slotIndexB)
+    {
+        if (InventoryUtilities.TryGetMainInventoryEntity(EntityManager, character, out var mainInventoryEntity))
+        {
+            var ibb = EntityManager.GetBuffer<InventoryBuffer>(mainInventoryEntity);
+            var temp = ibb[slotIndexA];
+            ibb[slotIndexA] = ibb[slotIndexB];
+            ibb[slotIndexB] = temp;
+        }
     }
 
 }

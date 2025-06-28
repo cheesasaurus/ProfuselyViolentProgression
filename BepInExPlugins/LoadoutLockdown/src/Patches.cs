@@ -75,19 +75,11 @@ public unsafe class Patches
             return SKIP_ORIGINAL_METHOD;
         }
 
-        if (LoadoutService.TryFindWastedWeaponSlot(character, out var slotIndex))
+        // IsValidWeaponEquip has a side effect of swapping the item into a wasted slot,
+        // so we mimic that ourselves. But with different rules about what counts as a wasted slot.
+        if (LoadoutService.TryFindWastedWeaponSlot(character, out var wastedSlotIndex))
         {
-            // IsValidWeaponEquip has a side effect of swapping the item into a wasted slot,
-            // so we mimic that ourselves. But with different rules about what counts as a wasted slot.
-            bool IsSlotEmpty = false;
-            if (IsSlotEmpty)
-            {   
-                // move item into slot
-            }
-            else
-            {
-                // todo: swap item with whatever's in wasted slot
-            }
+            LoadoutService.SwapItemsInSameInventory(character, equipItem.SlotIndex, wastedSlotIndex);
             __result = true;
             return SKIP_ORIGINAL_METHOD;
         }
