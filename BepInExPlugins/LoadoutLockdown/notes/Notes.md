@@ -14,6 +14,8 @@ todo: explore how that "No free action bar slots" message works.\
 Maybe there's a way to replace it with the "Nope" message.
 - SCT_Type
 
+ResponseEventType
+
 ```
 {
   "Guid": "7114de17-65b2-4e69-8723-79f8b33b2213",

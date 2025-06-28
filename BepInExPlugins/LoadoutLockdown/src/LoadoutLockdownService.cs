@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using ProfuselyViolentProgression.Core.Utilities;
 using ProfuselyViolentProgression.LoadoutLockdown.Config;
@@ -15,7 +16,7 @@ internal class LoadoutLockdownService
     private LoadoutLockdownConfig _config;
     private EntityManager EntityManager = WorldUtil.Game.EntityManager;
 
-    private int _maxSlotIndex => _config.WeaponSlots - 1;
+    private int _maxWeaponSlotIndex => _config.WeaponSlots - 1;
 
     public LoadoutLockdownService(LoadoutLockdownConfig config)
     {
@@ -366,38 +367,76 @@ internal class LoadoutLockdownService
 
     public bool IsValidWeaponSlot(int slotIndex)
     {
-        return slotIndex <= _maxSlotIndex;
+        return slotIndex <= _maxWeaponSlotIndex;
     }
 
     public bool TryFindWastedWeaponSlot(Entity character, out int slotIndex)
     {
-        for (var i = 0; i <= _maxSlotIndex; i++)
+        //if (!InventoryUtilities.TryGetMainInventoryEntity(EntityManager, character, out var mainInventoryEntity))
+        //{
+        //    slotIndex = default;
+        //    return false;
+        //}
+
+        if (!InventoryUtilities.TryGetInventory(EntityManager, character, out var ibb))
         {
-            // todo: get the buffer and check directly
-            if (!InventoryUtilities.TryGetItemAtSlot(EntityManager, character, i, out InventoryBuffer itemInSlot))
-            {
-                LogUtil.LogInfo("Found empty slot");
-                slotIndex = i;
-                return true;
-                // empty slot?
-            }
-            // todo: check if wasted
+            slotIndex = default;
+            return false;
         }
 
-        // todo: implement
+        var hasEmptySlot = false;
+        var firstEmptySlotIndex = 0;
 
-        // things that are not considered wasted:
-        // weapons, except the fishing pole
+        var hasJunkSlot = false;
+        var firstJunkSlotIndex = 0;
 
-        // todo: maybe let user configure which items
+        LogUtil.LogDebug("Scanning inventory slots");
+        for (var i = 0; i <= _maxWeaponSlotIndex; i++)
+        {
+            if (!hasEmptySlot && ibb[i].Amount == 0)
+            {
+                hasEmptySlot = true;
+                firstEmptySlotIndex = i;
+            }
+
+            if (!hasJunkSlot && !ShouldStayInWeaponSlot(ibb[i].ItemEntity._Entity))
+            {
+                hasJunkSlot = true;
+                firstJunkSlotIndex = i;
+            }
+        }
+
+        if (hasEmptySlot)
+        {
+            slotIndex = firstEmptySlotIndex;
+            LogUtil.LogInfo($"empty slot at index {slotIndex}");
+            return true;
+        }
+        else if (hasJunkSlot)
+        {
+            slotIndex = firstJunkSlotIndex;
+            LogUtil.LogInfo($"junk slot at index {slotIndex}");
+            return true;
+        }
+        slotIndex = default;
+        return false;
+    }
+
+    public bool ShouldStayInWeaponSlot(Entity itemEntity)
+    {
+        if (EntityManager.HasComponent<EquippableData>(itemEntity))
+        {
+            var equippableData = EntityManager.GetComponentData<EquippableData>(itemEntity);
+            return equippableData.EquipmentType is EquipmentType.Weapon
+                && equippableData.WeaponType is not WeaponType.FishingPole;
+        }
+
+        // todo: maybe let user configure which items don't count as waste in weapon slot
         // healing potions
         //   Blood rose potion
         //   Blood rose brew
         //   Vermin Salve
 
-        // return an empty slot, before returning a filled slot that's wasted
-
-        slotIndex = default;
         return false;
     }
 
