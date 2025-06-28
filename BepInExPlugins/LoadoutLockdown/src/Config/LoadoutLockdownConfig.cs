@@ -15,14 +15,24 @@ public enum FromMenuDuringPVP
     AllowSwapIntoFilledSlot,
 }
 
-public class EquippableToHotbarRules
+public interface IForbiddable
+{
+    public bool Forbidden { get; set; }
+}
+
+public interface ISwappableFromMenuDuringPVP
+{
+    public FromMenuDuringPVP FromMenuDuringPVP { get; set; }
+}
+
+public class EquippableToHotbarRules : IForbiddable, ISwappableFromMenuDuringPVP
 {
     public bool Forbidden { get; set; } = false;
     public FromMenuDuringPVP FromMenuDuringPVP { get; set; } = FromMenuDuringPVP.AllowSwapIntoWastedSlot;
     public bool RequiresHotbarSlot { get; set; } = true;
 }
 
-public class EquippableToOwnSlotRules
+public class EquippableToOwnSlotRules : IForbiddable, ISwappableFromMenuDuringPVP
 {
     public bool Forbidden { get; set; } = false;
     public FromMenuDuringPVP FromMenuDuringPVP { get; set; } = FromMenuDuringPVP.AllowSwapIntoWastedSlot;

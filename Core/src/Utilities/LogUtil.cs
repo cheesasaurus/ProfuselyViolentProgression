@@ -21,6 +21,11 @@ public static class LogUtil
         Logger.LogInfo(data);
     }
 
+    public static void LogDebug(object data)
+    {
+        Logger.LogDebug(data);
+    }
+
     public static void LogError(object data)
     {
         Logger.LogError(data);

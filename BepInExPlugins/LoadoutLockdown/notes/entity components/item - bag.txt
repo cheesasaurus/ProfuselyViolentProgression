@@ -1,0 +1,24 @@
+ProjectM.Equippable
+ProjectM.InventoryItem
+ProjectM.ItemData
+ProjectM.ModifyInventorySizeBuff
+ProjectM.DestroyData
+ProjectM.DestroyState
+ProjectM.EquippableData
+ProjectM.Network.Networked
+ProjectM.Network.UpToDateUserBitMask
+ProjectM.Network.SyncToUserBitMask
+ProjectM.Network.FrameChanged
+ProjectM.Network.NetworkSnapshot
+ProjectM.Shared.Salvageable
+ProjectM.Network.NetworkId
+Stunlock.Core.PrefabGUID
+ProjectM.Network.SyncToUserBuffer [Buffer]
+ProjectM.RecipeRequirementBuffer [Buffer]
+ProjectM.ModifyUnitStatBuff_DOTS [Buffer]
+ProjectM.Network.NetSnapshot [Buffer]
+ProjectM.Network.SnapshotFrameChangedBuffer [Buffer]
+ProjectM.Network.AlwaysNetworked
+ProjectM.Network.OnlySyncToUsersTag
+Unity.Entities.Simulate
+ProjectM.Network.NetworkSnapshotType

@@ -103,17 +103,6 @@ Maybe there's a way to replace it with the "Nope" message.
 ```
 
 
-
-EquippableToHotbarRules
-    Forbidden
-    FromMenuDuringPVP
-    RequiresHotbarSlot
-
-
-EquippableToOwnSlotRules
-    Forbidden
-    FromMenuDuringPVP
-
 ForbiddenByPrefab: ISet<PrefabGUID>
 
 
@@ -135,3 +124,23 @@ InventoryUtilitiesServer.NotActionBarItem(ItemData):bool
 
 The game automatically fills "junk" hotbar slots with a weapon when its right clicked from inventory.
 Some things like potions and rats are not considered junk in this case. But we want to allow swapping weapons into those slots. Not super important tho.
+
+
+EquippableData
+  BuffGuid (PrefabGUID) - this seems to identify the weapon moveset, not the actual weapon. e.g. EquipBuff_Weapon_Sword_Ability01 for bone sword. EquipBuff_Weapon_Sword_Ability02 for copper sword. EquipBuff_Weapon_Sword_Ability03 for iron sword.
+  EquipmentType (enum)
+  WeaponType (enum)
+  EquipmentSet (PrefabGUID) - the equipment set bonus associated with the item. I think this is just for armor pieces. e.g. SetBonus_T09_Dracula_Rogue
+
+ItemData
+  Entity - todo: check what this is
+  ItemTypeGUID (PrefabGUID) - todo
+  ItemType ItemType (enum)
+  ItemCategory ItemCategory (enum, flags)
+  RemoveOnConsume: bool
+  
+
+
+Item "Transfer" = moving item between slots in same inventory?
+
+Item "Move" = moving item between different inventories
