@@ -30,14 +30,14 @@ Configuration files are created after the mod runs.
 
 The following configuration settings are available in `(VRisingFolder)/BepInEx/config/LoadoutLockdown.cfg`.
 
-- `RulesetFilePath` [default `rulesets/MyConfig.jsonc`]: The location of the ruleset file to use for configuration.
+- `RulesetFilepath` [default `MyRuleset.jsonc`]: The location of the ruleset file to use for configuration.
 
 ### Rulesets
 
 There are 5 initial rulesets found in `(VRisingFolder)/BepInEx/config/LoadoutLockdown/rulesets/`
 
-- `MyConfig` - The default ruleset used. Feel free to edit it.
-- `Example_Default` - Default ruleset used to initially set up MyConfig.
+- `MyRuleset` - The default ruleset used. Feel free to edit it.
+- `Example_Default` - Default ruleset used to initially set up MyRuleset.
 - `Example_FishersFantasy` - Same behaviour as the vanilla game, but with fishing pole restrictions lifted.
 - `Example_CrutchersCrucible` - "Bans" some overperforming crutch weapons. Imposes tradeoffs with weapon selection.
 - `Example_SweatlordsSwag` - Lifts all restrictions. Menu-swap between 15 weapons and 3 amulets if you want.
@@ -73,7 +73,15 @@ Slots in the action bar are counted from left to right. Equipping a weapon which
 
 For example, with `WeaponSlots` set to `3`, any weapons in slots [4, 5, 6, 7, 8] cannot be equipped. Weapons in the main inventory also cannot be equipped.
 
-The `RequiresHotbarSlot` rule can be used to let a specific type of weapon (such as the fishing rod) bypass this restriction.
+The `RequiresHotbarSlot` rule can be set to `false` to let a specific type of weapon (such as the fishing pole) bypass this restriction.
+
+#### Wasted slots
+
+An empty slot can always be filled from the menu. Junk items (e.g. a pinecone sitting in a weapon slot) can also be swapped out during PvP.
+
+- todo: soul shards
+- todo: marking things as not junk
+
 
 
 ## Support

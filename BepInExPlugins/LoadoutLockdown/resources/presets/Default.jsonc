@@ -1,4 +1,4 @@
-// The default settings used to set up MyConfig.jsonc
+// The default settings used to set up MyRuleset.jsonc
 // Intended for experienced pc gamers, using a keyboard and mmo-mouse.
 {
     "WeaponSlots": 8,

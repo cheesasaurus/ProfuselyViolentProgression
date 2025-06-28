@@ -1,4 +1,6 @@
-﻿using BepInEx;
+﻿using System;
+using BepInEx;
+using BepInEx.Configuration;
 using BepInEx.Unity.IL2CPP;
 using HarmonyLib;
 using ProfuselyViolentProgression.Core.Config;
@@ -13,15 +15,24 @@ public class Plugin : BasePlugin
 {
     Harmony _harmony;
     HookDOTS.API.HookDOTS _hookDOTS;
-    ConfigManagerJSON<LoadoutLockdownConfig> ConfigManager;
 
-    // todo: config the config
+    ConfigEntry<string> RulesetFilename;
+    BepInExConfigReloader BepInExConfigReloader;
+
+    ConfigManagerJSON<LoadoutLockdownConfig> RulesetManager;
+    
 
     private bool _initialized = false;
 
-    public override void Load()
+    public Plugin() : base()
     {
         LogUtil.Init(Log);
+        RulesetFilename = Config.Bind("General", "RulesetFilename", "MyRuleset.jsonc", "Filename of the ruleset to apply. Relative to BepInEx/config/LoadoutLockdown/");
+    }
+
+    public override void Load()
+    {
+        BepInExConfigReloader = new BepInExConfigReloader(Config);
 
         _harmony = new Harmony(MyPluginInfo.PLUGIN_GUID);
         _harmony.PatchAll(System.Reflection.Assembly.GetExecutingAssembly());
@@ -29,28 +40,31 @@ public class Plugin : BasePlugin
         _hookDOTS = new HookDOTS.API.HookDOTS(MyPluginInfo.PLUGIN_GUID, Log);
         _hookDOTS.RegisterAnnotatedHooks();
 
-        ConfigManager = new ConfigManagerJSON<LoadoutLockdownConfig>(MyPluginInfo.PLUGIN_GUID, "MyConfig.jsonc", Log);
+        ResetRulesetManager();
         var presets = "ProfuselyViolentProgression.LoadoutLockdown.resources.presets";
-        ConfigManager.CreateMainFile_FromResource($"{presets}.Default.jsonc");
-        ConfigManager.CreateExampleFile_FromResource($"{presets}.Default.jsonc", "Example_Default.jsonc", overwrite: true);
-        ConfigManager.CreateExampleFile_FromResource($"{presets}.FishersFantasy.jsonc", "Example_FishersFantasy.jsonc", overwrite: true);
-        ConfigManager.CreateExampleFile_FromResource($"{presets}.CrutchersCrucible.jsonc", "Example_CrutchersCrucible.jsonc", overwrite: true);
-        ConfigManager.CreateExampleFile_FromResource($"{presets}.SweatlordsSwag.jsonc", "Example_SweatlordsSwag.jsonc", overwrite: true);
+        RulesetManager.CreateMainFile_FromResource($"{presets}.Default.jsonc");
+        RulesetManager.CreateExampleFile_FromResource($"{presets}.Default.jsonc", "Example_Default.jsonc", overwrite: true);
+        RulesetManager.CreateExampleFile_FromResource($"{presets}.FishersFantasy.jsonc", "Example_FishersFantasy.jsonc", overwrite: true);
+        RulesetManager.CreateExampleFile_FromResource($"{presets}.CrutchersCrucible.jsonc", "Example_CrutchersCrucible.jsonc", overwrite: true);
+        RulesetManager.CreateExampleFile_FromResource($"{presets}.SweatlordsSwag.jsonc", "Example_SweatlordsSwag.jsonc", overwrite: true);
 
         Hooks.EarlyUpdateGroup_Updated += OnEarlyUpdate;
+        RulesetFilename.SettingChanged += HandleRulesetFilenameChanged;
 
         Log.LogInfo($"Plugin {MyPluginInfo.PLUGIN_GUID} version {MyPluginInfo.PLUGIN_VERSION} is loaded!");
     }
 
     public override bool Unload()
     {
+        BepInExConfigReloader?.Dispose();
         Hooks.EarlyUpdateGroup_Updated -= OnEarlyUpdate;
+        RulesetFilename.SettingChanged -= HandleRulesetFilenameChanged;
         _hookDOTS.Dispose();
         _harmony?.UnpatchSelf();
-        if (ConfigManager is not null)
+        if (RulesetManager is not null)
         {
-            ConfigManager.ConfigUpdated -= HandleConfigChanged;
-            ConfigManager.Dispose();
+            RulesetManager.ConfigUpdated -= HandleRulesetChanged;
+            RulesetManager.Dispose();
         }
         return true;
     }
@@ -62,22 +76,53 @@ public class Plugin : BasePlugin
             return;
         }
         _initialized = true;
-        if (ConfigManager.TryLoadConfig(out var config))
-        {
-            SetUpLoadoutService(config);
-        }
-        ConfigManager.ConfigUpdated += HandleConfigChanged;
+        ReloadRuleset();
     }
 
-    public void HandleConfigChanged(LoadoutLockdownConfig config)
+    public void HandleRulesetChanged(LoadoutLockdownConfig config)
     {
-        SetUpLoadoutService(config);
+        if (!_initialized)
+        {
+            return;
+        }
+        ResetLoadoutService(config);
     }
 
-    public void SetUpLoadoutService(LoadoutLockdownConfig config)
+    private void HandleRulesetFilenameChanged(object sender, EventArgs e)
+    {
+        Log.LogMessage($"Switching ruleset to {RulesetFilename.Value}");
+        ResetRulesetManager();
+        if (_initialized)
+        {
+            ReloadRuleset();
+        }
+    }
+
+    public void ResetRulesetManager()
+    {
+        if (RulesetManager is not null)
+        {
+            RulesetManager.ConfigUpdated -= HandleRulesetChanged;
+            RulesetManager.Dispose();
+        }
+        RulesetManager = new ConfigManagerJSON<LoadoutLockdownConfig>(MyPluginInfo.PLUGIN_GUID, RulesetFilename.Value, Log);
+        RulesetManager.ConfigUpdated += HandleRulesetChanged;
+    }
+
+    private void ReloadRuleset()
+    {
+        if (!RulesetManager.TryLoadConfig(out var config))
+        {
+            Log.LogWarning("Failed to load ruleset. Falling back to vanilla behaviour.");
+            LoadoutLockdownService.Instance = null;
+            return;
+        }
+        ResetLoadoutService(config);
+    }
+
+    private void ResetLoadoutService(LoadoutLockdownConfig config)
     {
         LoadoutLockdownService.Instance = new LoadoutLockdownService(config);
-        LogUtil.LogWarning($"does fishing pole require hotbar slot: {config.RulesByType.FishingPole.RequiresHotbarSlot}");
     }
 
 }
