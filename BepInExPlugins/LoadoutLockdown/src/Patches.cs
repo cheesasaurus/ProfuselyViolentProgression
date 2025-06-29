@@ -106,9 +106,6 @@ public unsafe class Patches
     {
         LogUtil.LogDebug("doing IsValidTransfer");
 
-        // slotB contains the item being dragged
-        // slotA is the slot being dragged to
-
         LogUtil.LogInfo($"slotA: {slotA}, slotB: {slotB}");
 
         //DebugUtil.LogComponentTypes(entityA);
@@ -119,16 +116,6 @@ public unsafe class Patches
         {
             return EXECUTE_ORIGINAL_METHOD;
         }
-
-        bool fromWeaponSlot = LoadoutService.IsWeaponSlot(slotB);
-        bool toWeaponSlot = LoadoutService.IsWeaponSlot(slotA);
-        bool isZoneChange = (fromWeaponSlot && !toWeaponSlot) || (!fromWeaponSlot && toWeaponSlot);
-        if (!isInCombat || !isZoneChange)
-        {
-            __result = true;
-            return SKIP_ORIGINAL_METHOD;
-        }
-
 
 
 
@@ -177,7 +164,7 @@ public unsafe class Patches
 
         bool fromWeaponSlot = false;
         bool toWeaponSlot = false;
-        if (!fromWeaponSlot && !toWeaponSlot) // todo: probably check armor and everything else too
+        if (!fromWeaponSlot && !toWeaponSlot)
         {
             return EXECUTE_ORIGINAL_METHOD;
         }
