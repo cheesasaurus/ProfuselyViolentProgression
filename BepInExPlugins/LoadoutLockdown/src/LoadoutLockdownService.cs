@@ -213,6 +213,11 @@ internal class LoadoutLockdownService
         return false;
     }
 
+    public bool CanDirectlyMoveOutOfSlotDuringPVP(Entity item)
+    {
+        return CanMenuSwapIntoFilledSlotDuringPVP(item);
+    }
+
     private bool TryFindForbiddable(EquippableData equippableData, out IForbiddable forbiddable)
     {
         switch (equippableData.EquipmentType)
@@ -567,11 +572,6 @@ internal class LoadoutLockdownService
         return _alwaysAllowSwapIntoSlot.Contains(prefabGUID);
     }
 
-    public bool IsWeaponSlot(int slotIndex)
-    {
-        return slotIndex <= _maxWeaponSlotIndex;
-    }
-
 
     public static AssetGuid SCTMessage_Nope = AssetGuid.FromString("7114de17-65b2-4e69-8723-79f8b33b2213");
     public static AssetGuid SCTMessage_Disabled = AssetGuid.FromString("3bf7e066-4e49-4ae4-b7a3-6703b7a15dc1");
@@ -590,9 +590,9 @@ internal class LoadoutLockdownService
             translation.Value,
             color,
             character
-            //value,
-            //sct,
-            //player.UserEntity
+        //value,
+        //sct,
+        //player.UserEntity
         );
     }
 
@@ -600,7 +600,7 @@ internal class LoadoutLockdownService
     {
         CreateSCTMessage(character, SCTMessage_Disabled, ColorRed);
     }
-    
+
     public void SendMessageCannotMenuSwapDuringPVP(Entity character)
     {
         CreateSCTMessage(character, SCTMessage_CannotModifyActionBarWhilePVP, ColorRed);

@@ -5,6 +5,7 @@ using ProfuselyViolentProgression.Core.Utilities;
 using ProjectM;
 using ProjectM.Gameplay.Systems;
 using ProjectM.Network;
+using ProjectM.Scripting;
 using Stunlock.Core;
 using Unity.Collections;
 using Unity.Entities;
@@ -13,13 +14,15 @@ namespace ProfuselyViolentProgression.LoadoutLockdown;
 
 
 [HarmonyPatch]
-public unsafe class Patches
+public static unsafe class Patches
 {
     private static EntityManager EntityManager = WorldUtil.Game.EntityManager;
-    private static EntityQuery Query;
     private static LoadoutLockdownService LoadoutService => LoadoutLockdownService.Instance;
 
-    private static NativeParallelHashMap<PrefabGUID, ItemData> ItemHashLookupMap => WorldUtil.Server.GetExistingSystemManaged<GameDataSystem>().ItemHashLookupMap; // todo: cache this. should be on a service probably
+    // todo: cache things. should be on a service probably
+    private static NativeParallelHashMap<PrefabGUID, ItemData> ItemHashLookupMap => WorldUtil.Server.GetExistingSystemManaged<GameDataSystem>().ItemHashLookupMap;
+    private static ServerScriptMapper ServerScriptMapper => WorldUtil.Server.GetExistingSystemManaged<ServerScriptMapper>();
+    private static ServerRootPrefabCollection ServerRootPrefabCollection => ServerScriptMapper.GetSingleton<ServerRootPrefabCollection>();
 
     private const bool SKIP_ORIGINAL_METHOD = false;
     private const bool EXECUTE_ORIGINAL_METHOD = true;
@@ -41,7 +44,7 @@ public unsafe class Patches
 
     [HarmonyPatch(typeof(InventoryUtilitiesServer), nameof(InventoryUtilitiesServer.TryAddItem), new Type[] { typeof(AddItemSettings), typeof(Entity), typeof(InventoryBuffer) })]
     [HarmonyPrefix]
-    public static void TryAddItem(ref AddItemSettings addItemSettings, Entity target, InventoryBuffer inventoryItem)
+    public static void TryAddItem_Prefix(ref AddItemSettings addItemSettings, Entity target, InventoryBuffer inventoryItem)
     {
         if (!ItemHashLookupMap.TryGetValue(inventoryItem.ItemType, out var itemData))
         {
@@ -95,7 +98,7 @@ public unsafe class Patches
             __result = !isInPvPCombat
                 || LoadoutService.CanMenuSwapIntoFilledSlotDuringPVP(itemEntity)
                 || LoadoutService.IsDesignatedSlotWasted(character, itemEntity);
-                
+
             if (__result is false)
             {
                 LoadoutService.SendMessageCannotMenuSwapDuringPVP(character);
@@ -232,12 +235,94 @@ public unsafe class Patches
         return SKIP_ORIGINAL_METHOD;
     }
 
+    // IsValidItemDrop never seems to be called.
+    // I'm guessing WeaponSlots was a half-cooked feature that got cut,
+    // hence not appearing in any game menu or server settings documentation.
+    [HarmonyPatch(typeof(NewWeaponEquipmentRestrictionsUtility), nameof(NewWeaponEquipmentRestrictionsUtility.IsValidItemDrop))]
+    [HarmonyPrefix]
+    public static unsafe bool IsValidItemDrop_Prefix(
+        ref bool __result,
+        EntityManager entityManager,
+        Entity characterEntity,
+        int slotId,
+        ServerRootPrefabCollection serverRootPrefabs
+    )
+    {
+        LogUtil.LogDebug("running IsValidItemDrop prefix");
 
-    // todo: swapping designated slots (e.g. amulet slot) with things in main inventory
+        if (LoadoutService is null)
+        {
+            return EXECUTE_ORIGINAL_METHOD;
+        }
 
-    // todo: swapping designated slots (e.g. amulet slot) with external inventories
+        if (!InventoryUtilities.TryGetItemAtSlot(EntityManager, characterEntity, slotIndex: slotId, out InventoryBuffer itemInSlot))
+        {
+            return EXECUTE_ORIGINAL_METHOD;
+        }
 
-    // todo: unequipping from designated slots
+        bool isInPvPCombat = NewWeaponEquipmentRestrictionsUtility.IsInPvPCombat(EntityManager, serverRootPrefabs, characterEntity);
+
+        if (!isInPvPCombat || !LoadoutService.IsValidWeaponSlot(slotId) || LoadoutService.IsWasteInWeaponSlot(itemInSlot))
+        {
+            __result = true;
+            return SKIP_ORIGINAL_METHOD;
+        }
+
+        __result = false;
+        return SKIP_ORIGINAL_METHOD;
+    }
+
+    // TryUnEquipAndAddItem covers the case of unequipping an item from a designated slot,
+    // and moving it into an inventory. The inventory can be any inventory, not just the player's main inventory.
+    [HarmonyPatch(typeof(InventoryUtilitiesServer), nameof(InventoryUtilitiesServer.TryUnEquipAndAddItem))]
+    [HarmonyPrefix]
+    public static bool TryUnEquipAndAddItem_Prefix(
+        ref bool __result,
+        EntityManager entityManager,
+        NativeParallelHashMap<PrefabGUID, ItemData> itemDataMap,
+        Entity target,
+        Entity inventoryOwnerEntity,
+        int toSlotIndex,
+        Entity item,
+        out bool addedToInventory,
+        Il2CppSystem.Nullable_Unboxed<EntityCommandBuffer> commandBuffer
+    )
+    {
+        addedToInventory = false;
+
+        if (LoadoutService is null)
+        {
+            return EXECUTE_ORIGINAL_METHOD;
+        }
+
+        bool isInPvPCombat = NewWeaponEquipmentRestrictionsUtility.IsInPvPCombat(EntityManager, ServerRootPrefabCollection, target);
+        if (!isInPvPCombat || LoadoutService.CanDirectlyMoveOutOfSlotDuringPVP(item))
+        {
+            // allow unequipping; execute original method to do the unequip.
+            return EXECUTE_ORIGINAL_METHOD;
+        }
+
+        // do not allow unequipping
+        LoadoutService.SendMessageCannotMenuSwapDuringPVP(target);
+        __result = false;
+        return SKIP_ORIGINAL_METHOD;
+    }
+
+
+    // todo: overloads
+    public static bool TryUnEquipItem_Prefix()
+    {
+        return EXECUTE_ORIGINAL_METHOD;
+    }
+
+    // todo: set server setting for WeaponSlots to match the mod's settings.
+    // and put it back when the mod unloads.
+
+    // todo: dropping items from designated slots
+
+    // todo: disable crafting forbidden items? not necessary, just more user friendly.
+
+    // todo: command to unequip forbidden items from everybody
 
 
 
