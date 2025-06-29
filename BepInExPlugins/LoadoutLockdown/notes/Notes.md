@@ -61,6 +61,14 @@ SCTTypeCollection
   "Text": "Limited"
 },
 {
+  "Guid": "5b2caa92-4d58-4b48-9842-38abf52c1844",
+  "Text": "Restricted Slot"
+},
+{
+  "Guid": "1b032d4c-f114-429b-ad7c-43c2cd23262a",
+  "Text": "Cannot modify action bar while in PvP combat"
+},
+{
   "Guid": "dea7f940-4a8f-4592-8bb9-5398cde17c67",
   "Text": "<i>'Oink!'</i>"
 },

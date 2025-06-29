@@ -6,13 +6,10 @@ Restrict (or unrestrict) equipping gear, both in and out of combat. Fully custom
 
 ### Some example uses
 - Allow equipping a fishing pole from your inventory.
-- Disallow swapping armour or amulets during pvp combat.
+- Disallow swapping armour and amulets during pvp combat.
 - Forbid disliked weapons from being equipped.
 - Limit how many hotbar slots can be used for weapons.
 - Remove all vanilla restrictions, and menu-swap any gear during pvp.
-
-Note: when something is disallowed, a message comes up saying "No free action bar slots".\
-This is a preset localised message. It's not always the correct thing to say, but AFAIK this can't be changed from the server side.
 
 
 ## Installation
@@ -34,11 +31,11 @@ The following configuration settings are available in `(VRisingFolder)/BepInEx/c
 
 ### Rulesets
 
-There are 5 initial rulesets found in `(VRisingFolder)/BepInEx/config/LoadoutLockdown/rulesets/`
+There are 5 initial rulesets found in `(VRisingFolder)/BepInEx/config/LoadoutLockdown/`
 
 - `MyRuleset` - The default ruleset used. Feel free to edit it.
 - `Example_Default` - Default ruleset used to initially set up MyRuleset.
-- `Example_FishersFantasy` - Same behaviour as the vanilla game, but with fishing pole restrictions lifted.
+- `Example_FishersFantasy` - Mostly same behaviour as the vanilla game, but with fishing pole restrictions lifted.
 - `Example_CrutchersCrucible` - "Bans" some overperforming crutch weapons. Imposes tradeoffs with weapon selection.
 - `Example_SweatlordsSwag` - Lifts all restrictions. Menu-swap between 15 weapons and 3 amulets if you want.
 

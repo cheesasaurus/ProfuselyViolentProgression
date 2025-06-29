@@ -14,7 +14,7 @@
         },
         "FishingPole": {
             "Forbidden": false,
-            "FromMenuDuringPVP": "AllowSwapIntoFilledSlot",
+            "FromMenuDuringPVP": "AllowSwapIntoWastedSlot",
             "RequiresHotbarSlot": false
         },
         "Headgear": {

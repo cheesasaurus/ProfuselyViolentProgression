@@ -5,6 +5,8 @@ using ProfuselyViolentProgression.LoadoutLockdown.Config;
 using ProjectM;
 using Stunlock.Core;
 using Unity.Entities;
+using Unity.Mathematics;
+using Unity.Transforms;
 
 namespace ProfuselyViolentProgression.LoadoutLockdown;
 
@@ -15,6 +17,7 @@ internal class LoadoutLockdownService
 
     private LoadoutLockdownConfig _config;
     private EntityManager EntityManager => WorldUtil.Server.EntityManager;
+    private EndSimulationEntityCommandBufferSystem EndSimulationEntityCommandBufferSystem => WorldUtil.Server.GetExistingSystemManaged<EndSimulationEntityCommandBufferSystem>();
 
     private int _maxWeaponSlotIndex => _config.WeaponSlots - 1;
     private HashSet<PrefabGUID> _forbiddenByPrefab = new();
@@ -467,7 +470,7 @@ internal class LoadoutLockdownService
     public bool TryGetOwnerOfInventory(Entity inventoryEntity, out Entity owner)
     {
         if (!EntityManager.HasComponent<InventoryConnection>(inventoryEntity))
-        {            
+        {
             owner = default;
             return false;
         }
@@ -567,6 +570,40 @@ internal class LoadoutLockdownService
     public bool IsWeaponSlot(int slotIndex)
     {
         return slotIndex <= _maxWeaponSlotIndex;
+    }
+
+
+    public static AssetGuid SCTMessage_Nope = AssetGuid.FromString("7114de17-65b2-4e69-8723-79f8b33b2213");
+    public static AssetGuid SCTMessage_Disabled = AssetGuid.FromString("3bf7e066-4e49-4ae4-b7a3-6703b7a15dc1");
+    public static AssetGuid SCTMessage_CannotModifyActionBarWhilePVP = AssetGuid.FromString("1b032d4c-f114-429b-ad7c-43c2cd23262a");
+
+    public static float3 ColorRed = new float3(255, 0, 0);
+
+    public void CreateSCTMessage(Entity character, AssetGuid messageGuid, float3 color)
+    {
+        var translation = EntityManager.GetComponentData<Translation>(character);
+
+        ScrollingCombatTextMessage.Create(
+            EntityManager,
+            EndSimulationEntityCommandBufferSystem.CreateCommandBuffer(),
+            messageGuid,
+            translation.Value,
+            color,
+            character
+            //value,
+            //sct,
+            //player.UserEntity
+        );
+    }
+
+    public void SendMessageEquipmentForbidden(Entity character)
+    {
+        CreateSCTMessage(character, SCTMessage_Disabled, ColorRed);
+    }
+    
+    public void SendMessageCannotMenuSwapDuringPVP(Entity character)
+    {
+        CreateSCTMessage(character, SCTMessage_CannotModifyActionBarWhilePVP, ColorRed);
     }
 
 }

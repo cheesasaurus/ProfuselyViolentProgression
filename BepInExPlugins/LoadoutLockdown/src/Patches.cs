@@ -77,6 +77,7 @@ public unsafe class Patches
 
         if (LoadoutService.IsEquipmentForbidden(itemEntity))
         {
+            LoadoutService.SendMessageEquipmentForbidden(character);
             __result = false;
             return SKIP_ORIGINAL_METHOD;
         }
@@ -94,6 +95,11 @@ public unsafe class Patches
             __result = !isInPvPCombat
                 || LoadoutService.CanMenuSwapIntoFilledSlotDuringPVP(itemEntity)
                 || LoadoutService.IsDesignatedSlotWasted(character, itemEntity);
+                
+            if (__result is false)
+            {
+                LoadoutService.SendMessageCannotMenuSwapDuringPVP(character);
+            }
             // if __result is true, the game will take care of swapping the equipped item into the slot.
             // but only for things that have their own designated slot
             return SKIP_ORIGINAL_METHOD;
@@ -225,11 +231,13 @@ public unsafe class Patches
         __result = false;
         return SKIP_ORIGINAL_METHOD;
     }
-    
+
 
     // todo: swapping designated slots (e.g. amulet slot) with things in main inventory
 
     // todo: swapping designated slots (e.g. amulet slot) with external inventories
+
+    // todo: unequipping from designated slots
 
 
 
