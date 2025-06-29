@@ -1,3 +1,4 @@
+using System;
 using HarmonyLib;
 using HookDOTS.API.Attributes;
 using ProfuselyViolentProgression.Core.Utilities;
@@ -18,8 +19,40 @@ public unsafe class Patches
     private static EntityQuery Query;
     private static LoadoutLockdownService LoadoutService => LoadoutLockdownService.Instance;
 
+    private static NativeParallelHashMap<PrefabGUID, ItemData> ItemHashLookupMap => WorldUtil.Server.GetExistingSystemManaged<GameDataSystem>().ItemHashLookupMap; // todo: cache this. should be on a service probably
+
     private const bool SKIP_ORIGINAL_METHOD = false;
     private const bool EXECUTE_ORIGINAL_METHOD = true;
+
+    [HarmonyPatch(typeof(InventoryUtilitiesServer), nameof(InventoryUtilitiesServer.TryAddItem), new Type[] { typeof(AddItemSettings), typeof(Entity), typeof(PrefabGUID), typeof(int) })]
+    [HarmonyPrefix]
+    public static void TryAddItem_Prefix(ref AddItemSettings addItemSettings, Entity target, PrefabGUID itemType, int amount)
+    {
+        if (!ItemHashLookupMap.TryGetValue(itemType, out var itemData))
+        {
+            return;
+        }
+
+        if (LoadoutService.IsEquipmentForbidden(itemData.Entity))
+        {
+            addItemSettings.EquipIfPossible = false;
+        }
+    }
+
+    [HarmonyPatch(typeof(InventoryUtilitiesServer), nameof(InventoryUtilitiesServer.TryAddItem), new Type[] { typeof(AddItemSettings), typeof(Entity), typeof(InventoryBuffer) })]
+    [HarmonyPrefix]
+    public static void TryAddItem(ref AddItemSettings addItemSettings, Entity target, InventoryBuffer inventoryItem)
+    {
+        if (!ItemHashLookupMap.TryGetValue(inventoryItem.ItemType, out var itemData))
+        {
+            return;
+        }
+
+        if (LoadoutService.IsEquipmentForbidden(itemData.Entity))
+        {
+            addItemSettings.EquipIfPossible = false;
+        }
+    }
 
 
     // note: the original IsValidWeaponEquip is not just a check. it has side effects: moving the item into an open/junk slot
@@ -183,11 +216,29 @@ public unsafe class Patches
         LogUtil.LogDebug($"IsValidItemMove  __result: {__result}");
     }
 
-
-    // todo: picking up items off ground should not equip forbidden things
-    
     // todo: swapping designated slots (e.g. amulet slot) with things in main inventory
 
     // todo: swapping designated slots (e.g. amulet slot) with external inventories
+
+
+
+
+    //[HarmonyPatch(typeof(EquipItemFromInventorySystem), nameof(EquipItemFromInventorySystem.OnUpdate))]
+    //[HarmonyPrefix]
+    public static void EquipItemFromInventorySystem_OnUpdate_Prefix(EquipItemFromInventorySystem __instance)
+    {
+        LogUtil.LogInfo("========================================");
+        var queryCount = 0;
+        foreach (var query in __instance.EntityQueries)
+        {
+            LogUtil.LogInfo($"query#{queryCount}--------------------------------");
+            var entities = query.ToEntityArray(Allocator.Temp);
+            for (var i = 0; i < entities.Length; i++)
+            {
+                DebugUtil.LogComponentTypes(entities[i]);
+            }
+            queryCount++;
+        }
+    }
 
 }

@@ -15,6 +15,7 @@ Maybe there's a way to replace it with the "Nope" message.
 - SCT_Type
 
 ResponseEventType
+SCTTypeCollection
 
 ```
 {
@@ -143,6 +144,5 @@ ItemData
   
 
 
-Item "Transfer" = moving item between slots in same inventory?
-
-Item "Move" = moving item between different inventories
+EquipItemSystem doesn't do anything when item picked up from the ground
+EquipItemFromInventorySystem doesn't do anything when item picked up from the ground, or when item crafted
