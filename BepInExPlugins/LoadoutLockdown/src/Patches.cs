@@ -27,8 +27,6 @@ public unsafe class Patches
     [HarmonyPrefix]
     public static bool IsValidWeaponEquip_Prefix(ref bool __result, EntityManager entityManager, EquippableData equippableData, EquipItemEvent equipItem, ServerRootPrefabCollection serverRootPrefabs, Entity character, NativeParallelHashMap<PrefabGUID, ItemData> itemHashLookupMap, int weaponSlots)
     {
-        LogUtil.LogWarning("The thing is happening");
-
         if (LoadoutService is null)
         {
             return EXECUTE_ORIGINAL_METHOD;
@@ -62,7 +60,7 @@ public unsafe class Patches
         if (LoadoutService.HasOwnSlot(itemEntity))
         {
             __result = !isInPvPCombat
-                || LoadoutService.CanMenuSwapIntoFilledSlotDuringPVP(equippableData)
+                || LoadoutService.CanMenuSwapIntoFilledSlotDuringPVP(itemEntity)
                 || LoadoutService.IsOwnSlotWasted(character, itemEntity);
             // if __result is true, the game will take care of swapping the equipped item into the slot.
             // but only for things that have their own designated slot

@@ -143,5 +143,14 @@
         "Item_Consumable_HealingPotion_T01",  // Blood Rose Brew
         "Item_Consumable_HealingPotion_T02",  // Blood Rose Potion
     ],
+
+    // If you would like specific items to always be moveable into their slot, add them to this list.
+    "AlwaysAllowSwapIntoSlot": [
+        "Item_MagicSource_SoulShard_Dracula",
+        "Item_MagicSource_SoulShard_Manticore",
+        "Item_MagicSource_SoulShard_Monster",
+        "Item_MagicSource_SoulShard_Morgana",
+        "Item_MagicSource_SoulShard_Solarus",
+    ],
     
 }

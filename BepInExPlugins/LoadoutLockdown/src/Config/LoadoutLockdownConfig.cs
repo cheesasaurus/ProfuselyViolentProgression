@@ -8,6 +8,7 @@ public class LoadoutLockdownConfig
     public RulesByType RulesByType { get; set; } = new();
     public List<string> ForbiddenByPrefab { get; set; } = new();
     public List<string> NotWaste { get; set; } = new();
+    public List<string> AlwaysAllowSwapIntoSlot { get; set; } = new();
 }
 
 public enum FromMenuDuringPVP

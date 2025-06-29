@@ -85,6 +85,7 @@ public class Plugin : BasePlugin
         {
             return;
         }
+        Log.LogMessage($"Reloading ruleset {RulesetFilename.Value}");
         ResetLoadoutService(config);
     }
 

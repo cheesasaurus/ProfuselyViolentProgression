@@ -19,12 +19,14 @@ internal class LoadoutLockdownService
     private int _maxWeaponSlotIndex => _config.WeaponSlots - 1;
     private HashSet<PrefabGUID> _forbiddenByPrefab = new();
     private HashSet<PrefabGUID> _notWaste = new();
+    private HashSet<PrefabGUID> _alwaysAllowSwapIntoSlot = new();
 
     public LoadoutLockdownService(LoadoutLockdownConfig config)
     {
         _config = config;
         InitForbiddenByPrefab();
         InitNotWaste();
+        InitAlwaysAllowSwapIntoSlot();
     }
 
     private void InitForbiddenByPrefab()
@@ -53,6 +55,28 @@ internal class LoadoutLockdownService
             else
             {
                 LogUtil.LogWarning($"Unrecognized prefab in NotWaste: {prefabName}");
+            }
+        }
+    }
+
+    private void InitAlwaysAllowSwapIntoSlot()
+    {
+        foreach (string prefabName in _config.AlwaysAllowSwapIntoSlot)
+        {
+            if (SpawnablePrefabLookup.TryGetValue(prefabName, out var prefabGUID))
+            {
+                if (_forbiddenByPrefab.Contains(prefabGUID))
+                {
+                    LogUtil.LogWarning($"{prefabName} was removed from AlwaysAllowSwapIntoSlot, because it is ForbiddenByPrefab.");
+                }
+                else
+                {
+                    _alwaysAllowSwapIntoSlot.Add(prefabGUID);
+                }
+            }
+            else
+            {
+                LogUtil.LogWarning($"Unrecognized prefab in AlwaysAllowSwapIntoSlot: {prefabName}");
             }
         }
     }
@@ -152,16 +176,13 @@ internal class LoadoutLockdownService
             return true;
         }
 
-        // todo: if it's a soulshard, should be able to put it on
-        // but make that configurable
-
         var entityInSlot = equipment.GetEquipmentEntity(equippableData.EquipmentType)._Entity;
         if (!EntityManager.HasComponent<PrefabGUID>(entityInSlot))
         {
             return false;
         }
-        var prefabGUID = EntityManager.GetComponentData<PrefabGUID>(entityInSlot);
-        if (_notWaste.Contains(prefabGUID))
+        var prefabGUIDInSlot = EntityManager.GetComponentData<PrefabGUID>(entityInSlot);
+        if (_notWaste.Contains(prefabGUIDInSlot))
         {
             return false;
         }
@@ -169,8 +190,19 @@ internal class LoadoutLockdownService
         return false;
     }
 
-    public bool CanMenuSwapIntoFilledSlotDuringPVP(EquippableData equippableData)
+    public bool CanMenuSwapIntoFilledSlotDuringPVP(Entity entity)
     {
+        if (AlwaysAllowSwapIntoSlot(entity))
+        {
+            return true;
+        }
+
+        if (!EntityManager.HasComponent<EquippableData>(entity))
+        {
+            return false;
+        }
+        var equippableData = EntityManager.GetComponentData<EquippableData>(entity);
+        
         if (TryFindSwappableFromMenuDuringPVP(equippableData, out var swappableRules))
         {
             return swappableRules.FromMenuDuringPVP == FromMenuDuringPVP.AllowSwapIntoFilledSlot;
@@ -499,6 +531,16 @@ internal class LoadoutLockdownService
             ibb[slotIndexA] = ibb[slotIndexB];
             ibb[slotIndexB] = temp;
         }
+    }
+
+    public bool AlwaysAllowSwapIntoSlot(Entity entity)
+    {
+        if (!EntityManager.HasComponent<PrefabGUID>(entity))
+        {
+            return false;
+        }
+        var prefabGUID = EntityManager.GetComponentData<PrefabGUID>(entity);
+        return _alwaysAllowSwapIntoSlot.Contains(prefabGUID);
     }
 
 }

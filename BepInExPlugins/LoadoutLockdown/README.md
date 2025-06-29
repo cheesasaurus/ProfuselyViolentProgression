@@ -82,8 +82,7 @@ Forbidden weapons are considered to be junk items.
 
 Prefabs can be added to the `NotWaste` list to prevent them from being swapped out via `AllowSwapIntoWastedSlot`.
 
-- todo: soul shards
-
+If you would like specific items to always be moveable into their slot (e.g. soul shards), add their prefabs to the `AlwaysAllowSwapIntoSlot` list.
 
 
 ## Support
