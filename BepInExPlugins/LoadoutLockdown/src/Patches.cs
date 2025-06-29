@@ -54,7 +54,6 @@ public unsafe class Patches
         }
     }
 
-
     // note: the original IsValidWeaponEquip is not just a check. it has side effects: moving the item into an open/junk slot
     [HarmonyPatch(typeof(NewWeaponEquipmentRestrictionsUtility), nameof(NewWeaponEquipmentRestrictionsUtility.IsValidWeaponEquip))]
     [HarmonyPrefix]
@@ -90,11 +89,11 @@ public unsafe class Patches
 
         bool isInPvPCombat = NewWeaponEquipmentRestrictionsUtility.IsInPvPCombat(EntityManager, serverRootPrefabs, character);
 
-        if (LoadoutService.HasOwnSlot(itemEntity))
+        if (LoadoutService.HasDesignatedSlot(itemEntity))
         {
             __result = !isInPvPCombat
                 || LoadoutService.CanMenuSwapIntoFilledSlotDuringPVP(itemEntity)
-                || LoadoutService.IsOwnSlotWasted(character, itemEntity);
+                || LoadoutService.IsDesignatedSlotWasted(character, itemEntity);
             // if __result is true, the game will take care of swapping the equipped item into the slot.
             // but only for things that have their own designated slot
             return SKIP_ORIGINAL_METHOD;
@@ -119,56 +118,13 @@ public unsafe class Patches
         return SKIP_ORIGINAL_METHOD;
     }
 
-    // item "Transferring" is internally called by IsValidItemMove
-    // it gets called twice per potential move: once each for the orderings of slotA and slotB
-    // i.e. the second time it is called, the former slotA will appear as slotB, and the former slotB will appear as slotA.
-    [HarmonyPatch(typeof(NewWeaponEquipmentRestrictionsUtility), nameof(NewWeaponEquipmentRestrictionsUtility.IsValidTransfer))]
-    [HarmonyPrefix]
-    public static unsafe bool IsValidTransfer_Prefix(
-        ref bool __result,
-        EntityManager entityManager,
-        NativeParallelHashMap<PrefabGUID, ItemData> itemDataMap,
-        int slotA,
-        int slotB,
-        Entity entityA,
-        Entity entityB,
-        bool isInCombat,
-        int weaponSlots,
-        bool allowIfEmpty = false
-    )
-    {
-        LogUtil.LogDebug("doing IsValidTransfer");
-
-        LogUtil.LogInfo($"slotA: {slotA}, slotB: {slotB}");
-
-        //DebugUtil.LogComponentTypes(entityA);
-
-        /////////////////////////////////////////////////////////
-
-        if (LoadoutService is null)
-        {
-            return EXECUTE_ORIGINAL_METHOD;
-        }
-
-
-
-        // todo: logic
-
-        return EXECUTE_ORIGINAL_METHOD;
-    }
-
-    // todo: remove this
-    [HarmonyPatch(typeof(NewWeaponEquipmentRestrictionsUtility), nameof(NewWeaponEquipmentRestrictionsUtility.IsValidTransfer))]
-    [HarmonyPostfix]
-    public static unsafe void IsValidItemTransfer_Postfix(ref bool __result)
-    {
-        LogUtil.LogDebug($"IsValidTransfer  __result: {__result}");
-    }
-
-
-    // item "Moving" is between different inventories. or the same inventory.
-    // IsValidItemMove seems to internally call IsValidItemTransfer.
-    // Neither seems to be called when moving stuff in/out of a designated slot (e.g. cape, armor piece)
+    // "IsValidItemMove" covers the case of moving an item between two inventory slots. They can be slots in different inventories.
+    // It does NOT cover the case of moving stuff into a designated slot (e.g. moving a cloak into the cloak slot).
+    //
+    // The original IsValidItemMove internally calls IsValidItemTransfer twice. once each for the orderings of slotA and slotB.
+    // i.e. the second time IsValidItemTransfer is called, the former slotA will appear as slotB, and the former slotB will appear as slotA.
+    //
+    // We do not call IsValidItemMove at all, unless falling back to the original behaviour.
     [HarmonyPatch(typeof(NewWeaponEquipmentRestrictionsUtility), nameof(NewWeaponEquipmentRestrictionsUtility.IsValidItemMove))]
     [HarmonyPrefix]
     public static unsafe bool IsValidItemMove_Prefix(
@@ -182,39 +138,94 @@ public unsafe class Patches
         int weaponSlots
     )
     {
-        LogUtil.LogDebug("doing IsValidItemMove");
-
-        //__result = true;
-        //return SKIP_ORIGINAL_METHOD;
-
-
-        /////////////////////////////////////////////////////////
-
         if (LoadoutService is null)
         {
             return EXECUTE_ORIGINAL_METHOD;
         }
 
-        bool fromWeaponSlot = false;
-        bool toWeaponSlot = false;
-        if (!fromWeaponSlot && !toWeaponSlot)
+        bool isFromPlayerInventory = LoadoutService.IsPlayerInventory(fromInventory);
+        bool isToPlayerInventory = LoadoutService.IsPlayerInventory(toInventory);
+
+        Entity playerCharacter = default;
+        bool foundPlayerCharacter = false;
+        if (isFromPlayerInventory)
         {
-            return EXECUTE_ORIGINAL_METHOD;
+            foundPlayerCharacter = LoadoutService.TryGetOwnerOfInventory(fromInventory, out playerCharacter);
+        }
+        else if (isToPlayerInventory)
+        {
+            foundPlayerCharacter = LoadoutService.TryGetOwnerOfInventory(toInventory, out playerCharacter);
+        }
+        
+        if (!foundPlayerCharacter)
+        {
+            __result = true;
+            return SKIP_ORIGINAL_METHOD;
         }
 
-        // todo: logic
+        bool isInPvPCombat = NewWeaponEquipmentRestrictionsUtility.IsInPvPCombat(EntityManager, serverRootPrefabCollection, playerCharacter);
+        bool fromWeaponSlot = isFromPlayerInventory && LoadoutService.IsValidWeaponSlot(moveEvent.FromSlot);
+        bool toWeaponSlot = isToPlayerInventory && LoadoutService.IsValidWeaponSlot(moveEvent.ToSlot);
+        bool doesNotInvolveWeaponSlot = !fromWeaponSlot && !toWeaponSlot;
+        bool isRearrangingWeaponSlots = fromWeaponSlot && toWeaponSlot;
 
-        return EXECUTE_ORIGINAL_METHOD;
+        if (!isInPvPCombat || doesNotInvolveWeaponSlot || isRearrangingWeaponSlots)
+        {
+            __result = true;
+            return SKIP_ORIGINAL_METHOD;
+        }
+
+        InventoryBuffer menuSlotIB;
+        InventoryBuffer weaponSlotIB;
+        bool isMenuSlotEmpty;
+        bool isWeaponSlotEmpty;
+        if (fromWeaponSlot)
+        {
+            isWeaponSlotEmpty = !InventoryUtilities.TryGetItemAtSlot(EntityManager, fromInventory, moveEvent.FromSlot, out weaponSlotIB);
+            isMenuSlotEmpty = !InventoryUtilities.TryGetItemAtSlot(EntityManager, toInventory, moveEvent.ToSlot, out menuSlotIB);
+        }
+        else
+        {
+            isMenuSlotEmpty = !InventoryUtilities.TryGetItemAtSlot(EntityManager, fromInventory, moveEvent.FromSlot, out menuSlotIB);
+            isWeaponSlotEmpty = !InventoryUtilities.TryGetItemAtSlot(EntityManager, toInventory, moveEvent.ToSlot, out weaponSlotIB);
+        }
+
+        if (isMenuSlotEmpty && isWeaponSlotEmpty)
+        {
+            __result = true;
+            return SKIP_ORIGINAL_METHOD;
+        }
+
+        bool doesItemInMenuHaveDesignatedSlot = !isMenuSlotEmpty && LoadoutService.HasDesignatedSlot(menuSlotIB.ItemEntity._Entity);
+
+        if (!isMenuSlotEmpty && !doesItemInMenuHaveDesignatedSlot && LoadoutService.AlwaysAllowSwapIntoSlot(menuSlotIB.ItemEntity._Entity))
+        {
+            __result = true;
+            return SKIP_ORIGINAL_METHOD;
+        }
+
+        if (!isMenuSlotEmpty && !doesItemInMenuHaveDesignatedSlot && LoadoutService.CanMenuSwapIntoFilledSlotDuringPVP(menuSlotIB.ItemEntity._Entity))
+        {
+            __result = true;
+            return SKIP_ORIGINAL_METHOD;
+        }
+
+        if (isWeaponSlotEmpty || LoadoutService.IsWasteInWeaponSlot(weaponSlotIB))
+        {
+            __result = true;
+            return SKIP_ORIGINAL_METHOD;
+        }
+
+        if (isMenuSlotEmpty && LoadoutService.IsWasteInWeaponSlot(weaponSlotIB))
+        {
+            __result = true;
+            return SKIP_ORIGINAL_METHOD;
+        }
+
+        __result = false;
+        return SKIP_ORIGINAL_METHOD;
     }
-
-
-    // todo: remove this
-    [HarmonyPatch(typeof(NewWeaponEquipmentRestrictionsUtility), nameof(NewWeaponEquipmentRestrictionsUtility.IsValidItemMove))]
-    [HarmonyPostfix]
-    public static unsafe void IsValidItemMove_Postfix(ref bool __result)
-    {
-        LogUtil.LogDebug($"IsValidItemMove  __result: {__result}");
-    }
+    
 
     // todo: swapping designated slots (e.g. amulet slot) with things in main inventory
 

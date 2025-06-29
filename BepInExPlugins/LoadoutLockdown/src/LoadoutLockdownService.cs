@@ -132,7 +132,7 @@ internal class LoadoutLockdownService
         return false;
     }
 
-    private static HashSet<EquipmentType> EquipmentTypesWithOwnSlot = [
+    private static HashSet<EquipmentType> EquipmentTypesWithDesignatedSlot = [
         EquipmentType.Bag,
         EquipmentType.Cloak,
         EquipmentType.Headgear,
@@ -143,19 +143,19 @@ internal class LoadoutLockdownService
         EquipmentType.Footgear,
     ];
 
-    public bool HasOwnSlot(Entity entity)
+    public bool HasDesignatedSlot(Entity entity)
     {
         if (!EntityManager.HasComponent<EquippableData>(entity))
         {
             return false;
         }
         var equippableData = EntityManager.GetComponentData<EquippableData>(entity);
-        return EquipmentTypesWithOwnSlot.Contains(equippableData.EquipmentType);
+        return EquipmentTypesWithDesignatedSlot.Contains(equippableData.EquipmentType);
     }
 
-    public bool IsOwnSlotWasted(Entity character, Entity equippableEntity)
+    public bool IsDesignatedSlotWasted(Entity character, Entity equippableEntity)
     {
-        if (!HasOwnSlot(equippableEntity))
+        if (!HasDesignatedSlot(equippableEntity))
         {
             return false;
         }
@@ -453,6 +453,27 @@ internal class LoadoutLockdownService
     public bool IsValidWeaponSlot(int slotIndex)
     {
         return slotIndex <= _maxWeaponSlotIndex;
+    }
+
+    public bool IsPlayerInventory(Entity inventoryEntity)
+    {
+        if (TryGetOwnerOfInventory(inventoryEntity, out var owner))
+        {
+            return EntityManager.HasComponent<PlayerCharacter>(owner);
+        }
+        return false;
+    }
+
+    public bool TryGetOwnerOfInventory(Entity inventoryEntity, out Entity owner)
+    {
+        if (!EntityManager.HasComponent<InventoryConnection>(inventoryEntity))
+        {            
+            owner = default;
+            return false;
+        }
+        var inventoryConnection = EntityManager.GetComponentData<InventoryConnection>(inventoryEntity);
+        owner = inventoryConnection.InventoryOwner;
+        return true;
     }
 
     public bool TryFindWastedWeaponSlot(Entity character, out int slotIndex)

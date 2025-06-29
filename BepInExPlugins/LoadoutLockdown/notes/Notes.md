@@ -14,6 +14,8 @@ todo: explore how that "No free action bar slots" message works.\
 Maybe there's a way to replace it with the "Nope" message.
 - SCT_Type
 
+SCT = Scrolling Combat Text
+
 ResponseEventType
 SCTTypeCollection
 
@@ -47,6 +49,26 @@ SCTTypeCollection
   "Text": "On"
 },
 {
+  "Guid": "8a0bca5f-8f27-48ed-a4e0-7e035e974c3c",
+  "Text": "Complete"
+},
+{
+  "Guid": "54d48cbf-6817-42e5-a23f-354ca531c514",
+  "Text": "Done"
+},
+{
+  "Guid": "d79029a9-efe8-449c-878a-5830bfcdb1ba",
+  "Text": "Limited"
+},
+{
+  "Guid": "dea7f940-4a8f-4592-8bb9-5398cde17c67",
+  "Text": "<i>'Oink!'</i>"
+},
+{
+  "Guid": "5958f55c-60c3-4e12-b4d2-8d1d5e9f2c66",
+  "Text": "<i>'Oh no!'</i>"
+},
+{
   "Guid": "62a014f0-13d0-409f-b6d3-a90ae96ac0c1",
   "Text": "It's about to explode!"
 },
@@ -55,8 +77,8 @@ SCTTypeCollection
   "Text": "Smack"
 },
 {
-  "Guid": "54d48cbf-6817-42e5-a23f-354ca531c514",
-  "Text": "Done"
+  "Guid": "eecdc625-887f-4a5b-86f7-f268cfd7f2a1",
+  "Text": "Lock In"
 },
 {
   "Guid": "3d998323-8135-42dc-ba3b-8f76a16b0247",
@@ -89,18 +111,6 @@ SCTTypeCollection
 {
   "Guid": "5958f55c-60c3-4e12-b4d2-8d1d5e9f2c66",
   "Text": "<i>'Oh no!'</i>"
-},
-{
-  "Guid": "8a0bca5f-8f27-48ed-a4e0-7e035e974c3c",
-  "Text": "Complete"
-},
-{
-  "Guid": "eecdc625-887f-4a5b-86f7-f268cfd7f2a1",
-  "Text": "Lock In"
-},
-{
-  "Guid": "d79029a9-efe8-449c-878a-5830bfcdb1ba",
-  "Text": "Limited"
 },
 
 ```
