@@ -87,6 +87,8 @@ public unsafe class Patches
     }
 
     // item "Transferring" is internally called by IsValidItemMove
+    // it gets called twice per potential move: once each for the orderings of slotA and slotB
+    // i.e. the second time it is called, the former slotA will appear as slotB, and the former slotB will appear as slotA.
     [HarmonyPatch(typeof(NewWeaponEquipmentRestrictionsUtility), nameof(NewWeaponEquipmentRestrictionsUtility.IsValidTransfer))]
     [HarmonyPrefix]
     public static unsafe bool IsValidTransfer_Prefix(
@@ -126,6 +128,7 @@ public unsafe class Patches
             __result = true;
             return SKIP_ORIGINAL_METHOD;
         }
+
 
 
 
