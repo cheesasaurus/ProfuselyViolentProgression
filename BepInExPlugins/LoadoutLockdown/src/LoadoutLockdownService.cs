@@ -202,7 +202,7 @@ internal class LoadoutLockdownService
             return false;
         }
         var equippableData = EntityManager.GetComponentData<EquippableData>(entity);
-        
+
         if (TryFindSwappableFromMenuDuringPVP(equippableData, out var swappableRules))
         {
             return swappableRules.FromMenuDuringPVP == FromMenuDuringPVP.AllowSwapIntoFilledSlot;
@@ -541,6 +541,11 @@ internal class LoadoutLockdownService
         }
         var prefabGUID = EntityManager.GetComponentData<PrefabGUID>(entity);
         return _alwaysAllowSwapIntoSlot.Contains(prefabGUID);
+    }
+
+    public bool IsWeaponSlot(int slotIndex)
+    {
+        return slotIndex <= _maxWeaponSlotIndex;
     }
 
 }

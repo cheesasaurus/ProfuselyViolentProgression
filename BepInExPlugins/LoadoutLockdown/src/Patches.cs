@@ -86,12 +86,118 @@ public unsafe class Patches
         return SKIP_ORIGINAL_METHOD;
     }
 
-    // todo: remove this
-    [HarmonyPatch(typeof(NewWeaponEquipmentRestrictionsUtility), nameof(NewWeaponEquipmentRestrictionsUtility.IsValidWeaponEquip))]
-    [HarmonyPostfix]
-    public static void IsValidWeaponEquip_Postfix(ref bool __result, EntityManager entityManager, EquippableData equippableData, EquipItemEvent equipItem, ServerRootPrefabCollection serverRootPrefabs, Entity character, NativeParallelHashMap<PrefabGUID, ItemData> itemHashLookupMap, int weaponSlots)
+    // item "Transferring" is internally called by IsValidItemMove
+    [HarmonyPatch(typeof(NewWeaponEquipmentRestrictionsUtility), nameof(NewWeaponEquipmentRestrictionsUtility.IsValidTransfer))]
+    [HarmonyPrefix]
+    public static unsafe bool IsValidTransfer_Prefix(
+        ref bool __result,
+        EntityManager entityManager,
+        NativeParallelHashMap<PrefabGUID, ItemData> itemDataMap,
+        int slotA,
+        int slotB,
+        Entity entityA,
+        Entity entityB,
+        bool isInCombat,
+        int weaponSlots,
+        bool allowIfEmpty = false
+    )
     {
-        LogUtil.LogInfo($"__result: {__result}");
+        LogUtil.LogDebug("doing IsValidTransfer");
+
+        // slotB contains the item being dragged
+        // slotA is the slot being dragged to
+
+        LogUtil.LogInfo($"slotA: {slotA}, slotB: {slotB}");
+
+        //DebugUtil.LogComponentTypes(entityA);
+
+        /////////////////////////////////////////////////////////
+
+        if (LoadoutService is null)
+        {
+            return EXECUTE_ORIGINAL_METHOD;
+        }
+
+        bool fromWeaponSlot = LoadoutService.IsWeaponSlot(slotB);
+        bool toWeaponSlot = LoadoutService.IsWeaponSlot(slotA);
+        bool isZoneChange = (fromWeaponSlot && !toWeaponSlot) || (!fromWeaponSlot && toWeaponSlot);
+        if (!isInCombat || !isZoneChange)
+        {
+            __result = true;
+            return SKIP_ORIGINAL_METHOD;
+        }
+
+
+
+        // todo: logic
+
+        return EXECUTE_ORIGINAL_METHOD;
     }
+
+    // todo: remove this
+    [HarmonyPatch(typeof(NewWeaponEquipmentRestrictionsUtility), nameof(NewWeaponEquipmentRestrictionsUtility.IsValidTransfer))]
+    [HarmonyPostfix]
+    public static unsafe void IsValidItemTransfer_Postfix(ref bool __result)
+    {
+        LogUtil.LogDebug($"IsValidTransfer  __result: {__result}");
+    }
+
+
+    // item "Moving" is between different inventories. or the same inventory.
+    // IsValidItemMove seems to internally call IsValidItemTransfer.
+    // Neither seems to be called when moving stuff in/out of a designated slot (e.g. cape, armor piece)
+    [HarmonyPatch(typeof(NewWeaponEquipmentRestrictionsUtility), nameof(NewWeaponEquipmentRestrictionsUtility.IsValidItemMove))]
+    [HarmonyPrefix]
+    public static unsafe bool IsValidItemMove_Prefix(
+        ref bool __result,
+        EntityManager entityManager,
+        ServerRootPrefabCollection serverRootPrefabCollection,
+        NativeParallelHashMap<PrefabGUID, ItemData> itemDataMap,
+        MoveItemBetweenInventoriesEvent moveEvent,
+        Entity toInventory,
+        Entity fromInventory,
+        int weaponSlots
+    )
+    {
+        LogUtil.LogDebug("doing IsValidItemMove");
+
+        //__result = true;
+        //return SKIP_ORIGINAL_METHOD;
+
+
+        /////////////////////////////////////////////////////////
+
+        if (LoadoutService is null)
+        {
+            return EXECUTE_ORIGINAL_METHOD;
+        }
+
+        bool fromWeaponSlot = false;
+        bool toWeaponSlot = false;
+        if (!fromWeaponSlot && !toWeaponSlot) // todo: probably check armor and everything else too
+        {
+            return EXECUTE_ORIGINAL_METHOD;
+        }
+
+        // todo: logic
+
+        return EXECUTE_ORIGINAL_METHOD;
+    }
+
+
+    // todo: remove this
+    [HarmonyPatch(typeof(NewWeaponEquipmentRestrictionsUtility), nameof(NewWeaponEquipmentRestrictionsUtility.IsValidItemMove))]
+    [HarmonyPostfix]
+    public static unsafe void IsValidItemMove_Postfix(ref bool __result)
+    {
+        LogUtil.LogDebug($"IsValidItemMove  __result: {__result}");
+    }
+
+
+    // todo: picking up items off ground should not equip forbidden things
+    
+    // todo: swapping designated slots (e.g. amulet slot) with things in main inventory
+
+    // todo: swapping designated slots (e.g. amulet slot) with external inventories
 
 }
