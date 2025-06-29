@@ -1,4 +1,5 @@
 // Same behaviour as the vanilla game, but with fishing pole restrictions lifted.
+// Also has less restrictions about swapping out consumables in the hotbar.
 {
     
     "RulesByType": {
@@ -8,5 +9,13 @@
             "RequiresHotbarSlot": false
         },
     },
+
+    // During PVP, equipment with "AllowSwapIntoWastedSlot" cannot take the place of something marked "NotWaste".
+    // (except for re-arranging things which are both already in valid weapon slots)
+    "NotWaste": [
+        "Item_Consumable_Salve_Vermin",       // Vermin Salve   
+        "Item_Consumable_HealingPotion_T01",  // Blood Rose Brew
+        "Item_Consumable_HealingPotion_T02",  // Blood Rose Potion
+    ],
 
 }

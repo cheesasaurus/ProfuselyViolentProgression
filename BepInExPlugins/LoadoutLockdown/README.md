@@ -2,7 +2,7 @@
 
 ⚠️WIP⚠️
 
-Restrict (or unrestrict) equipping gear, both in and out of combat. Highly configurable.
+Restrict (or unrestrict) equipping gear, both in and out of combat. Fully customizable.
 
 ### Some example uses
 - Allow equipping a fishing pole from your inventory.
@@ -75,12 +75,14 @@ For example, with `WeaponSlots` set to `3`, any weapons in slots [4, 5, 6, 7, 8]
 
 The `RequiresHotbarSlot` rule can be set to `false` to let a specific type of weapon (such as the fishing pole) bypass this restriction.
 
-#### Wasted slots
+### Wasted slots
 
-An empty slot can always be filled from the menu. Junk items (e.g. a pinecone sitting in a weapon slot) can also be swapped out during PvP.
+An empty slot can always be filled from the menu. Junk items (e.g. a pinecone sitting in a weapon slot) can also be swapped out during PvP.\
+Forbidden weapons are considered to be junk items.
+
+Prefabs can be added to the `NotWaste` list to prevent them from being swapped out via `AllowSwapIntoWastedSlot`.
 
 - todo: soul shards
-- todo: marking things as not junk
 
 
 

@@ -18,11 +18,13 @@ internal class LoadoutLockdownService
 
     private int _maxWeaponSlotIndex => _config.WeaponSlots - 1;
     private HashSet<PrefabGUID> _forbiddenByPrefab = new();
+    private HashSet<PrefabGUID> _notWaste = new();
 
     public LoadoutLockdownService(LoadoutLockdownConfig config)
     {
         _config = config;
         InitForbiddenByPrefab();
+        InitNotWaste();
     }
 
     private void InitForbiddenByPrefab()
@@ -36,6 +38,21 @@ internal class LoadoutLockdownService
             else
             {
                 LogUtil.LogWarning($"Unrecognized prefab in ForbiddenByPrefab: {prefabName}");
+            }
+        }
+    }
+
+    private void InitNotWaste()
+    {
+        foreach (string prefabName in _config.NotWaste)
+        {
+            if (SpawnablePrefabLookup.TryGetValue(prefabName, out var prefabGUID))
+            {
+                _notWaste.Add(prefabGUID);
+            }
+            else
+            {
+                LogUtil.LogWarning($"Unrecognized prefab in NotWaste: {prefabName}");
             }
         }
     }
@@ -138,8 +155,17 @@ internal class LoadoutLockdownService
         // todo: if it's a soulshard, should be able to put it on
         // but make that configurable
 
+        var entityInSlot = equipment.GetEquipmentEntity(equippableData.EquipmentType)._Entity;
+        if (!EntityManager.HasComponent<PrefabGUID>(entityInSlot))
+        {
+            return false;
+        }
+        var prefabGUID = EntityManager.GetComponentData<PrefabGUID>(entityInSlot);
+        if (_notWaste.Contains(prefabGUID))
+        {
+            return false;
+        }
         // could potentially compare the gear (e.g. levels), but let's not overcomplicate it for something that nobody is asking for.
-        //var entityInSlot = equipment.GetEquipmentEntity(equippableData.EquipmentType)._Entity;
         return false;
     }
 
@@ -419,7 +445,7 @@ internal class LoadoutLockdownService
                 firstEmptySlotIndex = i;
             }
 
-            if (!hasJunkSlot && !ShouldStayInWeaponSlot(ibb[i].ItemEntity._Entity))
+            if (!hasJunkSlot && IsWasteInWeaponSlot(ibb[i]))
             {
                 hasJunkSlot = true;
                 firstJunkSlotIndex = i;
@@ -440,22 +466,28 @@ internal class LoadoutLockdownService
         return false;
     }
 
-    public bool ShouldStayInWeaponSlot(Entity itemEntity)
+    public bool IsWasteInWeaponSlot(InventoryBuffer inventoryBufferEl)
     {
+        var prefabGUID = inventoryBufferEl.ItemType;
+        if (_notWaste.Contains(prefabGUID))
+        {
+            return false;
+        }
+        if (_forbiddenByPrefab.Contains(prefabGUID))
+        {
+            // they can't use that weapon, so let them swap it out.
+            return true;
+        }
+
+        var itemEntity = inventoryBufferEl.ItemEntity._Entity;
         if (EntityManager.HasComponent<EquippableData>(itemEntity))
         {
             var equippableData = EntityManager.GetComponentData<EquippableData>(itemEntity);
-            return equippableData.EquipmentType is EquipmentType.Weapon
-                && equippableData.WeaponType is not WeaponType.FishingPole;
+            return equippableData.EquipmentType is not EquipmentType.Weapon
+                || equippableData.WeaponType is WeaponType.FishingPole;
         }
 
-        // todo: maybe let user configure which items don't count as waste in weapon slot
-        // healing potions
-        //   Blood rose potion
-        //   Blood rose brew
-        //   Vermin Salve
-
-        return false;
+        return true;
     }
 
     public void SwapItemsInSameInventory(Entity character, int slotIndexA, int slotIndexB)
