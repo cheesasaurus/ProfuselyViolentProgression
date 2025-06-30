@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using ProfuselyViolentProgression.Core.Utilities;
 using ProfuselyViolentProgression.LoadoutLockdown.Config;
 using ProjectM;
+using ProjectM.Network;
+using ProjectM.Scripting;
 using Stunlock.Core;
+using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
@@ -19,10 +22,18 @@ internal class LoadoutLockdownService
     private EntityManager EntityManager => WorldUtil.Server.EntityManager;
     private EndSimulationEntityCommandBufferSystem EndSimulationEntityCommandBufferSystem => WorldUtil.Server.GetExistingSystemManaged<EndSimulationEntityCommandBufferSystem>();
 
+    // todo: cache things. should be on a service probably
+    private static NativeParallelHashMap<PrefabGUID, ItemData> ItemHashLookupMap => WorldUtil.Server.GetExistingSystemManaged<GameDataSystem>().ItemHashLookupMap;
+    private static ServerScriptMapper ServerScriptMapper => WorldUtil.Server.GetExistingSystemManaged<ServerScriptMapper>();
+    private static ServerRootPrefabCollection ServerRootPrefabCollection => ServerScriptMapper.GetSingleton<ServerRootPrefabCollection>();
+    private static NetworkIdLookupMap NetworkIdLookupMap => ServerScriptMapper.GetSingleton<NetworkIdSystem.Singleton>()._NetworkIdLookupMap;
+
     private int _maxWeaponSlotIndex => _config.WeaponSlots - 1;
     private HashSet<PrefabGUID> _forbiddenByPrefab = new();
     private HashSet<PrefabGUID> _notWaste = new();
     private HashSet<PrefabGUID> _alwaysAllowSwapIntoSlot = new();
+
+    public int WeaponSlots => _config.WeaponSlots;
 
     public LoadoutLockdownService(LoadoutLockdownConfig config)
     {
@@ -611,6 +622,79 @@ internal class LoadoutLockdownService
     public void SendMessageNoFreeWeaponSlots(Entity character)
     {
         CreateSCTMessage(character, SCTMessage_NoFreeActionBarSlots, ColorRed);
+    }
+
+    public bool IsValidItemEquip(Entity character, Entity fromInventory, int fromSlotIndex, bool isCosmetic)
+    {
+        if (isCosmetic)
+        {
+            return true;
+        }
+
+        if (!InventoryUtilities.TryGetItemAtSlot(EntityManager, fromInventory, fromSlotIndex, out InventoryBuffer candidateIB))
+        {
+            LogUtil.LogWarning("IsValidItemEquip could not find candidateIB");
+            return false;
+        }
+        var candidateItemEntity = candidateIB.ItemEntity._Entity;
+
+        if (IsEquipmentForbidden(candidateItemEntity))
+        {
+            SendMessageEquipmentForbidden(character);
+            return false;
+        }
+
+        if (IsEquippableWithoutSlot(candidateItemEntity))
+        {
+            return true;
+        }
+
+        bool isInPvPCombat = NewWeaponEquipmentRestrictionsUtility.IsInPvPCombat(EntityManager, ServerRootPrefabCollection, character);
+
+        if (HasDesignatedSlot(candidateItemEntity))
+        {
+            var isAllowed = !isInPvPCombat
+                || CanMenuSwapIntoFilledSlotDuringPVP(candidateItemEntity)
+                || IsDesignatedSlotWasted(character, candidateItemEntity);
+
+            if (!isAllowed)
+            {
+                SendMessageCannotMenuSwapDuringPVP(character);
+            }
+            // if __result is true, the game will take care of swapping the equipped item into the slot.
+            // but only for things that have their own designated slot
+            return isAllowed;
+        }
+
+        if (IsValidWeaponSlot(fromSlotIndex))
+        {
+            return true;
+        }
+
+        // NewWeaponEquipmentRestrictionsUtilty.IsValidWeaponEquip has a side effect of swapping the item into a wasted slot,
+        // so we mimic that ourselves. But with different rules about what counts as a wasted slot.
+        if (TryFindWastedWeaponSlot(character, out var wastedSlotIndex))
+        {
+            SwapItemsInSameInventory(character, fromSlotIndex, wastedSlotIndex);
+            return true;
+        }
+
+        SendMessageNoFreeWeaponSlots(character);
+        return false;
+    }
+
+    public bool IsValidItemDrop(Entity character, int slotIndex)
+    {
+        if (!InventoryUtilities.TryGetItemAtSlot(EntityManager, character, slotIndex: slotIndex, out InventoryBuffer itemIB))
+        {
+            LogUtil.LogWarning("IsValidItemDrop could not find candidateIB");
+            return false;
+        }
+
+        bool isInPvPCombat = NewWeaponEquipmentRestrictionsUtility.IsInPvPCombat(EntityManager, ServerRootPrefabCollection, character);
+        bool isNotDroppingFromWeaponSlot = !IsValidWeaponSlot(slotIndex);
+
+        return !isInPvPCombat || isNotDroppingFromWeaponSlot || IsWasteInWeaponSlot(itemIB);
     }
 
 }

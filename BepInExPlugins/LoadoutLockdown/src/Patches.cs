@@ -23,6 +23,7 @@ public static unsafe class Patches
     private static NativeParallelHashMap<PrefabGUID, ItemData> ItemHashLookupMap => WorldUtil.Server.GetExistingSystemManaged<GameDataSystem>().ItemHashLookupMap;
     private static ServerScriptMapper ServerScriptMapper => WorldUtil.Server.GetExistingSystemManaged<ServerScriptMapper>();
     private static ServerRootPrefabCollection ServerRootPrefabCollection => ServerScriptMapper.GetSingleton<ServerRootPrefabCollection>();
+    private static NetworkIdLookupMap NetworkIdLookupMap => ServerScriptMapper.GetSingleton<NetworkIdSystem.Singleton>()._NetworkIdLookupMap;
 
     private const bool SKIP_ORIGINAL_METHOD = false;
     private const bool EXECUTE_ORIGINAL_METHOD = true;
@@ -58,6 +59,8 @@ public static unsafe class Patches
     }
 
     // note: the original IsValidWeaponEquip is not just a check. it has side effects: moving the item into an open/junk slot
+    // We completely disable this, and do our own processing to fix jank messaging / side effects.
+    // We still automatically move weapons into valid weapon slots, but with different rules about which slots can be moved into.
     [HarmonyPatch(typeof(NewWeaponEquipmentRestrictionsUtility), nameof(NewWeaponEquipmentRestrictionsUtility.IsValidWeaponEquip))]
     [HarmonyPrefix]
     public static bool IsValidWeaponEquip_Prefix(ref bool __result, EntityManager entityManager, EquippableData equippableData, EquipItemEvent equipItem, ServerRootPrefabCollection serverRootPrefabs, Entity character, NativeParallelHashMap<PrefabGUID, ItemData> itemHashLookupMap, int weaponSlots)
@@ -66,64 +69,8 @@ public static unsafe class Patches
         {
             return EXECUTE_ORIGINAL_METHOD;
         }
-
-        if (equipItem.IsCosmetic)
-        {
-            return EXECUTE_ORIGINAL_METHOD;
-        }
-
-        if (!InventoryUtilities.TryGetItemAtSlot(EntityManager, character, slotIndex: equipItem.SlotIndex, out InventoryBuffer itemInSlot))
-        {
-            return EXECUTE_ORIGINAL_METHOD;
-        }
-        var itemEntity = itemInSlot.ItemEntity._Entity;
-
-        if (LoadoutService.IsEquipmentForbidden(itemEntity))
-        {
-            LoadoutService.SendMessageEquipmentForbidden(character);
-            __result = false;
-            return SKIP_ORIGINAL_METHOD;
-        }
-
-        if (LoadoutService.IsEquippableWithoutSlot(itemEntity))
-        {
-            __result = true;
-            return SKIP_ORIGINAL_METHOD;
-        }
-
-        bool isInPvPCombat = NewWeaponEquipmentRestrictionsUtility.IsInPvPCombat(EntityManager, serverRootPrefabs, character);
-
-        if (LoadoutService.HasDesignatedSlot(itemEntity))
-        {
-            __result = !isInPvPCombat
-                || LoadoutService.CanMenuSwapIntoFilledSlotDuringPVP(itemEntity)
-                || LoadoutService.IsDesignatedSlotWasted(character, itemEntity);
-
-            if (__result is false)
-            {
-                LoadoutService.SendMessageCannotMenuSwapDuringPVP(character);
-            }
-            // if __result is true, the game will take care of swapping the equipped item into the slot.
-            // but only for things that have their own designated slot
-            return SKIP_ORIGINAL_METHOD;
-        }
-
-        if (LoadoutService.IsValidWeaponSlot(equipItem.SlotIndex))
-        {
-            __result = true;
-            return SKIP_ORIGINAL_METHOD;
-        }
-
-        // IsValidWeaponEquip has a side effect of swapping the item into a wasted slot,
-        // so we mimic that ourselves. But with different rules about what counts as a wasted slot.
-        if (LoadoutService.TryFindWastedWeaponSlot(character, out var wastedSlotIndex))
-        {
-            LoadoutService.SwapItemsInSameInventory(character, equipItem.SlotIndex, wastedSlotIndex);
-            __result = true;
-            return SKIP_ORIGINAL_METHOD;
-        }
-
-        __result = false;
+        //__result = LoadoutService.IsValidItemEquip(character, character, equipItem.SlotIndex, equipItem.IsCosmetic);
+        __result = true;
         return SKIP_ORIGINAL_METHOD;
     }
 
@@ -165,7 +112,7 @@ public static unsafe class Patches
         {
             foundPlayerCharacter = LoadoutService.TryGetOwnerOfInventory(toInventory, out playerCharacter);
         }
-        
+
         if (!foundPlayerCharacter)
         {
             __result = true;
@@ -235,9 +182,13 @@ public static unsafe class Patches
         return SKIP_ORIGINAL_METHOD;
     }
 
+    // todo: cover dropping items? Does not seem critical though - dropping items in combat is really risky.
+    // Might be a fun "exploit" - high risk, questionable reward.
+    //
     // IsValidItemDrop never seems to be called.
     // I'm guessing WeaponSlots was a half-cooked feature that got cut,
     // hence not appearing in any game menu or server settings documentation.
+    // Something else prevents hotbar items being dropped in combat.
     [HarmonyPatch(typeof(NewWeaponEquipmentRestrictionsUtility), nameof(NewWeaponEquipmentRestrictionsUtility.IsValidItemDrop))]
     [HarmonyPrefix]
     public static unsafe bool IsValidItemDrop_Prefix(
@@ -308,61 +259,86 @@ public static unsafe class Patches
         return SKIP_ORIGINAL_METHOD;
     }
 
-    // Equipment.SetEquipped covers the case of any gear being equipped.
-    // It has some overlap with IsValidWeaponEquip, but we use it to cover different things.
-    // For example, it deals with items being dragged into designated slots.
-    // But does not know anything about where the item is coming from. (e.g. which inventory/hotbar slot)
-    [HarmonyPatch(typeof(Equipment), nameof(Equipment.SetEquipped))]
+
+    // EquipItemFromInventorySystem covers the case of items being dragged into a designated slot from an inventory.
+    // The inventory could be an external inventory, or the player's own inventory.
+    [HarmonyPatch(typeof(EquipItemFromInventorySystem), nameof(EquipItemFromInventorySystem.OnUpdate))]
     [HarmonyPrefix]
-    public static bool Equipment_SetEquipped_Prefix(
-        EntityManager entityManager,
-        Entity target,
-        EquipmentType equipmentType,
-        Entity itemEntity,
-        PrefabGUID statItemId,
-        Il2CppSystem.Nullable_Unboxed<EntityCommandBuffer> commandBuffer
-    )
+    public static void EquipItemFromInventorySystem_OnUpdate_Prefix(EquipItemFromInventorySystem __instance)
     {
         if (LoadoutService is null)
         {
-            return EXECUTE_ORIGINAL_METHOD;
+            return;
         }
 
-        var character = target;
+        var entities = __instance._Query.ToEntityArray(Allocator.Temp);
+        var equipItemFromInventoryEvents = __instance._Query.ToComponentDataArray<EquipItemFromInventoryEvent>(Allocator.Temp);
+        var fromCharacters = __instance._Query.ToComponentDataArray<FromCharacter>(Allocator.Temp);
 
-        if (LoadoutService.IsEquipmentForbidden(itemEntity))
+        // this variable probably seems weird at first glance.
+        // its used to cache some hidden lookups.
+        // TODO: handle the caching better. extract things to a service
+        var networkIdToEntityMap = NetworkIdLookupMap._NetworkIdToEntityMap;
+
+        for (var i = 0; i < entities.Length; i++)
         {
-            LoadoutService.SendMessageEquipmentForbidden(character);
-            return SKIP_ORIGINAL_METHOD;
-        }
-
-        if (LoadoutService.IsEquippableWithoutSlot(itemEntity))
-        {
-            return EXECUTE_ORIGINAL_METHOD;
-        }
-
-        bool isInPvPCombat = NewWeaponEquipmentRestrictionsUtility.IsInPvPCombat(EntityManager, ServerRootPrefabCollection, character);
-        if (!isInPvPCombat)
-        {
-            return EXECUTE_ORIGINAL_METHOD;
-        }
-
-        if (LoadoutService.HasDesignatedSlot(itemEntity))
-        {
-            bool isAllowed = LoadoutService.CanMenuSwapIntoFilledSlotDuringPVP(itemEntity)
-                || LoadoutService.IsDesignatedSlotWasted(character, itemEntity);
-
-            if (!isAllowed)
+            var fromSlotIndex = equipItemFromInventoryEvents[i].SlotIndex;
+            var inventoryNetworkId = equipItemFromInventoryEvents[i].FromInventory;
+            if (!networkIdToEntityMap.TryGetValue(inventoryNetworkId, out var fromInventoryEntity))
             {
-                LoadoutService.SendMessageCannotMenuSwapDuringPVP(character);
-                return SKIP_ORIGINAL_METHOD;
+                LogUtil.LogWarning("EquipItemFromInventorySystem_OnUpdate_Prefix: Failed to find inventory entity from network id");
+                continue;
             }
-            return EXECUTE_ORIGINAL_METHOD;
+
+            bool isValidItemEquip = LoadoutService.IsValidItemEquip(
+                character: fromCharacters[i].Character,
+                fromInventory: fromInventoryEntity,
+                fromSlotIndex: fromSlotIndex,
+                isCosmetic: equipItemFromInventoryEvents[i].IsCosmetic
+            );
+
+            if (!isValidItemEquip)
+            {
+                EntityManager.DestroyEntity(entities[i]);
+            }
+        }
+    }
+
+    // EquipItemSystem covers the case of directly trying to equip an item from the player's inventory.
+    // "directly" meaning via a hotkey / right clicking the item.
+    // It does not cover the case of dragging an item into a designated equip slot.
+    [HarmonyPatch(typeof(EquipItemSystem), nameof(EquipItemSystem.OnUpdate))]
+    [HarmonyPrefix]
+    public static void EquipItemFSystem_OnUpdate_Prefix(EquipItemSystem __instance)
+    {
+        if (LoadoutService is null)
+        {
+            return;
         }
 
-        return EXECUTE_ORIGINAL_METHOD;
+        var query0 = __instance.__query_1850505309_0;
+        var entities = query0.ToEntityArray(Allocator.Temp);
+        var equipItemEvents = query0.ToComponentDataArray<EquipItemEvent>(Allocator.Temp);
+        var fromCharacters = query0.ToComponentDataArray<FromCharacter>(Allocator.Temp);
+
+        for (var i = 0; i < entities.Length; i++)
+        {
+            var fromSlotIndex = equipItemEvents[i].SlotIndex;
+
+            bool isValidItemEquip = LoadoutService.IsValidItemEquip(
+                character: fromCharacters[i].Character,
+                fromInventory: fromCharacters[i].Character,
+                fromSlotIndex: fromSlotIndex,
+                isCosmetic: equipItemEvents[i].IsCosmetic
+            );
+
+            if (!isValidItemEquip)
+            {
+                EntityManager.DestroyEntity(entities[i]);
+            }
+        }
     }
-    
+
 
     [HarmonyPatch(typeof(InventoryUtilitiesServer), nameof(InventoryUtilitiesServer.TryUnEquipItem), new Type[] { typeof(EntityManager), typeof(Entity), typeof(Entity), typeof(Il2CppSystem.Nullable_Unboxed<EntityCommandBuffer>) })]
     [HarmonyPrefix]
@@ -396,20 +372,46 @@ public static unsafe class Patches
         return EXECUTE_ORIGINAL_METHOD;
     }
 
-    // todo: dropping items from designated slots
+    // DropItemSystem covers the case of directly dropping items from a player's own inventory.
+    // "directly" meaning via a hotkey.
+    // It does not cover dropping items from designated slots or via dragging out of the inventory.
+    [HarmonyPatch(typeof(DropItemSystem), nameof(DropItemSystem.OnUpdate))]
+    [HarmonyPrefix]
+    public static void DropItemSystem_OnUpdate_Prefix(DropItemSystem __instance)
+    {
+        if (LoadoutService is null)
+        {
+            return;
+        }
+
+        var query = __instance._EventQuery;
+        var entities = query.ToEntityArray(Allocator.Temp);
+        var dropItemAtSlotEvents = query.ToComponentDataArray<DropItemAtSlotEvent>(Allocator.Temp);
+        var fromCharacters = query.ToComponentDataArray<FromCharacter>(Allocator.Temp);
+
+        for (var i = 0; i < entities.Length; i++)
+        {
+            var isValidDrop = LoadoutService.IsValidItemDrop(
+                character: fromCharacters[i].Character,
+                slotIndex: dropItemAtSlotEvents[i].SlotIndex
+            );
+
+            if (!isValidDrop)
+            {
+                EntityManager.DestroyEntity(entities[i]);
+            }
+        }
+    }
+
 
     // todo: disable crafting forbidden items? not necessary, just more user friendly.
 
     // todo: command to unequip forbidden items from everybody
 
 
-    
-
-
-
-    //[HarmonyPatch(typeof(EquipItemFromInventorySystem), nameof(EquipItemFromInventorySystem.OnUpdate))]
+    //[HarmonyPatch(typeof(DropItemSystem), nameof(DropItemSystem.OnUpdate))]
     //[HarmonyPrefix]
-    public static void EquipItemFromInventorySystem_OnUpdate_Prefix(EquipItemFromInventorySystem __instance)
+    public static void SomeSystem_OnUpdate_Prefix(DropItemSystem __instance)
     {
         LogUtil.LogInfo("========================================");
         var queryCount = 0;
