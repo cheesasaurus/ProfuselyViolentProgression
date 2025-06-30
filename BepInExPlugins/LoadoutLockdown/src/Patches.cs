@@ -471,15 +471,17 @@ public static unsafe class Patches
 
 
     // todo: disable crafting forbidden items? not necessary, just more user friendly.
+    // Would need need to investigate the crafting / recipe implementation details.
+    // In particular, need to map recipe prefabs to actual item prefabs.
+    // and the item prefabs can be used to get the EquipmentType / WeaponType from item entities.
+    // Item entities gotten from ItemData, looked up from ItemHashLookupMap.
 
-    // todo: command to unequip forbidden items from everybody
 
-
-    //[HarmonyPatch(typeof(DropItemSystem), nameof(DropItemSystem.OnUpdate))]
+    //[HarmonyPatch(typeof(StartCraftingSystem), nameof(StartCraftingSystem.OnUpdate))]
     //[HarmonyPrefix]
-    public static void SomeSystem_OnUpdate_Prefix(DropItemSystem __instance)
-    {
-        DebugUtil.LogComponentTypesFromQueries(__instance);
-    }
+    //public static void SomeSystem_OnUpdate_Prefix(StartCraftingSystem __instance)
+    //{
+    //    DebugUtil.LogComponentTypesFromQueries(__instance);
+    //}
 
 }

@@ -8,6 +8,7 @@ using ProjectM.Scripting;
 using Stunlock.Core;
 using Unity.Collections;
 using Unity.Entities;
+using Unity.Entities.UniversalDelegates;
 using Unity.Mathematics;
 using Unity.Transforms;
 
@@ -603,9 +604,9 @@ internal class LoadoutLockdownService
             translation.Value,
             color,
             character
-        //value,
-        //sct,
-        //player.UserEntity
+            //value,
+            //sct,
+            //player.UserEntity
         );
     }
 
@@ -726,6 +727,73 @@ internal class LoadoutLockdownService
 
         SendMessageCannotMenuSwapDuringPVP(character);
         return false;
+    }
+
+    public void UnEquipForbiddenItemsFromAllPlayerCharacters()
+    {
+        var query = EntityManager.CreateEntityQuery(new EntityQueryDesc
+        {
+            All = new ComponentType[] {
+                ComponentType.ReadOnly<PlayerCharacter>(),
+                ComponentType.ReadWrite<Equipment>(),
+            },
+            Options = EntityQueryOptions.IncludeDisabledEntities,
+        });
+
+        var entities = query.ToEntityArray(Allocator.Temp);
+        var playerCharacters = query.ToComponentDataArray<PlayerCharacter>(Allocator.Temp);
+        var equipments = query.ToComponentDataArray<Equipment>(Allocator.Temp);
+        LogUtil.LogInfo("Unequipping forbidden items from all players...");
+        var count = 0;
+        for (var i = 0; i < entities.Length; i++)
+        {
+            count += UnEquipForbiddenItems(entities[i], playerCharacters[i], equipments[i]);
+        }
+        LogUtil.LogInfo($"Unequipped {count} forbidden items.");
+    }
+
+    private static HashSet<EquipmentType> EquipmentTypesToUnequipIfForbidden = [
+        EquipmentType.Bag,
+        EquipmentType.Cloak,
+        EquipmentType.Headgear,
+        EquipmentType.MagicSource,
+        EquipmentType.Chest,
+        EquipmentType.Legs,
+        EquipmentType.Gloves,
+        EquipmentType.Footgear,
+        EquipmentType.Weapon
+    ];
+
+    public int UnEquipForbiddenItems(Entity characterEntity, PlayerCharacter playerCharacter, Equipment equipment)
+    {
+        int count = 0;
+        foreach (var equipmentType in EquipmentTypesToUnequipIfForbidden)
+        {
+            var itemEntity = equipment.GetEquipmentEntity(equipmentType)._Entity;
+            if (IsEquipmentForbidden(itemEntity))
+            {                
+                var unequipped = InventoryUtilitiesServer.TryUnEquipAndAddItem(
+                    EntityManager,
+                    ItemHashLookupMap,
+                    characterEntity,
+                    characterEntity,
+                    1,
+                    itemEntity,
+                    out bool addedToInventory
+                );
+                if (unequipped)
+                {
+                    EntityManager.TryGetComponentData<PrefabGUID>(itemEntity, out var prefabGUID);
+                    LogUtil.LogInfo($"  Unequipped forbidden {equipmentType} from player {playerCharacter.Name}: {DebugUtil.LookupPrefabName(prefabGUID)}");
+                    count++;
+                }
+                else
+                {
+                    LogUtil.LogWarning($"  Failed to unequip forbidden {equipmentType} from player {playerCharacter.Name}");
+                }
+            }
+        }
+        return count;
     }
 
 }

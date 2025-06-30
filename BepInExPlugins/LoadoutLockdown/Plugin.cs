@@ -7,11 +7,13 @@ using ProfuselyViolentProgression.Core.Config;
 using ProfuselyViolentProgression.Core.Utilities;
 using ProfuselyViolentProgression.LoadoutLockdown.Config;
 using ProjectM;
+using VampireCommandFramework;
 
 namespace ProfuselyViolentProgression.LoadoutLockdown;
 
 [BepInPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
 [BepInDependency("HookDOTS.API")]
+[BepInDependency("gg.deca.VampireCommandFramework")]
 public class Plugin : BasePlugin
 {
     Harmony _harmony;
@@ -53,11 +55,14 @@ public class Plugin : BasePlugin
         Hooks.EarlyUpdateGroup_Updated += OnEarlyUpdate;
         RulesetFilename.SettingChanged += HandleRulesetFilenameChanged;
 
+        CommandRegistry.RegisterAll();
+
         Log.LogInfo($"Plugin {MyPluginInfo.PLUGIN_GUID} version {MyPluginInfo.PLUGIN_VERSION} is loaded!");
     }
 
     public override bool Unload()
     {
+        CommandRegistry.UnregisterAssembly();
         BepInExConfigReloader?.Dispose();
         Hooks.EarlyUpdateGroup_Updated -= OnEarlyUpdate;
         RulesetFilename.SettingChanged -= HandleRulesetFilenameChanged;

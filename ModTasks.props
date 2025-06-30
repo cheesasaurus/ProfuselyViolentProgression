@@ -1,5 +1,7 @@
 <Project>
 
+  <!-- todo: each project should have its own manifest, because they are going to have different dependencies -->
+
   <PropertyGroup>
     <ThunderstoreManifestContent>
       <![CDATA[

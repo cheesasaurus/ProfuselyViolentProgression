@@ -82,6 +82,11 @@ Prefabs can be added to the `NotWaste` list to prevent them from being swapped o
 If you would like specific items to always be moveable into their slot (e.g. soul shards), add their prefabs to the `AlwaysAllowSwapIntoSlot` list.
 
 
+## Chat commands
+
+- `.UnEquipForbiddenGear` - Admin only. Unequips forbidden gear from all players. 
+
+
 ## Support
 
 Join the [modding community](https://vrisingmods.com/discord).
