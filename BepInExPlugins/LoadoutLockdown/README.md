@@ -1,7 +1,5 @@
 # LoadoutLockdown
 
-⚠️WIP⚠️
-
 Restrict (or unrestrict) equipping gear, both in and out of combat. Fully customizable.
 
 ### Some example uses
@@ -22,7 +20,7 @@ Restrict (or unrestrict) equipping gear, both in and out of combat. Fully custom
 
 ## Configuration
 
-Configuration files are created after the mod runs.
+Configuration files are created after the mod runs. Saved changes are automatically applied; no need to restart the server each time you edit something.
 
 ### Main config
 
