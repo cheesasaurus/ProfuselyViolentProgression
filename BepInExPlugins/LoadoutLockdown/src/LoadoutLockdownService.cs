@@ -576,6 +576,8 @@ internal class LoadoutLockdownService
     public static AssetGuid SCTMessage_Nope = AssetGuid.FromString("7114de17-65b2-4e69-8723-79f8b33b2213");
     public static AssetGuid SCTMessage_Disabled = AssetGuid.FromString("3bf7e066-4e49-4ae4-b7a3-6703b7a15dc1");
     public static AssetGuid SCTMessage_CannotModifyActionBarWhilePVP = AssetGuid.FromString("1b032d4c-f114-429b-ad7c-43c2cd23262a");
+    public static AssetGuid SCTMessage_NoFreeActionBarSlots = AssetGuid.FromString("8e2de316-22d6-4088-b23f-9084af440171");
+
 
     public static float3 ColorRed = new float3(255, 0, 0);
 
@@ -604,6 +606,11 @@ internal class LoadoutLockdownService
     public void SendMessageCannotMenuSwapDuringPVP(Entity character)
     {
         CreateSCTMessage(character, SCTMessage_CannotModifyActionBarWhilePVP, ColorRed);
+    }
+
+    public void SendMessageNoFreeWeaponSlots(Entity character)
+    {
+        CreateSCTMessage(character, SCTMessage_NoFreeActionBarSlots, ColorRed);
     }
 
 }

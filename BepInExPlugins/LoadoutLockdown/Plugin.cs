@@ -6,6 +6,7 @@ using HarmonyLib;
 using ProfuselyViolentProgression.Core.Config;
 using ProfuselyViolentProgression.Core.Utilities;
 using ProfuselyViolentProgression.LoadoutLockdown.Config;
+using ProjectM;
 
 namespace ProfuselyViolentProgression.LoadoutLockdown;
 
@@ -20,9 +21,10 @@ public class Plugin : BasePlugin
     BepInExConfigReloader BepInExConfigReloader;
 
     ConfigManagerJSON<LoadoutLockdownConfig> RulesetManager;
-    
 
     private bool _initialized = false;
+
+    ServerGameSettingsSystem _serverGameSettingsSystem => WorldUtil.Server.GetExistingSystemManaged<ServerGameSettingsSystem>();
 
     public Plugin() : base()
     {
@@ -124,6 +126,7 @@ public class Plugin : BasePlugin
     private void ResetLoadoutService(LoadoutLockdownConfig config)
     {
         LoadoutLockdownService.Instance = new LoadoutLockdownService(config);
+        _serverGameSettingsSystem._Settings.WeaponSlots = (byte)config.WeaponSlots;
     }
 
 }

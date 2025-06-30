@@ -308,15 +308,93 @@ public static unsafe class Patches
         return SKIP_ORIGINAL_METHOD;
     }
 
-
-    // todo: overloads
-    public static bool TryUnEquipItem_Prefix()
+    // Equipment.SetEquipped covers the case of any gear being equipped.
+    // It has some overlap with IsValidWeaponEquip, but we use it to cover different things.
+    // For example, it deals with items being dragged into designated slots.
+    // But does not know anything about where the item is coming from. (e.g. which inventory/hotbar slot)
+    [HarmonyPatch(typeof(Equipment), nameof(Equipment.SetEquipped))]
+    [HarmonyPrefix]
+    public static bool Equipment_SetEquipped_Prefix(
+        EntityManager entityManager,
+        Entity target,
+        EquipmentType equipmentType,
+        Entity itemEntity,
+        PrefabGUID statItemId,
+        Il2CppSystem.Nullable_Unboxed<EntityCommandBuffer> commandBuffer
+    )
     {
+        if (LoadoutService is null)
+        {
+            return EXECUTE_ORIGINAL_METHOD;
+        }
+
+        var character = target;
+
+        if (LoadoutService.IsEquipmentForbidden(itemEntity))
+        {
+            LoadoutService.SendMessageEquipmentForbidden(character);
+            return SKIP_ORIGINAL_METHOD;
+        }
+
+        if (LoadoutService.IsEquippableWithoutSlot(itemEntity))
+        {
+            return EXECUTE_ORIGINAL_METHOD;
+        }
+
+        bool isInPvPCombat = NewWeaponEquipmentRestrictionsUtility.IsInPvPCombat(EntityManager, ServerRootPrefabCollection, character);
+        if (!isInPvPCombat)
+        {
+            return EXECUTE_ORIGINAL_METHOD;
+        }
+
+        if (LoadoutService.HasDesignatedSlot(itemEntity))
+        {
+            bool isAllowed = LoadoutService.CanMenuSwapIntoFilledSlotDuringPVP(itemEntity)
+                || LoadoutService.IsDesignatedSlotWasted(character, itemEntity);
+
+            if (!isAllowed)
+            {
+                LoadoutService.SendMessageCannotMenuSwapDuringPVP(character);
+                return SKIP_ORIGINAL_METHOD;
+            }
+            return EXECUTE_ORIGINAL_METHOD;
+        }
+
+        return EXECUTE_ORIGINAL_METHOD;
+    }
+    
+
+    [HarmonyPatch(typeof(InventoryUtilitiesServer), nameof(InventoryUtilitiesServer.TryUnEquipItem), new Type[] { typeof(EntityManager), typeof(Entity), typeof(Entity), typeof(Il2CppSystem.Nullable_Unboxed<EntityCommandBuffer>) })]
+    [HarmonyPrefix]
+    public static bool TryUnEquipItem_Prefix(
+        ref bool __result,
+        EntityManager entityManager,
+        Entity target,
+        Entity item,
+        Il2CppSystem.Nullable_Unboxed<EntityCommandBuffer> commandBuffer
+    )
+    {
+        //LogUtil.LogDebug("running TryUnEquipItem_Prefix1");
+        // This gets called when unequipping an item from the inventory or from a designated slot.
+        // But it does NOT get called when unequipping during pvp. Something else cuts it off.
+        // Our patch TryUnEquipAndAddItem_Prefix prevents TryUnEquipAndAddItem from running, which presumably is what would call TryUnEquipItem.
         return EXECUTE_ORIGINAL_METHOD;
     }
 
-    // todo: set server setting for WeaponSlots to match the mod's settings.
-    // and put it back when the mod unloads.
+    [HarmonyPatch(typeof(InventoryUtilitiesServer), nameof(InventoryUtilitiesServer.TryUnEquipItem), new Type[] { typeof(EntityManager), typeof(Entity), typeof(PrefabGUID), typeof(Il2CppSystem.Nullable_Unboxed<EntityCommandBuffer>) })]
+    [HarmonyPrefix]
+    public static bool TryUnEquipItem_Prefix(
+        ref bool __result,
+        EntityManager entityManager,
+        Entity target,
+        PrefabGUID type,
+        Il2CppSystem.Nullable_Unboxed<EntityCommandBuffer> commandBuffer
+    )
+    {
+        //LogUtil.LogDebug("running TryUnEquipItem_Prefix2");
+        // This doesn't seem to come into play, but leaving it here just in case 
+        return EXECUTE_ORIGINAL_METHOD;
+    }
 
     // todo: dropping items from designated slots
 
@@ -324,6 +402,8 @@ public static unsafe class Patches
 
     // todo: command to unequip forbidden items from everybody
 
+
+    
 
 
 
