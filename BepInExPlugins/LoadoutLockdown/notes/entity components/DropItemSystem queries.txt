@@ -6,3 +6,9 @@ ProjectM.Network.DropItemAtSlotEvent
 ProjectM.Network.ReceiveNetworkEventTag
 Unity.Entities.Simulate
 
+_EventQuery2 ========================
+ProjectM.Network.FromCharacter
+ProjectM.Network.NetworkEventType
+ProjectM.Network.DropEquippedItemEvent
+ProjectM.Network.ReceiveNetworkEventTag
+Unity.Entities.Simulate

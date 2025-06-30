@@ -683,9 +683,9 @@ internal class LoadoutLockdownService
         return false;
     }
 
-    public bool IsValidItemDrop(Entity character, int slotIndex)
+    public bool IsValidItemDrop(Entity character, Entity fromInventory, int slotIndex)
     {
-        if (!InventoryUtilities.TryGetItemAtSlot(EntityManager, character, slotIndex: slotIndex, out InventoryBuffer itemIB))
+        if (!InventoryUtilities.TryGetItemAtSlot(EntityManager, fromInventory, slotIndex: slotIndex, out InventoryBuffer itemIB))
         {
             LogUtil.LogWarning("IsValidItemDrop could not find candidateIB");
             return false;
@@ -694,7 +694,38 @@ internal class LoadoutLockdownService
         bool isInPvPCombat = NewWeaponEquipmentRestrictionsUtility.IsInPvPCombat(EntityManager, ServerRootPrefabCollection, character);
         bool isNotDroppingFromWeaponSlot = !IsValidWeaponSlot(slotIndex);
 
-        return !isInPvPCombat || isNotDroppingFromWeaponSlot || IsWasteInWeaponSlot(itemIB);
+        if (!isInPvPCombat || isNotDroppingFromWeaponSlot || IsWasteInWeaponSlot(itemIB))
+        {
+            return true;
+        }
+
+        SendMessageCannotMenuSwapDuringPVP(character);
+        return false;
+    }
+
+    public bool IsValidItemDropFromDedicatedSlot(Entity character, EquipmentType equipmentType)
+    {
+        bool isInPvPCombat = NewWeaponEquipmentRestrictionsUtility.IsInPvPCombat(EntityManager, ServerRootPrefabCollection, character);
+        if (!isInPvPCombat)
+        {
+            return true;
+        }
+
+        if (!EntityManager.HasComponent<Equipment>(character))
+        {
+            LogUtil.LogWarning("IsValidItemDropFromDedicatedSlot failed to find Equipment on character");
+            return true;
+        }
+        var equipment = EntityManager.GetComponentData<Equipment>(character);
+        var entityInSlot = equipment.GetEquipmentEntity(equipmentType)._Entity;
+
+        if (CanDirectlyMoveOutOfSlotDuringPVP(entityInSlot))
+        {
+            return true;
+        }
+
+        SendMessageCannotMenuSwapDuringPVP(character);
+        return false;
     }
 
 }

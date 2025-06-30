@@ -182,13 +182,13 @@ public static unsafe class Patches
         return SKIP_ORIGINAL_METHOD;
     }
 
-    // todo: cover dropping items? Does not seem critical though - dropping items in combat is really risky.
-    // Might be a fun "exploit" - high risk, questionable reward.
-    //
     // IsValidItemDrop never seems to be called.
     // I'm guessing WeaponSlots was a half-cooked feature that got cut,
     // hence not appearing in any game menu or server settings documentation.
     // Something else prevents hotbar items being dropped in combat.
+    //
+    // We add our own processing of item drop events in the system update loop,
+    // And therefore completely disable this.
     [HarmonyPatch(typeof(NewWeaponEquipmentRestrictionsUtility), nameof(NewWeaponEquipmentRestrictionsUtility.IsValidItemDrop))]
     [HarmonyPrefix]
     public static unsafe bool IsValidItemDrop_Prefix(
@@ -199,27 +199,11 @@ public static unsafe class Patches
         ServerRootPrefabCollection serverRootPrefabs
     )
     {
-        LogUtil.LogDebug("running IsValidItemDrop prefix");
-
         if (LoadoutService is null)
         {
             return EXECUTE_ORIGINAL_METHOD;
         }
-
-        if (!InventoryUtilities.TryGetItemAtSlot(EntityManager, characterEntity, slotIndex: slotId, out InventoryBuffer itemInSlot))
-        {
-            return EXECUTE_ORIGINAL_METHOD;
-        }
-
-        bool isInPvPCombat = NewWeaponEquipmentRestrictionsUtility.IsInPvPCombat(EntityManager, serverRootPrefabs, characterEntity);
-
-        if (!isInPvPCombat || !LoadoutService.IsValidWeaponSlot(slotId) || LoadoutService.IsWasteInWeaponSlot(itemInSlot))
-        {
-            __result = true;
-            return SKIP_ORIGINAL_METHOD;
-        }
-
-        __result = false;
+        __result = true;
         return SKIP_ORIGINAL_METHOD;
     }
 
@@ -374,7 +358,15 @@ public static unsafe class Patches
 
     // DropItemSystem covers the case of directly dropping items from a player's own inventory.
     // "directly" meaning via a hotkey.
-    // It does not cover dropping items from designated slots or via dragging out of the inventory.
+    // This is DropItemAtSlotEvent.
+    //
+    // It also covers the case of dropping items from a designated slot. (both directly, and via drag-n-drop)
+    // This is DropEquippedItemEvent.
+    //
+    // It does not cover dragging items out of the inventory.
+    //
+    // Note that there is some other check besides NewWeaponEquipmentRestrictionsUtility.IsValidItemDrop,
+    // which prevents dropping items from the hotbar during pvp.
     [HarmonyPatch(typeof(DropItemSystem), nameof(DropItemSystem.OnUpdate))]
     [HarmonyPrefix]
     public static void DropItemSystem_OnUpdate_Prefix(DropItemSystem __instance)
@@ -384,16 +376,90 @@ public static unsafe class Patches
             return;
         }
 
+        // DropItemAtSlotEvent (from inventory)
         var query = __instance._EventQuery;
         var entities = query.ToEntityArray(Allocator.Temp);
         var dropItemAtSlotEvents = query.ToComponentDataArray<DropItemAtSlotEvent>(Allocator.Temp);
         var fromCharacters = query.ToComponentDataArray<FromCharacter>(Allocator.Temp);
-
         for (var i = 0; i < entities.Length; i++)
         {
             var isValidDrop = LoadoutService.IsValidItemDrop(
                 character: fromCharacters[i].Character,
+                fromInventory: fromCharacters[i].Character,
                 slotIndex: dropItemAtSlotEvents[i].SlotIndex
+            );
+
+            if (!isValidDrop)
+            {
+                EntityManager.DestroyEntity(entities[i]);
+            }
+        }
+
+        // DropEquippedItemEvent (from designated slot)
+        var query2 = __instance._EventQuery2;
+        var entities2 = query2.ToEntityArray(Allocator.Temp);
+        var dropEquippedItemEvents = query2.ToComponentDataArray<DropEquippedItemEvent>(Allocator.Temp);
+        var fromCharacters2 = query2.ToComponentDataArray<FromCharacter>(Allocator.Temp);
+        for (var i = 0; i < entities2.Length; i++)
+        {
+            var isValidDrop = LoadoutService.IsValidItemDropFromDedicatedSlot(
+                character: fromCharacters2[i].Character,
+                equipmentType: dropEquippedItemEvents[i].EquipmentType
+            );
+
+            if (!isValidDrop)
+            {
+                EntityManager.DestroyEntity(entities2[i]);
+            }
+        }
+
+    }
+
+    // DropInventoryItemSystem covers the case of drag-n-dropping items out of inventories.
+    // It can include a player's own inventory, as well as external inventories.
+    //
+    // Note that there is some other check besides NewWeaponEquipmentRestrictionsUtility.IsValidItemDrop,
+    // which prevents dropping items from the hotbar during pvp.
+    [HarmonyPatch(typeof(DropInventoryItemSystem), nameof(DropInventoryItemSystem.OnUpdate))]
+    [HarmonyPrefix]
+    public static void DropInventoryItemSystem_OnUpdate_Prefix(DropInventoryItemSystem __instance)
+    {
+        if (LoadoutService is null)
+        {
+            return;
+        }
+
+        // todo: cache query
+        var query = EntityManager.CreateEntityQuery(new EntityQueryDesc()
+        {
+            All = new ComponentType[] {
+                ComponentType.ReadOnly<DropInventoryItemEvent>(),
+                ComponentType.ReadOnly<FromCharacter>(),
+            },
+        });
+
+        var entities = query.ToEntityArray(Allocator.Temp);
+        var dropInventoryItemEvents = query.ToComponentDataArray<DropInventoryItemEvent>(Allocator.Temp);
+        var fromCharacters = query.ToComponentDataArray<FromCharacter>(Allocator.Temp);
+
+        // this variable probably seems weird at first glance.
+        // its used to cache some hidden lookups.
+        // TODO: handle the caching better. extract things to a service
+        var networkIdToEntityMap = NetworkIdLookupMap._NetworkIdToEntityMap;
+
+        for (var i = 0; i < entities.Length; i++)
+        {
+            var inventoryNetworkId = dropInventoryItemEvents[i].Inventory;
+            if (!networkIdToEntityMap.TryGetValue(inventoryNetworkId, out var fromInventoryEntity))
+            {
+                LogUtil.LogWarning("DropInventoryItemSystem_OnUpdate_Prefix: Failed to find inventory entity from network id");
+                continue;
+            }
+
+            var isValidDrop = LoadoutService.IsValidItemDrop(
+                character: fromCharacters[i].Character,
+                fromInventory: fromInventoryEntity,
+                slotIndex: dropInventoryItemEvents[i].SlotIndex
             );
 
             if (!isValidDrop)
