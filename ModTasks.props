@@ -1,24 +1,4 @@
-<Project>
-
-  <!-- todo: each project should have its own manifest, because they are going to have different dependencies -->
-
-  <PropertyGroup>
-    <ThunderstoreManifestContent>
-      <![CDATA[
-{
-  "name": "$(AssemblyName)",
-  "version_number": "$(Version)",
-  "website_url": "$(WebsiteURL)",
-  "description": "$(Description)",
-  "dependencies": [
-      "BepInEx-BepInExPack_V_Rising-1.733.2",
-      "cheesasaurus-HookDOTS_API-1.0.0"
-  ]
-}
-    ]]>
-    </ThunderstoreManifestContent>
-  </PropertyGroup>
-  
+<Project>  
 
   <Target Name="ThunderstoreDist" AfterTargets="Publish">
     <PropertyGroup>
