@@ -534,7 +534,7 @@ internal class LoadoutLockdownService
         {
             return false;
         }
-        if (_forbiddenByPrefab.Contains(prefabGUID))
+        if (IsEquipmentForbidden(inventoryBufferEl.ItemEntity._Entity))
         {
             // they can't use that weapon, so let them swap it out.
             return true;
