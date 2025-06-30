@@ -2,12 +2,28 @@ using System.Text.Json;
 using ProjectM;
 using ProjectM.Shared;
 using Stunlock.Core;
+using Unity.Collections;
 using Unity.Entities;
 
 namespace ProfuselyViolentProgression.Core.Utilities;
 
 public static class DebugUtil
 {
+    public static void LogComponentTypesFromQueries(ComponentSystemBase systemBase)
+    {
+        LogUtil.LogInfo("========================================");
+        var queryCount = 0;
+        foreach (var query in systemBase.EntityQueries)
+        {
+            LogUtil.LogInfo($"query#{queryCount}--------------------------------");
+            var entities = query.ToEntityArray(Allocator.Temp);
+            for (var i = 0; i < entities.Length; i++)
+            {
+                DebugUtil.LogComponentTypes(entities[i]);
+            }
+            queryCount++;
+        }
+    }
 
     public static void LogComponentTypes(Entity entity)
     {

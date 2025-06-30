@@ -479,18 +479,7 @@ public static unsafe class Patches
     //[HarmonyPrefix]
     public static void SomeSystem_OnUpdate_Prefix(DropItemSystem __instance)
     {
-        LogUtil.LogInfo("========================================");
-        var queryCount = 0;
-        foreach (var query in __instance.EntityQueries)
-        {
-            LogUtil.LogInfo($"query#{queryCount}--------------------------------");
-            var entities = query.ToEntityArray(Allocator.Temp);
-            for (var i = 0; i < entities.Length; i++)
-            {
-                DebugUtil.LogComponentTypes(entities[i]);
-            }
-            queryCount++;
-        }
+        DebugUtil.LogComponentTypesFromQueries(__instance);
     }
 
 }
