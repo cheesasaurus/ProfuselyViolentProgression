@@ -16,6 +16,7 @@ Restrict (or unrestrict) equipping gear, both in and out of combat. Fully custom
 
 - Install [BepInEx](https://v-rising.thunderstore.io/package/BepInEx/BepInExPack_V_Rising/).
 - Install [HookDOTS](https://thunderstore.io/c/v-rising/p/cheesasaurus/HookDOTS_API/).
+- Install [VampireCommandFramework](https://thunderstore.io/c/v-rising/p/deca/VampireCommandFramework/).
 - Extract `LoadoutLockdown.dll` into _`(VRising folder)/BepInEx/plugins`_.
 
 
