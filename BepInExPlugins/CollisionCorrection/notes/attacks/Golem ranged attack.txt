@@ -1,0 +1,30 @@
+
+
+
+
+
+HitColliderCast [Buffer]:
+  HitColliderCast [0]
+    Shape
+      Type: Circle
+      RadiusOrWidth: 0.7
+      InnerRadiusOrHeight: 0
+      Length: 0
+      Angle: 0
+    AfterDuration: 0
+    TerrainColliderModifier: 0.5
+    PrioritySettings
+      Near_Origin_Factor: 1
+      Near_Origin_Distance: 3
+      Target_Priority_Factor: 1
+      UseMeleeCone: False
+      Melee_Cone_Angle 45
+      UseColliderCenterAsOriginPosition: False
+    CollisionCheckType: OnUpdate
+    PrimaryFilterFlags: Hittable
+    PrimaryTargets_Count: 10
+    SecondaryTargets_Count: 0
+    ContinuousCollision: False
+    IncludeTerrain: True
+    CanHitThroughBlockSpellCollision: True
+    IgnoreImmaterial: False

@@ -1,0 +1,73 @@
+ CollisionCorrection.
+  HitColliderCast [Buffer]:
+    HitColliderCast [0]
+      Shape
+        Type: Circle
+        RadiusOrWidth: 1.5
+        InnerRadiusOrHeight: 0
+        Length: 0
+        Angle: 0
+      AfterDuration: 0
+      TerrainColliderModifier: 0.75
+      PrioritySettings
+        Near_Origin_Factor: 1
+        Near_Origin_Distance: 3
+        Target_Priority_Factor: 1
+        UseMeleeCone: False
+        Melee_Cone_Angle 45
+        UseColliderCenterAsOriginPosition: False
+      CollisionCheckType: OnDestroy
+      PrimaryFilterFlags: Hittable
+      PrimaryTargets_Count: 10
+      SecondaryTargets_Count: 0
+      ContinuousCollision: False
+      IncludeTerrain: False
+      CanHitThroughBlockSpellCollision: False
+      IgnoreImmaterial: False
+    ----
+-------------------------------------------
+ProjectM.EntityOwner
+ProjectM.EntityCreator
+ProjectM.AbilityOwner
+ProjectM.GetOwnerRotation
+ProjectM.GetTranslationOnSpawn
+ProjectM.RagdollForceSource
+ProjectM.DestroyData
+ProjectM.DestroyState
+ProjectM.Age
+ProjectM.LifeTime
+ProjectM.TargetAoE
+ProjectM.ManualFirstFrameLastTranslation
+ProjectM.Team
+ProjectM.Network.Networked
+ProjectM.Network.UpToDateUserBitMask
+ProjectM.Network.FrameChanged
+ProjectM.Network.NetworkSnapshot
+ProjectM.Shared.SpellModSetComponent
+Unity.Transforms.Rotation
+Unity.Transforms.Translation
+Unity.Transforms.LocalToWorld
+Unity.Transforms.LocalTransform
+ProjectM.TeamReference
+ProjectM.Network.NetworkId
+Stunlock.Core.PrefabGUID
+ProjectM.TargetAOESequence [Buffer]
+ProjectM.HitTrigger [Buffer]
+ProjectM.CreateGameplayEventsOnHit [Buffer]
+ProjectM.ApplyBuffOnGameplayEvent [Buffer]
+ProjectM.GameplayEventIdMapping [Buffer]
+ProjectM.HitColliderCast [Buffer]
+ProjectM.DealDamageOnGameplayEvent [Buffer]
+ProjectM.GameplayEventListeners [Buffer]
+ProjectM.Network.NetSnapshot [Buffer]
+ProjectM.Network.SnapshotFrameChangedBuffer [Buffer]
+ProjectM.Shared.SpellModArithmetic [Buffer]
+ProjectM.GetOwnerRotationOnlyOnSpawnTag
+ProjectM.GetOwnerTeamOnSpawn
+ProjectM.HitColliderCast+CollisionCastOnDestroy
+Unity.Entities.DestroyTag
+Unity.Entities.Disabled
+Unity.Entities.Simulate
+Unity.Entities.BlobAssetOwner
+ProjectM.Network.NetworkSnapshotType
+-------------------------------------------

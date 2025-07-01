@@ -15,7 +15,7 @@ public unsafe class Patches
     private static EntityManager EntityManager = WorldUtil.Game.EntityManager;
     private static EntityQuery Query_;
 
-    //[EcsSystemUpdatePostfix(typeof(HandleGameplayEventsRecursiveSystem))]
+    [EcsSystemUpdatePostfix(typeof(HandleGameplayEventsRecursiveSystem))]
     public static void CheckDealDamageEvents()
     {
         if (Query_ == default)
@@ -32,9 +32,14 @@ public unsafe class Patches
         foreach (var dealDamageEvent in dealDamageEvents)
         {
             //DebugUtil.LogComponentTypes(dealDamageEvent.SpellSource);
-            DebugUtil.LogHitColliderCast(dealDamageEvent.SpellSource);
+            var entity = dealDamageEvent.SpellSource;
+            DebugUtil.LogPrefabGuid(entity);
+            DebugUtil.LogHitTriggers(entity);
+            DebugUtil.LogHitColliderCast(entity);
+            //DebugUtil.LogComponentTypes(entity);
         }
     }
+
 
 
     //[HarmonyPatch(typeof(BuffSystem_Spawn_Server), nameof(BuffSystem_Spawn_Server.OnUpdate))]
@@ -51,8 +56,8 @@ public unsafe class Patches
     //}
 
 
-    [HarmonyPatch(typeof(HitCastColliderSystem_OnUpdate), nameof(HitCastColliderSystem_OnUpdate.OnUpdate))]
-    [HarmonyPrefix]
+    //[HarmonyPatch(typeof(HitCastColliderSystem_OnUpdate), nameof(HitCastColliderSystem_OnUpdate.OnUpdate))]
+    //[HarmonyPrefix]
     public static void HitCastColliderSystem_OnUpdate_Prefix(HitCastColliderSystem_OnUpdate __instance)
     {
         var query = __instance.__query_911162766_0;

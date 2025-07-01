@@ -1,0 +1,222 @@
+  PrefabGUID: AB_Frost_CrystalLance_Projectile_SpellMod_Pierce PrefabGUID(1173883084)
+  HitTrigger [Buffer]:
+    HitTrigger [0]
+      HitTime: 1041335.503730125
+      Target: Entity(320873:1531)
+      OriginPosition: float3(-872.6215f, 6.124002f, -1615.821f)
+      CollisionPosition: float3(-872.6215f, 6.024002f, -1614.75f)
+      CollisionRotation: quaternion(0f, 0.003869754f, 0f, 0.9999926f)
+      Handled: True
+      Ignore: False
+      HitGroup: Group1
+      CastIndex: 0
+    ----
+  HitColliderCast [Buffer]:
+    HitColliderCast [0]
+      Shape
+        Type: Circle
+        RadiusOrWidth: 0.5
+        InnerRadiusOrHeight: 0
+        Length: 0
+        Angle: 0
+      AfterDuration: 0
+      TerrainColliderModifier: 0.5
+      PrioritySettings
+        Near_Origin_Factor: 1
+        Near_Origin_Distance: 3
+        Target_Priority_Factor: 1
+        UseMeleeCone: False
+        Melee_Cone_Angle 45
+        UseColliderCenterAsOriginPosition: False
+      CollisionCheckType: OnUpdate
+      PrimaryFilterFlags: Hittable
+      PrimaryTargets_Count: 1
+      SecondaryTargets_Count: 10
+      ContinuousCollision: False
+      IncludeTerrain: True
+      CanHitThroughBlockSpellCollision: False
+      IgnoreImmaterial: False
+    ----
+  PrefabGUID: AB_Frost_CrystalLance_Projectile_SpellMod_Pierce PrefabGUID(1173883084)
+  HitTrigger [Buffer]:
+    HitTrigger [0]
+      HitTime: 1041335.503730125
+      Target: Entity(320873:1531)
+      OriginPosition: float3(-872.6215f, 6.124002f, -1615.821f)
+      CollisionPosition: float3(-872.6215f, 6.024002f, -1614.75f)
+      CollisionRotation: quaternion(0f, 0.003869754f, 0f, 0.9999926f)
+      Handled: True
+      Ignore: False
+      HitGroup: Group1
+      CastIndex: 0
+    ----
+    HitTrigger [1]
+      HitTime: 1041335.6037297242
+      Target: Entity(321704:461)
+      OriginPosition: float3(-872.6046f, 6.124002f, -1613.621f)
+      CollisionPosition: float3(-872.6046f, 6.024002f, -1612.75f)
+      CollisionRotation: quaternion(0f, 0.003869754f, 0f, 0.9999926f)
+      Handled: True
+      Ignore: False
+      HitGroup: Group2
+      CastIndex: 0
+    ----
+  HitColliderCast [Buffer]:
+    HitColliderCast [0]
+      Shape
+        Type: Circle
+        RadiusOrWidth: 0.5
+        InnerRadiusOrHeight: 0
+        Length: 0
+        Angle: 0
+      AfterDuration: 0
+      TerrainColliderModifier: 0.5
+      PrioritySettings
+        Near_Origin_Factor: 1
+        Near_Origin_Distance: 3
+        Target_Priority_Factor: 1
+        UseMeleeCone: False
+        Melee_Cone_Angle 45
+        UseColliderCenterAsOriginPosition: False
+      CollisionCheckType: OnUpdate
+      PrimaryFilterFlags: Hittable
+      PrimaryTargets_Count: 1
+      SecondaryTargets_Count: 10
+      ContinuousCollision: False
+      IncludeTerrain: True
+      CanHitThroughBlockSpellCollision: False
+      IgnoreImmaterial: False
+    ----
+  PrefabGUID: AB_Frost_CrystalLance_Projectile_SpellMod_Pierce PrefabGUID(1173883084)
+  HitTrigger [Buffer]:
+    HitTrigger [0]
+      HitTime: 1041335.503730125
+      Target: Entity(320873:1531)
+      OriginPosition: float3(-872.6215f, 6.124002f, -1615.821f)
+      CollisionPosition: float3(-872.6215f, 6.024002f, -1614.75f)
+      CollisionRotation: quaternion(0f, 0.003869754f, 0f, 0.9999926f)
+      Handled: True
+      Ignore: False
+      HitGroup: Group1
+      CastIndex: 0
+    ----
+    HitTrigger [1]
+      HitTime: 1041335.6037297242
+      Target: Entity(321704:461)
+      OriginPosition: float3(-872.6046f, 6.124002f, -1613.621f)
+      CollisionPosition: float3(-872.6046f, 6.024002f, -1612.75f)
+      CollisionRotation: quaternion(0f, 0.003869754f, 0f, 0.9999926f)
+      Handled: True
+      Ignore: False
+      HitGroup: Group2
+      CastIndex: 0
+    ----
+    HitTrigger [2]
+      HitTime: 1041335.7037305229
+      Target: Entity(344537:1)
+      OriginPosition: float3(-872.5876f, 6.124002f, -1611.421f)
+      CollisionPosition: float3(-872.5876f, 6.024002f, -1610.75f)
+      CollisionRotation: quaternion(0f, 0.003869754f, 0f, 0.9999926f)
+      Handled: True
+      Ignore: False
+      HitGroup: Group2
+      CastIndex: 0
+    ----
+  HitColliderCast [Buffer]:
+    HitColliderCast [0]
+      Shape
+        Type: Circle
+        RadiusOrWidth: 0.5
+        InnerRadiusOrHeight: 0
+        Length: 0
+        Angle: 0
+      AfterDuration: 0
+      TerrainColliderModifier: 0.5
+      PrioritySettings
+        Near_Origin_Factor: 1
+        Near_Origin_Distance: 3
+        Target_Priority_Factor: 1
+        UseMeleeCone: False
+        Melee_Cone_Angle 45
+        UseColliderCenterAsOriginPosition: False
+      CollisionCheckType: OnUpdate
+      PrimaryFilterFlags: Hittable
+      PrimaryTargets_Count: 1
+      SecondaryTargets_Count: 10
+      ContinuousCollision: False
+      IncludeTerrain: True
+      CanHitThroughBlockSpellCollision: False
+      IgnoreImmaterial: False
+    ----
+  PrefabGUID: AB_Frost_CrystalLance_Projectile_SpellMod_Pierce PrefabGUID(1173883084)
+  HitTrigger [Buffer]:
+    HitTrigger [0]
+      HitTime: 1041335.503730125
+      Target: Entity(320873:1531)
+      OriginPosition: float3(-872.6215f, 6.124002f, -1615.821f)
+      CollisionPosition: float3(-872.6215f, 6.024002f, -1614.75f)
+      CollisionRotation: quaternion(0f, 0.003869754f, 0f, 0.9999926f)
+      Handled: True
+      Ignore: False
+      HitGroup: Group1
+      CastIndex: 0
+    ----
+    HitTrigger [1]
+      HitTime: 1041335.6037297242
+      Target: Entity(321704:461)
+      OriginPosition: float3(-872.6046f, 6.124002f, -1613.621f)
+      CollisionPosition: float3(-872.6046f, 6.024002f, -1612.75f)
+      CollisionRotation: quaternion(0f, 0.003869754f, 0f, 0.9999926f)
+      Handled: True
+      Ignore: False
+      HitGroup: Group2
+      CastIndex: 0
+    ----
+    HitTrigger [2]
+      HitTime: 1041335.7037305229
+      Target: Entity(344537:1)
+      OriginPosition: float3(-872.5876f, 6.124002f, -1611.421f)
+      CollisionPosition: float3(-872.5876f, 6.024002f, -1610.75f)
+      CollisionRotation: quaternion(0f, 0.003869754f, 0f, 0.9999926f)
+      Handled: True
+      Ignore: False
+      HitGroup: Group2
+      CastIndex: 0
+    ----
+    HitTrigger [3]
+      HitTime: 1041335.770397722
+      Target: Entity(344535:1)
+      OriginPosition: float3(-872.5764f, 6.124002f, -1609.955f)
+      CollisionPosition: float3(-872.5764f, 6.024002f, -1608.75f)
+      CollisionRotation: quaternion(0f, 0.003828782f, 0f, 0.9999927f)
+      Handled: True
+      Ignore: False
+      HitGroup: Group2
+      CastIndex: 0
+    ----
+  HitColliderCast [Buffer]:
+    HitColliderCast [0]
+      Shape
+        Type: Circle
+        RadiusOrWidth: 0.5
+        InnerRadiusOrHeight: 0
+        Length: 0
+        Angle: 0
+      AfterDuration: 0
+      TerrainColliderModifier: 0.5
+      PrioritySettings
+        Near_Origin_Factor: 1
+        Near_Origin_Distance: 3
+        Target_Priority_Factor: 1
+        UseMeleeCone: False
+        Melee_Cone_Angle 45
+        UseColliderCenterAsOriginPosition: False
+      CollisionCheckType: OnUpdate
+      PrimaryFilterFlags: Hittable
+      PrimaryTargets_Count: 1
+      SecondaryTargets_Count: 10
+      ContinuousCollision: False
+      IncludeTerrain: True
+      CanHitThroughBlockSpellCollision: False
+      IgnoreImmaterial: False
+    ----

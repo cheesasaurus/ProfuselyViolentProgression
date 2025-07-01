@@ -9,3 +9,6 @@ The problem with Curse and Carrion Swarm seems to be related to having multiple 
 Curse: launches 5 projectiles. When colliding with a castle wall/gate, 4 continue through. (only 1 projectile disappears).
 When colliding with a second gate after the first, out of the 4 projectiles, 3 continue through. (1 more projectile disappears).
 
+
+`HitTrigger` components seems to be added to a buffer in the spell source entity, when something is hit.
+
