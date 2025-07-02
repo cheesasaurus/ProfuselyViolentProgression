@@ -31,12 +31,13 @@ public unsafe class Patches
         var dealDamageEvents = Query_.ToComponentDataArray<DealDamageEvent>(Allocator.Temp);
         foreach (var dealDamageEvent in dealDamageEvents)
         {
-            //DebugUtil.LogComponentTypes(dealDamageEvent.SpellSource);
             var entity = dealDamageEvent.SpellSource;
             DebugUtil.LogPrefabGuid(entity);
-            DebugUtil.LogHitTriggers(entity);
-            DebugUtil.LogHitColliderCast(entity);
             //DebugUtil.LogComponentTypes(entity);
+            //DebugUtil.LogHitTriggers(entity);
+            //DebugUtil.LogHitColliderCast(entity);
+            //DebugUtil.LogTriggerHitConsume(entity);
+
         }
     }
 
@@ -56,8 +57,8 @@ public unsafe class Patches
     //}
 
 
-    //[HarmonyPatch(typeof(HitCastColliderSystem_OnUpdate), nameof(HitCastColliderSystem_OnUpdate.OnUpdate))]
-    //[HarmonyPrefix]
+    [HarmonyPatch(typeof(HitCastColliderSystem_OnUpdate), nameof(HitCastColliderSystem_OnUpdate.OnUpdate))]
+    [HarmonyPrefix]
     public static void HitCastColliderSystem_OnUpdate_Prefix(HitCastColliderSystem_OnUpdate __instance)
     {
         var query = __instance.__query_911162766_0;
@@ -66,14 +67,17 @@ public unsafe class Patches
         for (var i = 0; i < entities.Length; i++)
         {
             var entity = entities[i];
-            DebugUtil.LogCreateGameplayEventsOnHit(entity);
-            //DebugUtil.LogGameplayEventListeners(entity);
+            DebugUtil.LogPrefabGuid(entity);
+            //DebugUtil.LogComponentTypes(entity);
+            //DebugUtil.LogCreateGameplayEventsOnHit(entity);
+            DebugUtil.LogGameplayEventListeners(entity);
             //DebugUtil.LogPlayImpactOnGameplayEvent(entity);
             //DebugUtil.LogTriggerHitConsume(entity);
             //DebugUtil.LogDealDamageOnGameplayEvent(entity);
-            //DoSomething(entity);
-            //DebugUtil.LogComponentTypes(entity);
+            //DebugUtil.LogAbilityProjectileFanOnGameplayEvent_DataServer(entity);
+            //DebugUtil.LogProjectilDestroyData(entity);
 
+            //DoSomething(entity);
         }
     }
 
@@ -98,7 +102,11 @@ public unsafe class Patches
 
     private static void DoSomething2(Entity entity)
     {
-        DebugUtil.LogSpellModSet(entity);
+        if (!EntityManager.TryGetComponentRW<ProjectileDestroyData>(entity, out var pdd))
+        {
+            return;
+        }
+        pdd.ValueRW.HasHitTarget = false;
     }
 
 }

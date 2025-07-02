@@ -1,5 +1,6 @@
 using System.Text.Json;
 using ProjectM;
+using ProjectM.Gameplay.Scripting;
 using ProjectM.Shared;
 using Stunlock.Core;
 using Unity.Collections;
@@ -103,6 +104,18 @@ public static class DebugUtil
             LogUtil.LogInfo($"    spellModSource:{buff.CustomAbilitySpellModsSource}");
             LogUtil.LogInfo("     ----");
         }
+    }
+
+    public static void LogProjectilDestroyData(Entity entity)
+    {
+        var entityManager = WorldUtil.Game.EntityManager;
+        if (!entityManager.HasComponent<ProjectileDestroyData>(entity))
+        {
+            return;
+        }
+        var pdd = entityManager.GetComponentData<ProjectileDestroyData>(entity);
+        LogUtil.LogInfo($"  ProjectileDestroyData:");
+        LogUtil.LogInfo($"    HasHitTarget: {pdd.HasHitTarget}");
     }
 
     public static void LogHitColliderCast(Entity entity)
@@ -283,6 +296,8 @@ public static class DebugUtil
             LogUtil.LogInfo($"      EventIndexOfType: {gel.EventIndexOfType}");
             LogUtil.LogInfo($"      GameplayEventType: {gel.GameplayEventType}");
             LogUtil.LogInfo($"      GameplayEventId: {gel.GameplayEventId}");
+            LogUtil.LogInfo($"        GameplayEventType: {gel.GameplayEventId.GameplayEventType}");
+            LogUtil.LogInfo($"        EventId: {gel.GameplayEventId.EventId}");
             LogUtil.LogInfo("    ----");
         }
     }
@@ -305,6 +320,39 @@ public static class DebugUtil
             LogUtil.LogInfo($"      ColliderCastIndex: {cgeoh.ColliderCastIndex}");
             LogUtil.LogInfo("    ----");
         }
+    }
+
+    public static void LogAbilityProjectileFanOnGameplayEvent_DataServer(Entity entity)
+    {
+        var entityManager = WorldUtil.Game.EntityManager;
+        if (!entityManager.HasComponent<AbilityProjectileFanOnGameplayEvent_DataServer>(entity))
+        {
+            return;
+        }
+        var apfogeds = entityManager.GetComponentData<AbilityProjectileFanOnGameplayEvent_DataServer>(entity);
+        LogUtil.LogInfo($"  AbilityProjectileFanOnGameplayEvent_DataServer:");
+        LogUtil.LogInfo($"    Angle: {apfogeds.Angle}");
+        LogUtil.LogInfo($"    OffsetAngle: {apfogeds.OffsetAngle}");
+        LogUtil.LogInfo($"    RandomOffset: {apfogeds.RandomOffset}");
+        LogUtil.LogInfo($"    IndividualRandom: {apfogeds.IndividualRandom}");
+        LogUtil.LogInfo($"    NewProjectileEntity: {LookupPrefabName(apfogeds.NewProjectileEntity)}");
+        LogUtil.LogInfo($"    NewProjectileEntityAlternate: {LookupPrefabName(apfogeds.NewProjectileEntityAlternate)}");
+        LogUtil.LogInfo($"    TickCount: {apfogeds.TickCount}");
+        LogUtil.LogInfo($"    UseOwnerAimDirection: {apfogeds.UseOwnerAimDirection}");
+        LogUtil.LogInfo($"    SetSpellTargetToSelf: {apfogeds.SetSpellTargetToSelf}");
+        LogUtil.LogInfo($"    SetSpellTargetToSelfSpellTarget: {apfogeds.SetSpellTargetToSelfSpellTarget}");
+        LogUtil.LogInfo($"    SetSpellTargetToBuffTarget: {apfogeds.SetSpellTargetToBuffTarget}");
+        LogUtil.LogInfo($"    SetRandomTargetInRadiusToSpellTarget: {apfogeds.SetRandomTargetInRadiusToSpellTarget}");
+        LogUtil.LogInfo($"    RandomTargetMaxHeightDiff: {apfogeds.RandomTargetMaxHeightDiff}");
+        LogUtil.LogInfo($"    RandomSpellTargetHitFilter: {apfogeds.RandomSpellTargetHitFilter}");
+        LogUtil.LogInfo($"    BoostBuffType: {apfogeds.BoostBuffType}");
+        LogUtil.LogInfo($"    BoostPerStackCount: {apfogeds.BoostPerStackCount}");
+        LogUtil.LogInfo($"    BoostPerStackAngle: {apfogeds.BoostPerStackAngle}");
+        LogUtil.LogInfo($"    BoostPerStackPrefab1: {LookupPrefabName(apfogeds.BoostPerStackPrefab1)}");
+        LogUtil.LogInfo($"    BoostPerStackPrefab2: {LookupPrefabName(apfogeds.BoostPerStackPrefab2)}");
+        LogUtil.LogInfo($"    BoostPerStackPrefab3: {LookupPrefabName(apfogeds.BoostPerStackPrefab3)}");
+        LogUtil.LogInfo($"    OverrideProjectileSpeedMin: {apfogeds.OverrideProjectileSpeedMin}");
+        LogUtil.LogInfo($"    OverrideProjectileSpeedMax: {apfogeds.OverrideProjectileSpeedMax}");
     }
 
     public static string LookupPrefabName(PrefabGUID prefabGuid)
