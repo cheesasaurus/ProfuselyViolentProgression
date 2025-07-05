@@ -5,6 +5,7 @@ namespace ProfuselyViolentProgression.LoadoutLockdown.Config;
 public class LoadoutLockdownConfig
 {
     public int WeaponSlots { get; set; } = 8;
+    public bool ApplyPvpMenuSwapRulesToPVE { get; set; } = false;
     public RulesByType RulesByType { get; set; } = new();
     public List<string> ForbiddenByPrefab { get; set; } = new();
     public List<string> NotWaste { get; set; } = new();

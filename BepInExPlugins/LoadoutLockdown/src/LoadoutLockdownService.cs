@@ -8,7 +8,6 @@ using ProjectM.Scripting;
 using Stunlock.Core;
 using Unity.Collections;
 using Unity.Entities;
-using Unity.Entities.UniversalDelegates;
 using Unity.Mathematics;
 using Unity.Transforms;
 
@@ -604,9 +603,9 @@ internal class LoadoutLockdownService
             translation.Value,
             color,
             character
-            //value,
-            //sct,
-            //player.UserEntity
+        //value,
+        //sct,
+        //player.UserEntity
         );
     }
 
@@ -650,11 +649,9 @@ internal class LoadoutLockdownService
             return true;
         }
 
-        bool isInPvPCombat = NewWeaponEquipmentRestrictionsUtility.IsInPvPCombat(EntityManager, ServerRootPrefabCollection, character);
-
         if (HasDesignatedSlot(candidateItemEntity))
         {
-            var isAllowed = !isInPvPCombat
+            var isAllowed = !IsInRestrictiveCombat(character)
                 || CanMenuSwapIntoFilledSlotDuringPVP(candidateItemEntity)
                 || IsDesignatedSlotWasted(character, candidateItemEntity);
 
@@ -684,6 +681,82 @@ internal class LoadoutLockdownService
         return false;
     }
 
+    public bool IsValidItemMove(MoveItemBetweenInventoriesEvent moveEvent, Entity toInventory, Entity fromInventory)
+    {
+        bool isFromPlayerInventory = IsPlayerInventory(fromInventory);
+        bool isToPlayerInventory = IsPlayerInventory(toInventory);
+
+        Entity playerCharacter = default;
+        bool foundPlayerCharacter = false;
+        if (isFromPlayerInventory)
+        {
+            foundPlayerCharacter = TryGetOwnerOfInventory(fromInventory, out playerCharacter);
+        }
+        else if (isToPlayerInventory)
+        {
+            foundPlayerCharacter = TryGetOwnerOfInventory(toInventory, out playerCharacter);
+        }
+
+        if (!foundPlayerCharacter)
+        {
+            return true;
+        }
+
+        bool fromWeaponSlot = isFromPlayerInventory && IsValidWeaponSlot(moveEvent.FromSlot);
+        bool toWeaponSlot = isToPlayerInventory && IsValidWeaponSlot(moveEvent.ToSlot);
+        bool doesNotInvolveWeaponSlot = !fromWeaponSlot && !toWeaponSlot;
+        bool isRearrangingWeaponSlots = fromWeaponSlot && toWeaponSlot;
+
+        if (doesNotInvolveWeaponSlot || isRearrangingWeaponSlots || !IsInRestrictiveCombat(playerCharacter))
+        {
+            return true;
+        }
+
+        InventoryBuffer menuSlotIB;
+        InventoryBuffer weaponSlotIB;
+        bool isMenuSlotEmpty;
+        bool isWeaponSlotEmpty;
+        if (fromWeaponSlot)
+        {
+            isWeaponSlotEmpty = !InventoryUtilities.TryGetItemAtSlot(EntityManager, fromInventory, moveEvent.FromSlot, out weaponSlotIB);
+            isMenuSlotEmpty = !InventoryUtilities.TryGetItemAtSlot(EntityManager, toInventory, moveEvent.ToSlot, out menuSlotIB);
+        }
+        else
+        {
+            isMenuSlotEmpty = !InventoryUtilities.TryGetItemAtSlot(EntityManager, fromInventory, moveEvent.FromSlot, out menuSlotIB);
+            isWeaponSlotEmpty = !InventoryUtilities.TryGetItemAtSlot(EntityManager, toInventory, moveEvent.ToSlot, out weaponSlotIB);
+        }
+
+        if (isMenuSlotEmpty && isWeaponSlotEmpty)
+        {
+            return true;
+        }
+
+        bool doesItemInMenuHaveDesignatedSlot = !isMenuSlotEmpty && HasDesignatedSlot(menuSlotIB.ItemEntity._Entity);
+
+        if (!isMenuSlotEmpty && !doesItemInMenuHaveDesignatedSlot && AlwaysAllowSwapIntoSlot(menuSlotIB.ItemEntity._Entity))
+        {
+            return true;
+        }
+
+        if (!isMenuSlotEmpty && !doesItemInMenuHaveDesignatedSlot && CanMenuSwapIntoFilledSlotDuringPVP(menuSlotIB.ItemEntity._Entity))
+        {
+            return true;
+        }
+
+        if (isWeaponSlotEmpty || IsWasteInWeaponSlot(weaponSlotIB))
+        {
+            return true;
+        }
+
+        if (isMenuSlotEmpty && IsWasteInWeaponSlot(weaponSlotIB))
+        {
+            return true;
+        }
+
+        return false;
+    }
+
     public bool IsValidItemDrop(Entity character, Entity fromInventory, int slotIndex)
     {
         if (!InventoryUtilities.TryGetItemAtSlot(EntityManager, fromInventory, slotIndex: slotIndex, out InventoryBuffer itemIB))
@@ -692,10 +765,9 @@ internal class LoadoutLockdownService
             return false;
         }
 
-        bool isInPvPCombat = NewWeaponEquipmentRestrictionsUtility.IsInPvPCombat(EntityManager, ServerRootPrefabCollection, character);
         bool isNotDroppingFromWeaponSlot = !IsValidWeaponSlot(slotIndex);
 
-        if (!isInPvPCombat || isNotDroppingFromWeaponSlot || IsWasteInWeaponSlot(itemIB))
+        if (!IsInRestrictiveCombat(character) || isNotDroppingFromWeaponSlot || IsWasteInWeaponSlot(itemIB))
         {
             return true;
         }
@@ -706,8 +778,7 @@ internal class LoadoutLockdownService
 
     public bool IsValidItemDropFromDedicatedSlot(Entity character, EquipmentType equipmentType)
     {
-        bool isInPvPCombat = NewWeaponEquipmentRestrictionsUtility.IsInPvPCombat(EntityManager, ServerRootPrefabCollection, character);
-        if (!isInPvPCombat)
+        if (!IsInRestrictiveCombat(character))
         {
             return true;
         }
@@ -771,7 +842,7 @@ internal class LoadoutLockdownService
         {
             var itemEntity = equipment.GetEquipmentEntity(equipmentType)._Entity;
             if (IsEquipmentForbidden(itemEntity))
-            {                
+            {
                 var unequipped = InventoryUtilitiesServer.TryUnEquipAndAddItem(
                     EntityManager,
                     ItemHashLookupMap,
@@ -794,6 +865,34 @@ internal class LoadoutLockdownService
             }
         }
         return count;
+    }
+
+    public bool IsInRestrictiveCombat(Entity character)
+    {
+        return IsInPvPCombat(character)
+            || (_config.ApplyPvpMenuSwapRulesToPVE && IsInCombat(character));
+    }
+
+    public bool IsInPvPCombat(Entity character)
+    {
+        return NewWeaponEquipmentRestrictionsUtility.IsInPvPCombat(EntityManager, ServerRootPrefabCollection, character);
+    }
+
+    private static PrefabGUID Buff_InCombat = new PrefabGUID(581443919);
+    public bool IsInCombat(Entity character)
+    {
+        if (!EntityManager.TryGetBuffer<BuffBuffer>(character, out var buffs))
+        {
+            return false;
+        }
+        foreach (var buff in buffs)
+        {
+            if (buff.PrefabGuid.Equals(Buff_InCombat))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

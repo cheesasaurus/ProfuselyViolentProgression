@@ -6,6 +6,8 @@
 {
     "WeaponSlots": 3,
 
+    "ApplyPvpMenuSwapRulesToPVE": false,
+
     "RulesByType": {
         "Bag": {
             "Forbidden": false,
