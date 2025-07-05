@@ -80,6 +80,10 @@ Prefabs can be added to the `NotWaste` list to prevent them from being swapped o
 
 If you would like specific items to always be moveable into their slot (e.g. soul shards), add their prefabs to the `AlwaysAllowSwapIntoSlot` list.
 
+### ApplyPvpMenuSwapRulesToPVE
+
+`ApplyPvpMenuSwapRulesToPVE` can be enabled to make the FromMenuDuringPVP rules also apply during PVE combat.
+
 
 ## Chat commands
 

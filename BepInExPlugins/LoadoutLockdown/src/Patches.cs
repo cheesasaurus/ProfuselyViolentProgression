@@ -99,86 +99,7 @@ public static unsafe class Patches
             return EXECUTE_ORIGINAL_METHOD;
         }
 
-        bool isFromPlayerInventory = LoadoutService.IsPlayerInventory(fromInventory);
-        bool isToPlayerInventory = LoadoutService.IsPlayerInventory(toInventory);
-
-        Entity playerCharacter = default;
-        bool foundPlayerCharacter = false;
-        if (isFromPlayerInventory)
-        {
-            foundPlayerCharacter = LoadoutService.TryGetOwnerOfInventory(fromInventory, out playerCharacter);
-        }
-        else if (isToPlayerInventory)
-        {
-            foundPlayerCharacter = LoadoutService.TryGetOwnerOfInventory(toInventory, out playerCharacter);
-        }
-
-        if (!foundPlayerCharacter)
-        {
-            __result = true;
-            return SKIP_ORIGINAL_METHOD;
-        }
-
-        bool isInPvPCombat = NewWeaponEquipmentRestrictionsUtility.IsInPvPCombat(EntityManager, serverRootPrefabCollection, playerCharacter);
-        bool fromWeaponSlot = isFromPlayerInventory && LoadoutService.IsValidWeaponSlot(moveEvent.FromSlot);
-        bool toWeaponSlot = isToPlayerInventory && LoadoutService.IsValidWeaponSlot(moveEvent.ToSlot);
-        bool doesNotInvolveWeaponSlot = !fromWeaponSlot && !toWeaponSlot;
-        bool isRearrangingWeaponSlots = fromWeaponSlot && toWeaponSlot;
-
-        if (!isInPvPCombat || doesNotInvolveWeaponSlot || isRearrangingWeaponSlots)
-        {
-            __result = true;
-            return SKIP_ORIGINAL_METHOD;
-        }
-
-        InventoryBuffer menuSlotIB;
-        InventoryBuffer weaponSlotIB;
-        bool isMenuSlotEmpty;
-        bool isWeaponSlotEmpty;
-        if (fromWeaponSlot)
-        {
-            isWeaponSlotEmpty = !InventoryUtilities.TryGetItemAtSlot(EntityManager, fromInventory, moveEvent.FromSlot, out weaponSlotIB);
-            isMenuSlotEmpty = !InventoryUtilities.TryGetItemAtSlot(EntityManager, toInventory, moveEvent.ToSlot, out menuSlotIB);
-        }
-        else
-        {
-            isMenuSlotEmpty = !InventoryUtilities.TryGetItemAtSlot(EntityManager, fromInventory, moveEvent.FromSlot, out menuSlotIB);
-            isWeaponSlotEmpty = !InventoryUtilities.TryGetItemAtSlot(EntityManager, toInventory, moveEvent.ToSlot, out weaponSlotIB);
-        }
-
-        if (isMenuSlotEmpty && isWeaponSlotEmpty)
-        {
-            __result = true;
-            return SKIP_ORIGINAL_METHOD;
-        }
-
-        bool doesItemInMenuHaveDesignatedSlot = !isMenuSlotEmpty && LoadoutService.HasDesignatedSlot(menuSlotIB.ItemEntity._Entity);
-
-        if (!isMenuSlotEmpty && !doesItemInMenuHaveDesignatedSlot && LoadoutService.AlwaysAllowSwapIntoSlot(menuSlotIB.ItemEntity._Entity))
-        {
-            __result = true;
-            return SKIP_ORIGINAL_METHOD;
-        }
-
-        if (!isMenuSlotEmpty && !doesItemInMenuHaveDesignatedSlot && LoadoutService.CanMenuSwapIntoFilledSlotDuringPVP(menuSlotIB.ItemEntity._Entity))
-        {
-            __result = true;
-            return SKIP_ORIGINAL_METHOD;
-        }
-
-        if (isWeaponSlotEmpty || LoadoutService.IsWasteInWeaponSlot(weaponSlotIB))
-        {
-            __result = true;
-            return SKIP_ORIGINAL_METHOD;
-        }
-
-        if (isMenuSlotEmpty && LoadoutService.IsWasteInWeaponSlot(weaponSlotIB))
-        {
-            __result = true;
-            return SKIP_ORIGINAL_METHOD;
-        }
-
-        __result = false;
+        __result = LoadoutService.IsValidItemMove(moveEvent, toInventory, fromInventory);
         return SKIP_ORIGINAL_METHOD;
     }
 
@@ -230,8 +151,7 @@ public static unsafe class Patches
             return EXECUTE_ORIGINAL_METHOD;
         }
 
-        bool isInPvPCombat = NewWeaponEquipmentRestrictionsUtility.IsInPvPCombat(EntityManager, ServerRootPrefabCollection, target);
-        if (!isInPvPCombat || LoadoutService.CanDirectlyMoveOutOfSlotDuringPVP(item))
+        if (!LoadoutService.IsInRestrictiveCombat(target) || LoadoutService.CanDirectlyMoveOutOfSlotDuringPVP(item))
         {
             // allow unequipping; execute original method to do the unequip.
             return EXECUTE_ORIGINAL_METHOD;
