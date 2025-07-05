@@ -80,7 +80,7 @@ public static unsafe class Patches
     // The original IsValidItemMove internally calls IsValidItemTransfer twice. once each for the orderings of slotA and slotB.
     // i.e. the second time IsValidItemTransfer is called, the former slotA will appear as slotB, and the former slotB will appear as slotA.
     //
-    // We do not call IsValidItemMove at all, unless falling back to the original behaviour.
+    // We do not call IsValidItemTransfer at all, unless falling back to the original behaviour.
     [HarmonyPatch(typeof(NewWeaponEquipmentRestrictionsUtility), nameof(NewWeaponEquipmentRestrictionsUtility.IsValidItemMove))]
     [HarmonyPrefix]
     public static unsafe bool IsValidItemMove_Prefix(
@@ -99,7 +99,12 @@ public static unsafe class Patches
             return EXECUTE_ORIGINAL_METHOD;
         }
 
-        __result = LoadoutService.IsValidItemMove(moveEvent, toInventory, fromInventory);
+        var ruling = LoadoutService.ValidateItemMove(moveEvent, toInventory, fromInventory);
+        if (ruling.ShouldUnEquipItemBeforeMoving)
+        {
+            InventoryUtilitiesServer.TryUnEquipItem(EntityManager, ruling.ItemToUnEquip.Character, ruling.ItemToUnEquip.Item);
+        }
+        __result = ruling.IsAllowed;
         return SKIP_ORIGINAL_METHOD;
     }
 
@@ -213,7 +218,7 @@ public static unsafe class Patches
     // It does not cover the case of dragging an item into a designated equip slot.
     [HarmonyPatch(typeof(EquipItemSystem), nameof(EquipItemSystem.OnUpdate))]
     [HarmonyPrefix]
-    public static void EquipItemFSystem_OnUpdate_Prefix(EquipItemSystem __instance)
+    public static void EquipItemSystem_OnUpdate_Prefix(EquipItemSystem __instance)
     {
         if (LoadoutService is null)
         {
@@ -243,7 +248,10 @@ public static unsafe class Patches
         }
     }
 
-
+    // TryUnEquipItem gets called when unequipping an item from the inventory or from a designated slot.
+    //
+    // But it does NOT get called when unequipping from a designated slot during pvp. Something else cuts it off.
+    // Our patch TryUnEquipAndAddItem_Prefix prevents TryUnEquipAndAddItem from running, which presumably is what would call TryUnEquipItem.
     [HarmonyPatch(typeof(InventoryUtilitiesServer), nameof(InventoryUtilitiesServer.TryUnEquipItem), new Type[] { typeof(EntityManager), typeof(Entity), typeof(Entity), typeof(Il2CppSystem.Nullable_Unboxed<EntityCommandBuffer>) })]
     [HarmonyPrefix]
     public static bool TryUnEquipItem_Prefix(
@@ -255,9 +263,11 @@ public static unsafe class Patches
     )
     {
         //LogUtil.LogDebug("running TryUnEquipItem_Prefix1");
-        // This gets called when unequipping an item from the inventory or from a designated slot.
-        // But it does NOT get called when unequipping during pvp. Something else cuts it off.
-        // Our patch TryUnEquipAndAddItem_Prefix prevents TryUnEquipAndAddItem from running, which presumably is what would call TryUnEquipItem.
+
+        // TryUnEquipAndAddItem_Prefix already handles unequipping items from designated slots.
+        //
+        // The only other case this would cover is unequipping items from the hotbar/inventory.
+        // Switching to unarmed should always be allowed, so there is nothing to change here.
         return EXECUTE_ORIGINAL_METHOD;
     }
 

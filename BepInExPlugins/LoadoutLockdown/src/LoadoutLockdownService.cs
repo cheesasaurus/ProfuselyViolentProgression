@@ -681,7 +681,32 @@ internal class LoadoutLockdownService
         return false;
     }
 
-    public bool IsValidItemMove(MoveItemBetweenInventoriesEvent moveEvent, Entity toInventory, Entity fromInventory)
+    public struct ItemMoveRuling
+    {
+        public bool IsAllowed;
+        public bool ShouldUnEquipItemBeforeMoving;
+        public EquippedItem ItemToUnEquip;
+
+        public struct EquippedItem
+        {
+            public Entity Character;
+            public Entity Item;
+        }
+
+        public static ItemMoveRuling Allowed => new ItemMoveRuling
+        {
+            IsAllowed = true,
+            ShouldUnEquipItemBeforeMoving = false
+        };
+        
+        public static ItemMoveRuling Disallowed => new ItemMoveRuling
+        {
+            IsAllowed = false,
+            ShouldUnEquipItemBeforeMoving = false
+        };
+    }
+
+    public ItemMoveRuling ValidateItemMove(MoveItemBetweenInventoriesEvent moveEvent, Entity toInventory, Entity fromInventory)
     {
         bool isFromPlayerInventory = IsPlayerInventory(fromInventory);
         bool isToPlayerInventory = IsPlayerInventory(toInventory);
@@ -699,7 +724,7 @@ internal class LoadoutLockdownService
 
         if (!foundPlayerCharacter)
         {
-            return true;
+            return ItemMoveRuling.Allowed;
         }
 
         bool fromWeaponSlot = isFromPlayerInventory && IsValidWeaponSlot(moveEvent.FromSlot);
@@ -707,9 +732,9 @@ internal class LoadoutLockdownService
         bool doesNotInvolveWeaponSlot = !fromWeaponSlot && !toWeaponSlot;
         bool isRearrangingWeaponSlots = fromWeaponSlot && toWeaponSlot;
 
-        if (doesNotInvolveWeaponSlot || isRearrangingWeaponSlots || !IsInRestrictiveCombat(playerCharacter))
+        if (doesNotInvolveWeaponSlot || isRearrangingWeaponSlots)
         {
-            return true;
+            return ItemMoveRuling.Allowed;
         }
 
         InventoryBuffer menuSlotIB;
@@ -729,32 +754,56 @@ internal class LoadoutLockdownService
 
         if (isMenuSlotEmpty && isWeaponSlotEmpty)
         {
-            return true;
+            return ItemMoveRuling.Allowed;
+        }
+
+        if (!EntityManager.TryGetComponentData<Equipment>(playerCharacter, out var equipment))
+        {
+            LogUtil.LogWarning("ValidateItemMove failed to find Equipment on character");
+            return ItemMoveRuling.Allowed;
+        }
+
+        Entity weaponSlotItem = weaponSlotIB.ItemEntity._Entity;
+
+        var allowedWithPotentialUnEquip = new ItemMoveRuling
+        {
+            IsAllowed = true,
+            ShouldUnEquipItemBeforeMoving = equipment.IsEquipped(weaponSlotItem) && !IsEquippableWithoutSlot(weaponSlotItem),
+            ItemToUnEquip = new()
+            {
+                Character = playerCharacter,
+                Item = weaponSlotItem
+            }
+        };
+
+        if (!IsInRestrictiveCombat(playerCharacter))
+        {
+            return allowedWithPotentialUnEquip;
         }
 
         bool doesItemInMenuHaveDesignatedSlot = !isMenuSlotEmpty && HasDesignatedSlot(menuSlotIB.ItemEntity._Entity);
 
         if (!isMenuSlotEmpty && !doesItemInMenuHaveDesignatedSlot && AlwaysAllowSwapIntoSlot(menuSlotIB.ItemEntity._Entity))
         {
-            return true;
+            return allowedWithPotentialUnEquip;
         }
 
         if (!isMenuSlotEmpty && !doesItemInMenuHaveDesignatedSlot && CanMenuSwapIntoFilledSlotDuringPVP(menuSlotIB.ItemEntity._Entity))
         {
-            return true;
+            return allowedWithPotentialUnEquip;
         }
 
         if (isWeaponSlotEmpty || IsWasteInWeaponSlot(weaponSlotIB))
         {
-            return true;
+            return ItemMoveRuling.Allowed;
         }
 
         if (isMenuSlotEmpty && IsWasteInWeaponSlot(weaponSlotIB))
         {
-            return true;
+            return ItemMoveRuling.Allowed;
         }
 
-        return false;
+        return ItemMoveRuling.Disallowed;
     }
 
     public bool IsValidItemDrop(Entity character, Entity fromInventory, int slotIndex)
