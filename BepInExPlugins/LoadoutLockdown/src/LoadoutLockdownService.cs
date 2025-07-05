@@ -562,14 +562,18 @@ internal class LoadoutLockdownService
         return true;
     }
 
-    public void SwapItemsInSameInventory(Entity character, int slotIndexA, int slotIndexB)
+    public void SwapItemsInSameInventory(Entity character, int fromSlotIndex, int toSlotIndex)
     {
         if (InventoryUtilities.TryGetMainInventoryEntity(EntityManager, character, out var mainInventoryEntity))
         {
-            var ibb = EntityManager.GetBuffer<InventoryBuffer>(mainInventoryEntity);
-            var temp = ibb[slotIndexA];
-            ibb[slotIndexA] = ibb[slotIndexB];
-            ibb[slotIndexB] = temp;
+            InventoryUtilitiesServer.TryMoveItem(
+                EntityManager,
+                ItemHashLookupMap,
+                mainInventoryEntity,
+                fromSlotIndex,
+                mainInventoryEntity,
+                toSlotIndex
+            );
         }
     }
 
@@ -624,6 +628,7 @@ internal class LoadoutLockdownService
         CreateSCTMessage(character, SCTMessage_NoFreeActionBarSlots, ColorRed);
     }
 
+    // todo: refactor this, move side effects out
     public bool IsValidItemEquip(Entity character, Entity fromInventory, int fromSlotIndex, bool isCosmetic)
     {
         if (isCosmetic)
@@ -669,11 +674,30 @@ internal class LoadoutLockdownService
             return true;
         }
 
+        if (!EntityManager.TryGetComponentData<Equipment>(character, out var equipment))
+        {
+            LogUtil.LogWarning("IsValidItemEquip failed to find Equipment on character");
+            return true;
+        }
+        if (!EntityManager.TryGetComponentData<EquippableData>(candidateItemEntity, out var equippableData))
+        {
+            LogUtil.LogWarning("IsValidItemEquip failed to find EquippableData on candidateItemEntity");
+            return true;
+        }
+
         // NewWeaponEquipmentRestrictionsUtilty.IsValidWeaponEquip has a side effect of swapping the item into a wasted slot,
         // so we mimic that ourselves. But with different rules about what counts as a wasted slot.
         if (TryFindWastedWeaponSlot(character, out var wastedSlotIndex))
         {
             SwapItemsInSameInventory(character, fromSlotIndex, wastedSlotIndex);
+            equipment.SetEquipped(
+                EntityManager,
+                character,
+                equippableData.EquipmentType,
+                candidateItemEntity,
+                candidateIB.ItemType
+            );
+            EntityManager.SetComponentData(character, equipment);
             return true;
         }
 
