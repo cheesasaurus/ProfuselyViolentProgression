@@ -165,3 +165,22 @@ public struct RulingItemDropFromInventory
     };
 }
 
+public struct RulingItemDropFromDesignatedSlot
+{
+    public Judgement Judgement;
+    public bool IsAllowed;
+
+    public static RulingItemDropFromDesignatedSlot Allowed(Judgement judgement) => new()
+    {
+        Judgement = judgement,
+        IsAllowed = true,
+    };
+
+    public static RulingItemDropFromDesignatedSlot Disallowed(Judgement judgement) => new()
+    {
+        Judgement = judgement,
+        IsAllowed = false,
+    };
+}
+
+

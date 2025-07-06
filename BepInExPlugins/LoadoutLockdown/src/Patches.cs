@@ -363,14 +363,17 @@ public static unsafe class Patches
         var fromCharacters2 = query2.ToComponentDataArray<FromCharacter>(Allocator.Temp);
         for (var i = 0; i < entities2.Length; i++)
         {
-            var isValidDrop = LoadoutService.IsValidItemDropFromDedicatedSlot(
-                character: fromCharacters2[i].Character,
+            var character = fromCharacters2[i].Character;
+
+            var ruling = LoadoutService.ValidateItemDropFromDesignatedSlot(
+                character: character,
                 equipmentType: dropEquippedItemEvents[i].EquipmentType
             );
 
-            if (!isValidDrop)
+            if (!ruling.IsAllowed)
             {
                 EntityManager.DestroyEntity(entities2[i]);
+                LoadoutService.SendMessageDisallowed(character, ruling.Judgement);
             }
         }
 

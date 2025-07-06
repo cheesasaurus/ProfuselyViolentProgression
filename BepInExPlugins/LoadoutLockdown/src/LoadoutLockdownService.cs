@@ -205,44 +205,6 @@ internal class LoadoutLockdownService
         return EquipmentSlotStatus.FilledNotWasted;
     }
 
-    // todo: remove
-    public bool IsDesignatedSlotWasted(Entity character, Entity equippableEntity)
-    {
-        if (!HasDesignatedSlot(equippableEntity))
-        {
-            return false;
-        }
-
-        if (!EntityManager.HasComponent<EquippableData>(equippableEntity))
-        {
-            return false;
-        }
-        var equippableData = EntityManager.GetComponentData<EquippableData>(equippableEntity);
-
-        if (!EntityManager.HasComponent<Equipment>(character))
-        {
-            return false;
-        }
-        var equipment = EntityManager.GetComponentData<Equipment>(character);
-        if (!equipment.IsEquipped(equippableData.EquipmentType))
-        {
-            return true;
-        }
-
-        var entityInSlot = equipment.GetEquipmentEntity(equippableData.EquipmentType)._Entity;
-        if (!EntityManager.HasComponent<PrefabGUID>(entityInSlot))
-        {
-            return false;
-        }
-        var prefabGUIDInSlot = EntityManager.GetComponentData<PrefabGUID>(entityInSlot);
-        if (_notWaste.Contains(prefabGUIDInSlot))
-        {
-            return false;
-        }
-        // could potentially compare the gear (e.g. levels), but let's not overcomplicate it for something that nobody is asking for.
-        return false;
-    }
-
     public bool CanMenuSwapIntoFilledSlotDuringPVP(Entity entity)
     {
         if (AlwaysAllowSwapIntoSlot(entity))
@@ -676,21 +638,6 @@ internal class LoadoutLockdownService
         }
     }
 
-    public void SendMessageEquipmentForbidden(Entity character)
-    {
-        CreateSCTMessage(character, SCTMessage_Disabled, ColorRed);
-    }
-
-    public void SendMessageCannotMenuSwapDuringPVP(Entity character)
-    {
-        CreateSCTMessage(character, SCTMessage_CannotModifyActionBarWhilePVP, ColorRed);
-    }
-
-    public void SendMessageNoFreeWeaponSlots(Entity character)
-    {
-        CreateSCTMessage(character, SCTMessage_NoFreeActionBarSlots, ColorRed);
-    }
-
     public RulingItemEquip ValidateItemEquip(Entity character, Entity fromInventory, int fromSlotIndex, bool isCosmetic)
     {
         var ruling = _ValidateItemEquip(character, fromInventory, fromSlotIndex, isCosmetic);
@@ -1023,28 +970,42 @@ internal class LoadoutLockdownService
         }
     }
 
-    public bool IsValidItemDropFromDedicatedSlot(Entity character, EquipmentType equipmentType)
+    public RulingItemDropFromDesignatedSlot ValidateItemDropFromDesignatedSlot(Entity character, EquipmentType equipmentType)
     {
-        if (!IsInRestrictiveCombat(character))
+        var ruling = _ValidateItemDropFromDesignatedSlot(character, equipmentType);
+        RulingLogger.LogItemDropFromDesignatedSlot(ruling);
+        return ruling;
+    }
+
+    public RulingItemDropFromDesignatedSlot _ValidateItemDropFromDesignatedSlot(Entity character, EquipmentType equipmentType)
+    {
+        var combatRestriction = CheckCombatRestriction(character);
+        if (combatRestriction is CombatRestriction.None)
         {
-            return true;
+            return RulingItemDropFromDesignatedSlot.Allowed(Judgement.Allowed_NotInRestrictiveCombat);
         }
 
         if (!EntityManager.HasComponent<Equipment>(character))
         {
             LogUtil.LogWarning("IsValidItemDropFromDedicatedSlot failed to find Equipment on character");
-            return true;
+            return RulingItemDropFromDesignatedSlot.Allowed(Judgement.Allowed_Exception);
         }
         var equipment = EntityManager.GetComponentData<Equipment>(character);
         var entityInSlot = equipment.GetEquipmentEntity(equipmentType)._Entity;
 
         if (CanDirectlyMoveOutOfSlotDuringPVP(entityInSlot))
         {
-            return true;
+            return RulingItemDropFromDesignatedSlot.Allowed(Judgement.Allowed_EquipmentCanAlwaysBeUnEquipped);
         }
 
-        SendMessageCannotMenuSwapDuringPVP(character);
-        return false;
+        if (combatRestriction is CombatRestriction.PvPCombat)
+        {
+            return RulingItemDropFromDesignatedSlot.Disallowed(Judgement.Disallowed_CannotMenuSwapDuringPvPCombat);
+        }
+        else
+        {
+            return RulingItemDropFromDesignatedSlot.Disallowed(Judgement.Disallowed_CannotMenuSwapDuringAnyCombat);
+        }
     }
 
     public void UnEquipForbiddenItemsFromAllPlayerCharacters()
@@ -1125,12 +1086,6 @@ internal class LoadoutLockdownService
             return CombatRestriction.AnyCombat;
         }
         return CombatRestriction.None;
-    }
-
-    public bool IsInRestrictiveCombat(Entity character)
-    {
-        return IsInPvPCombat(character)
-            || (_config.ApplyPvpMenuSwapRulesToPVE && IsInCombat(character));
     }
 
     public bool IsInPvPCombat(Entity character)

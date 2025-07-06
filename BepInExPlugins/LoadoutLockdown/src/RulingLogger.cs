@@ -67,6 +67,15 @@ public static class RulingLogger
         LogUtil.LogDebug(sb.ToString());
     }
 
-    
+    public static void LogItemDropFromDesignatedSlot(RulingItemDropFromDesignatedSlot ruling)
+    {
+        if (!Enabled) return;
+        var sb = new StringBuilder();
+        sb.AppendLine("Ruling Made.");
+        sb.AppendLine($"  ValidateItemDropFromDesignatedSlot");
+        sb.AppendLine($"  IsAllowed: {ruling.IsAllowed}");
+        sb.Append($"  Judgement: {ruling.Judgement}");
+        LogUtil.LogDebug(sb.ToString());
+    }
 
 }
