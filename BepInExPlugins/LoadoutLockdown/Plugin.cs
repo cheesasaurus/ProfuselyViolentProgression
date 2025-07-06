@@ -20,6 +20,7 @@ public class Plugin : BasePlugin
     HookDOTS.API.HookDOTS _hookDOTS;
 
     ConfigEntry<string> RulesetFilename;
+    ConfigEntry<bool> DebugLogRulings;
     BepInExConfigReloader BepInExConfigReloader;
 
     ConfigManagerJSON<LoadoutLockdownConfig> RulesetManager;
@@ -32,10 +33,12 @@ public class Plugin : BasePlugin
     {
         LogUtil.Init(Log);
         RulesetFilename = Config.Bind("General", "RulesetFilename", "MyRuleset.jsonc", "Filename of the ruleset to apply. Relative to BepInEx/config/LoadoutLockdown/");
+        DebugLogRulings = Config.Bind("Debug", "LogRulings", false, "Log all rulings made by LoadoutLockdown.");
     }
 
     public override void Load()
     {
+        RulingLogger.Enabled = DebugLogRulings.Value;
         BepInExConfigReloader = new BepInExConfigReloader(Config);
 
         _harmony = new Harmony(MyPluginInfo.PLUGIN_GUID);
@@ -54,6 +57,7 @@ public class Plugin : BasePlugin
 
         Hooks.EarlyUpdateGroup_Updated += OnEarlyUpdate;
         RulesetFilename.SettingChanged += HandleRulesetFilenameChanged;
+        DebugLogRulings.SettingChanged += HandleDebugLogRulingsChanged;
 
         CommandRegistry.RegisterAll();
 
@@ -66,6 +70,7 @@ public class Plugin : BasePlugin
         BepInExConfigReloader?.Dispose();
         Hooks.EarlyUpdateGroup_Updated -= OnEarlyUpdate;
         RulesetFilename.SettingChanged -= HandleRulesetFilenameChanged;
+        DebugLogRulings.SettingChanged -= HandleDebugLogRulingsChanged;
         _hookDOTS.Dispose();
         _harmony?.UnpatchSelf();
         if (RulesetManager is not null)
@@ -84,6 +89,11 @@ public class Plugin : BasePlugin
         }
         _initialized = true;
         ReloadRuleset();
+    }
+
+    public void HandleDebugLogRulingsChanged(object sender, EventArgs e)
+    {
+        RulingLogger.Enabled = DebugLogRulings.Value;
     }
 
     public void HandleRulesetChanged(LoadoutLockdownConfig config)

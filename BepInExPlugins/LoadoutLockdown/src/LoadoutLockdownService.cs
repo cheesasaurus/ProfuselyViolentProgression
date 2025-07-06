@@ -693,6 +693,13 @@ internal class LoadoutLockdownService
 
     public RulingItemEquip ValidateItemEquip(Entity character, Entity fromInventory, int fromSlotIndex, bool isCosmetic)
     {
+        var ruling = _ValidateItemEquip(character, fromInventory, fromSlotIndex, isCosmetic);
+        RulingLogger.LogItemEquip(ruling);
+        return ruling;
+    }
+
+    private RulingItemEquip _ValidateItemEquip(Entity character, Entity fromInventory, int fromSlotIndex, bool isCosmetic)
+    {
         if (isCosmetic)
         {
             return RulingItemEquip.Allowed(Judgement.Allowed_Cosmetic);
@@ -800,7 +807,14 @@ internal class LoadoutLockdownService
         EntityManager.SetComponentData(character, equipment);
     }
 
-    public RulingItemMoveBetweenInventorySlots ValidateItemMove(MoveItemBetweenInventoriesEvent moveEvent, Entity toInventory, Entity fromInventory)
+    public RulingItemMoveBetweenInventorySlots ValidateItemMoveBetweenInventorySlots(MoveItemBetweenInventoriesEvent moveEvent, Entity toInventory, Entity fromInventory)
+    {
+        var ruling = _ValidateItemMoveBetweenInventorySlots(moveEvent, toInventory, fromInventory);
+        RulingLogger.LogItemMoveBetweenInventorySlots(ruling);
+        return ruling;
+    }
+
+    private RulingItemMoveBetweenInventorySlots _ValidateItemMoveBetweenInventorySlots(MoveItemBetweenInventoriesEvent moveEvent, Entity toInventory, Entity fromInventory)
     {
         bool isFromPlayerInventory = IsPlayerInventory(fromInventory);
         bool isToPlayerInventory = IsPlayerInventory(toInventory);
@@ -913,6 +927,28 @@ internal class LoadoutLockdownService
         {
             return RulingItemMoveBetweenInventorySlots.Disallowed(Judgement.Disallowed_CannotMenuSwapDuringAnyCombat);
         }
+    }
+
+    public RulingTryAutoEquipAfterAddItem ValidateTryAutoEquipAfterAddItem(PrefabGUID itemPrefabGUID)
+    {
+        var ruling = _ValidateTryAutoEquipAfterAddItem(itemPrefabGUID);
+        RulingLogger.LogTryAutoEquipAfterAddItem(ruling, itemPrefabGUID);
+        return ruling;
+    }
+
+    private RulingTryAutoEquipAfterAddItem _ValidateTryAutoEquipAfterAddItem(PrefabGUID itemPrefabGUID)
+    {
+        if (!ItemHashLookupMap.TryGetValue(itemPrefabGUID, out var itemData))
+        {
+            return RulingTryAutoEquipAfterAddItem.Allowed(Judgement.Allowed_Exception);
+        }
+
+        if (IsEquipmentForbidden(itemData.Entity))
+        {
+            return RulingTryAutoEquipAfterAddItem.Disallowed(Judgement.Disallowed_EquipmentToEquipIsForbidden);
+        }
+        
+        return RulingTryAutoEquipAfterAddItem.Allowed(Judgement.Allowed_TryAutoEquipAlwaysAllowedUnlessEquipmentToEquipIsForbidden);
     }
 
     public bool IsValidItemDrop(Entity character, Entity fromInventory, int slotIndex)

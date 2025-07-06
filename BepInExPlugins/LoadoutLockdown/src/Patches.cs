@@ -32,12 +32,8 @@ public static unsafe class Patches
     [HarmonyPrefix]
     public static void TryAddItem_Prefix(ref AddItemSettings addItemSettings, Entity target, PrefabGUID itemType, int amount)
     {
-        if (!ItemHashLookupMap.TryGetValue(itemType, out var itemData))
-        {
-            return;
-        }
-
-        if (LoadoutService.IsEquipmentForbidden(itemData.Entity))
+        var autoEquipRuling = LoadoutService.ValidateTryAutoEquipAfterAddItem(itemType);
+        if (!autoEquipRuling.IsAllowed)
         {
             addItemSettings.EquipIfPossible = false;
         }
@@ -47,12 +43,8 @@ public static unsafe class Patches
     [HarmonyPrefix]
     public static void TryAddItem_Prefix(ref AddItemSettings addItemSettings, Entity target, InventoryBuffer inventoryItem)
     {
-        if (!ItemHashLookupMap.TryGetValue(inventoryItem.ItemType, out var itemData))
-        {
-            return;
-        }
-
-        if (LoadoutService.IsEquipmentForbidden(itemData.Entity))
+        var autoEquipRuling = LoadoutService.ValidateTryAutoEquipAfterAddItem(inventoryItem.ItemType);
+        if (!autoEquipRuling.IsAllowed)
         {
             addItemSettings.EquipIfPossible = false;
         }
@@ -99,7 +91,7 @@ public static unsafe class Patches
             return EXECUTE_ORIGINAL_METHOD;
         }
 
-        var ruling = LoadoutService.ValidateItemMove(moveEvent, toInventory, fromInventory);
+        var ruling = LoadoutService.ValidateItemMoveBetweenInventorySlots(moveEvent, toInventory, fromInventory);
         if (ruling.ShouldUnEquipItemBeforeMoving)
         {
             InventoryUtilitiesServer.TryUnEquipItem(EntityManager, ruling.ItemToUnEquip.Character, ruling.ItemToUnEquip.Item);

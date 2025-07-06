@@ -18,6 +18,7 @@ public enum Judgement
     Allowed_InsertIntoEmptySlot,
     Allowed_SwapIntoWastedSlot,
     Allowed_EquipmentCanAlwaysBeSwappedIntoAppropriateSlot,
+    Allowed_TryAutoEquipAlwaysAllowedUnlessEquipmentToEquipIsForbidden,
     Disallowed_EquipmentToEquipIsForbidden,
     Disallowed_CannotMenuSwapDuringPvPCombat,
     Disallowed_CannotMenuSwapDuringAnyCombat,
@@ -105,4 +106,23 @@ public struct RulingItemEquip
     };
 }
 
+
+public struct RulingTryAutoEquipAfterAddItem
+{
+    public Judgement Judgement;
+    public bool IsAllowed;
+
+    public static RulingTryAutoEquipAfterAddItem Allowed(Judgement judgement) => new()
+    {
+        Judgement = judgement,
+        IsAllowed = true,
+    };
+
+    public static RulingTryAutoEquipAfterAddItem Disallowed(Judgement judgement) => new()
+    {
+        Judgement = judgement,
+        IsAllowed = false,
+    };
+
+}
 
