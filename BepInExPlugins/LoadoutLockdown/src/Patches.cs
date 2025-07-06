@@ -191,6 +191,7 @@ public static unsafe class Patches
 
         for (var i = 0; i < entities.Length; i++)
         {
+            var character = fromCharacters[i].Character;
             var fromSlotIndex = equipItemFromInventoryEvents[i].SlotIndex;
             var inventoryNetworkId = equipItemFromInventoryEvents[i].FromInventory;
             if (!networkIdToEntityMap.TryGetValue(inventoryNetworkId, out var fromInventoryEntity))
@@ -199,16 +200,28 @@ public static unsafe class Patches
                 continue;
             }
 
-            bool isValidItemEquip = LoadoutService.IsValidItemEquip(
-                character: fromCharacters[i].Character,
+            var ruling = LoadoutService.ValidateItemEquip(
+                character: character,
                 fromInventory: fromInventoryEntity,
                 fromSlotIndex: fromSlotIndex,
                 isCosmetic: equipItemFromInventoryEvents[i].IsCosmetic
             );
 
-            if (!isValidItemEquip)
+            if (!ruling.IsAllowed)
             {
                 EntityManager.DestroyEntity(entities[i]);
+                LoadoutService.SendMessageDisallowed(character, ruling.Judgement);
+            }
+            else if (ruling.ShouldMoveToWastedWeaponSlotBeforeEquipping)
+            {
+                LoadoutService.SwapIntoWastedWeaponSlotAndEquip(
+                    character,
+                    fromSlotIndex,
+                    ruling.WastedWeaponSlotIndex,
+                    ruling.ItemToEquip.Entity,
+                    ruling.ItemToEquip.PrefabGUID,
+                    ruling.ItemToEquip.EquippableData
+                );
             }
         }
     }
@@ -232,18 +245,34 @@ public static unsafe class Patches
 
         for (var i = 0; i < entities.Length; i++)
         {
+            var character = fromCharacters[i].Character;
             var fromSlotIndex = equipItemEvents[i].SlotIndex;
 
-            bool isValidItemEquip = LoadoutService.IsValidItemEquip(
-                character: fromCharacters[i].Character,
+            var ruling = LoadoutService.ValidateItemEquip(
+                character: character,
                 fromInventory: fromCharacters[i].Character,
                 fromSlotIndex: fromSlotIndex,
                 isCosmetic: equipItemEvents[i].IsCosmetic
             );
 
-            if (!isValidItemEquip)
+            // todo: config option to log all rulings
+            //LogUtil.LogDebug(ruling.Judgement);
+
+            if (!ruling.IsAllowed)
             {
                 EntityManager.DestroyEntity(entities[i]);
+                LoadoutService.SendMessageDisallowed(character, ruling.Judgement);
+            }
+            else if (ruling.ShouldMoveToWastedWeaponSlotBeforeEquipping)
+            {
+                LoadoutService.SwapIntoWastedWeaponSlotAndEquip(
+                    character,
+                    fromSlotIndex,
+                    ruling.WastedWeaponSlotIndex,
+                    ruling.ItemToEquip.Entity,
+                    ruling.ItemToEquip.PrefabGUID,
+                    ruling.ItemToEquip.EquippableData
+                );
             }
         }
     }

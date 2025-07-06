@@ -1,3 +1,5 @@
+using ProjectM;
+using Stunlock.Core;
 using Unity.Entities;
 
 namespace ProfuselyViolentProgression.LoadoutLockdown.Rulings;
@@ -7,6 +9,7 @@ public enum Judgement
 {
     Allowed_Exception,
     Allowed_NoPlayerCharactersInvolved,
+    Allowed_Cosmetic,
     Allowed_NotInRestrictiveCombat,
     Allowed_NoEquipmentSlotsInvolved,
     Allowed_NoEquipmentSlotRequired,
@@ -26,6 +29,14 @@ public enum CombatRestriction
     None,
     AnyCombat,
     PvPCombat,
+}
+
+public enum EquipmentSlotStatus
+{
+    Unknown,
+    Empty,
+    FilledWasted,
+    FilledNotWasted,
 }
 
 public struct RulingItemMoveBetweenInventorySlots
@@ -62,6 +73,14 @@ public struct RulingItemEquip
     public bool IsAllowed;
     public bool ShouldMoveToWastedWeaponSlotBeforeEquipping;
     public int WastedWeaponSlotIndex;
+    public EquippableItem ItemToEquip;
+
+    public struct EquippableItem
+    {
+        public Entity Entity;
+        public PrefabGUID PrefabGUID;
+        public EquippableData EquippableData;
+    }
 
     public static RulingItemEquip Allowed(Judgement judgement) => new()
     {

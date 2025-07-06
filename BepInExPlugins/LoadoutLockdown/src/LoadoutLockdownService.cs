@@ -168,6 +168,44 @@ internal class LoadoutLockdownService
         return EquipmentTypesWithDesignatedSlot.Contains(equippableData.EquipmentType);
     }
 
+    public EquipmentSlotStatus DesignatedSlotStatus(Entity character, Entity equippableEntity)
+    {
+        if (!HasDesignatedSlot(equippableEntity))
+        {
+            return EquipmentSlotStatus.Unknown;
+        }
+
+        if (!EntityManager.HasComponent<EquippableData>(equippableEntity))
+        {
+            return EquipmentSlotStatus.Unknown;
+        }
+        var equippableData = EntityManager.GetComponentData<EquippableData>(equippableEntity);
+
+        if (!EntityManager.HasComponent<Equipment>(character))
+        {
+            return EquipmentSlotStatus.Unknown;
+        }
+        var equipment = EntityManager.GetComponentData<Equipment>(character);
+        if (!equipment.IsEquipped(equippableData.EquipmentType))
+        {
+            return EquipmentSlotStatus.Empty;
+        }
+
+        var entityInSlot = equipment.GetEquipmentEntity(equippableData.EquipmentType)._Entity;
+        if (!EntityManager.HasComponent<PrefabGUID>(entityInSlot))
+        {
+            return EquipmentSlotStatus.Unknown;
+        }
+        var prefabGUIDInSlot = EntityManager.GetComponentData<PrefabGUID>(entityInSlot);
+        if (_notWaste.Contains(prefabGUIDInSlot))
+        {
+            return EquipmentSlotStatus.FilledNotWasted;
+        }
+        // could potentially compare the gear (e.g. levels), but let's not overcomplicate it for something that nobody is asking for.
+        return EquipmentSlotStatus.FilledNotWasted;
+    }
+
+    // todo: remove
     public bool IsDesignatedSlotWasted(Entity character, Entity equippableEntity)
     {
         if (!HasDesignatedSlot(equippableEntity))
@@ -614,6 +652,30 @@ internal class LoadoutLockdownService
         );
     }
 
+    public void SendMessageDisallowed(Entity character, Judgement judgement)
+    {
+        switch (judgement)
+        {
+            case Judgement.Disallowed_EquipmentToEquipIsForbidden:
+                CreateSCTMessage(character, SCTMessage_Disabled, ColorRed);
+                break;
+
+            case Judgement.Disallowed_NoFreeWeaponSlots:
+                CreateSCTMessage(character, SCTMessage_NoFreeActionBarSlots, ColorRed);
+                break;
+
+            case Judgement.Disallowed_CannotMenuSwapDuringAnyCombat:
+                // same message as pvp combat. this is scuffed,
+                // but there isn't any better existing message to use.
+            case Judgement.Disallowed_CannotMenuSwapDuringPvPCombat:
+                CreateSCTMessage(character, SCTMessage_CannotModifyActionBarWhilePVP, ColorRed);
+                break;
+
+            default:
+                break;
+        }
+    }
+
     public void SendMessageEquipmentForbidden(Entity character)
     {
         CreateSCTMessage(character, SCTMessage_Disabled, ColorRed);
@@ -629,81 +691,113 @@ internal class LoadoutLockdownService
         CreateSCTMessage(character, SCTMessage_NoFreeActionBarSlots, ColorRed);
     }
 
-    // todo: refactor this, move side effects out
-    public bool IsValidItemEquip(Entity character, Entity fromInventory, int fromSlotIndex, bool isCosmetic)
+    public RulingItemEquip ValidateItemEquip(Entity character, Entity fromInventory, int fromSlotIndex, bool isCosmetic)
     {
         if (isCosmetic)
         {
-            return true;
+            return RulingItemEquip.Allowed(Judgement.Allowed_Cosmetic);
         }
 
         if (!InventoryUtilities.TryGetItemAtSlot(EntityManager, fromInventory, fromSlotIndex, out InventoryBuffer candidateIB))
         {
-            LogUtil.LogWarning("IsValidItemEquip could not find candidateIB");
-            return false;
+            LogUtil.LogWarning("ValidateItemEquip could not find candidateIB");
+            return RulingItemEquip.Allowed(Judgement.Allowed_Exception);
         }
         var candidateItemEntity = candidateIB.ItemEntity._Entity;
 
         if (IsEquipmentForbidden(candidateItemEntity))
         {
-            SendMessageEquipmentForbidden(character);
-            return false;
+            return RulingItemEquip.Disallowed(Judgement.Disallowed_EquipmentToEquipIsForbidden);
         }
 
         if (IsEquippableWithoutSlot(candidateItemEntity))
         {
-            return true;
+            return RulingItemEquip.Allowed(Judgement.Allowed_NoEquipmentSlotRequired);
         }
 
         if (HasDesignatedSlot(candidateItemEntity))
         {
-            var isAllowed = !IsInRestrictiveCombat(character)
-                || CanMenuSwapIntoFilledSlotDuringPVP(candidateItemEntity)
-                || IsDesignatedSlotWasted(character, candidateItemEntity);
-
-            if (!isAllowed)
+            var combatRestriction = CheckCombatRestriction(character);
+            if (combatRestriction is CombatRestriction.None)
             {
-                SendMessageCannotMenuSwapDuringPVP(character);
+                return RulingItemEquip.Allowed(Judgement.Allowed_NotInRestrictiveCombat);
             }
-            // if __result is true, the game will take care of swapping the equipped item into the slot.
-            // but only for things that have their own designated slot
-            return isAllowed;
-        }
 
-        if (IsValidWeaponSlot(fromSlotIndex))
+            if (CanMenuSwapIntoFilledSlotDuringPVP(candidateItemEntity))
+            {
+                return RulingItemEquip.Allowed(Judgement.Allowed_EquipmentCanAlwaysBeSwappedIntoAppropriateSlot);
+            }
+
+            var slotStatus = DesignatedSlotStatus(character, candidateItemEntity);
+            if (slotStatus is EquipmentSlotStatus.Empty)
+            {
+                return RulingItemEquip.Allowed(Judgement.Allowed_InsertIntoEmptySlot);
+            }
+            else if (slotStatus is EquipmentSlotStatus.FilledWasted)
+            {
+                return RulingItemEquip.Allowed(Judgement.Allowed_SwapIntoWastedSlot);
+            }
+
+            if (combatRestriction is CombatRestriction.PvPCombat)
+            {
+                return RulingItemEquip.Disallowed(Judgement.Disallowed_CannotMenuSwapDuringPvPCombat);
+            }
+            else
+            {
+                return RulingItemEquip.Disallowed(Judgement.Disallowed_CannotMenuSwapDuringAnyCombat);
+            }
+        }
+        else
         {
-            return true;
+            if (IsValidWeaponSlot(fromSlotIndex))
+            {
+                return RulingItemEquip.Allowed(Judgement.Allowed_EquipmentInValidSlot);
+            }
+
+            if (TryFindWastedWeaponSlot(character, out var wastedSlotIndex))
+            {
+                if (!EntityManager.TryGetComponentData<EquippableData>(candidateItemEntity, out var equippableData))
+                {
+                    LogUtil.LogWarning("ValidateItemEquip failed to find EquippableData on candidateItemEntity");
+                    return RulingItemEquip.Allowed(Judgement.Allowed_Exception);
+                }
+
+                return new RulingItemEquip
+                {
+                    Judgement = Judgement.Allowed_SwapIntoWastedSlot,
+                    IsAllowed = true,
+                    ShouldMoveToWastedWeaponSlotBeforeEquipping = true,
+                    WastedWeaponSlotIndex = wastedSlotIndex,
+                    ItemToEquip = new()
+                    {
+                        Entity = candidateItemEntity,
+                        PrefabGUID = candidateIB.ItemType,
+                        EquippableData = equippableData,
+                    },
+                };
+            }
+
+            return RulingItemEquip.Disallowed(Judgement.Disallowed_NoFreeWeaponSlots);
         }
 
+    }
+
+    public void SwapIntoWastedWeaponSlotAndEquip(Entity character, int fromSlotIndex, int toSlotIndex, Entity itemEntity, PrefabGUID itemPrefabGUID, EquippableData equippableData)
+    {
         if (!EntityManager.TryGetComponentData<Equipment>(character, out var equipment))
         {
-            LogUtil.LogWarning("IsValidItemEquip failed to find Equipment on character");
-            return true;
+            LogUtil.LogWarning("EquipIntoWastedWeaponSlot failed to find Equipment on character");
+            return;
         }
-        if (!EntityManager.TryGetComponentData<EquippableData>(candidateItemEntity, out var equippableData))
-        {
-            LogUtil.LogWarning("IsValidItemEquip failed to find EquippableData on candidateItemEntity");
-            return true;
-        }
-
-        // NewWeaponEquipmentRestrictionsUtilty.IsValidWeaponEquip has a side effect of swapping the item into a wasted slot,
-        // so we mimic that ourselves. But with different rules about what counts as a wasted slot.
-        if (TryFindWastedWeaponSlot(character, out var wastedSlotIndex))
-        {
-            SwapItemsInSameInventory(character, fromSlotIndex, wastedSlotIndex);
-            equipment.SetEquipped(
-                EntityManager,
-                character,
-                equippableData.EquipmentType,
-                candidateItemEntity,
-                candidateIB.ItemType
-            );
-            EntityManager.SetComponentData(character, equipment);
-            return true;
-        }
-
-        SendMessageNoFreeWeaponSlots(character);
-        return false;
+        SwapItemsInSameInventory(character, fromSlotIndex, toSlotIndex);
+        equipment.SetEquipped(
+            EntityManager,
+            character,
+            equippableData.EquipmentType,
+            itemEntity,
+            itemPrefabGUID
+        );
+        EntityManager.SetComponentData(character, equipment);
     }
 
     public RulingItemMoveBetweenInventorySlots ValidateItemMove(MoveItemBetweenInventoriesEvent moveEvent, Entity toInventory, Entity fromInventory)
