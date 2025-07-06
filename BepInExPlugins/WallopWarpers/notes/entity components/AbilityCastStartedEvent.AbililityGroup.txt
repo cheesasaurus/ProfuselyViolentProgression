@@ -1,0 +1,29 @@
+ProjectM.Attach
+ProjectM.EntityOwner
+ProjectM.EntityCreator
+ProjectM.AbilityGroupState
+ProjectM.DestroyData
+ProjectM.DestroyState
+ProjectM.StoredPowerStats
+ProjectM.AbilityGroupInfo
+ProjectM.Network.Networked
+ProjectM.Network.UpToDateUserBitMask
+ProjectM.Network.SyncToUserBitMask
+ProjectM.Network.FrameChanged
+ProjectM.Network.NetworkSnapshot
+ProjectM.Network.NetworkId
+Stunlock.Core.PrefabGUID
+ProjectM.Attached
+ProjectM.AbilityStateBuffer [Buffer]
+ProjectM.Network.SyncToUserBuffer [Buffer]
+ProjectM.Network.Snapshot_AbilityStateBuffer [Buffer]
+ProjectM.AbilityCastCondition [Buffer]
+ProjectM.AbilityGroupStartAbilitiesBuffer [Buffer]
+ProjectM.Network.NetSnapshot [Buffer]
+ProjectM.Network.SnapshotFrameChangedBuffer [Buffer]
+ProjectM.PreventDisableWhenNoPlayersInRange
+ProjectM.Network.OnlySyncToUsersTag
+Unity.Entities.Simulate
+Unity.Entities.BlobAssetOwner
+ProjectM.AttachedDepth
+ProjectM.Network.NetworkSnapshotType

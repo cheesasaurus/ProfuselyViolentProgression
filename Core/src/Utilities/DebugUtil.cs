@@ -1,5 +1,7 @@
+using System;
 using System.Text.Json;
 using ProjectM;
+using ProjectM.CastleBuilding;
 using ProjectM.Gameplay.Scripting;
 using ProjectM.Shared;
 using Stunlock.Core;
@@ -46,6 +48,19 @@ public static class DebugUtil
         }
         var prefabGuid = entityManager.GetComponentData<PrefabGUID>(entity);
         LogUtil.LogInfo($"  PrefabGUID: {LookupPrefabName(prefabGuid)}");
+    }
+
+    public static void LogBuffableFlagState(Entity entity)
+    {
+        var entityManager = WorldUtil.Game.EntityManager;
+        if (!entityManager.HasComponent<BuffableFlagState>(entity))
+        {
+            return;
+        }
+        var bfs = entityManager.GetComponentData<BuffableFlagState>(entity);
+        LogUtil.LogInfo($"  BuffableFlagState:");
+        LogUtil.LogInfo($"    Value: {bfs.Value._Value}");
+        LogUtil.LogInfo($"      BuffModificationTypes: {(BuffModificationTypes)bfs.Value._Value}");
     }
 
     public static void LogBuffs(Entity entity)
@@ -355,6 +370,73 @@ public static class DebugUtil
         LogUtil.LogInfo($"    OverrideProjectileSpeedMax: {apfogeds.OverrideProjectileSpeedMax}");
     }
 
+    public static void LogInteractAbilityBuffer(Entity entity)
+    {
+        var entityManager = WorldUtil.Game.EntityManager;
+        if (!entityManager.HasBuffer<InteractAbilityBuffer>(entity))
+        {
+            return;
+        }
+        LogUtil.LogInfo($"  InteractAbilityBuffer [Buffer]:");
+        var buffer = entityManager.GetBuffer<InteractAbilityBuffer>(entity);
+        for (var i = 0; i < buffer.Length; i++)
+        {
+            var ibb = buffer[i];
+            LogUtil.LogInfo($"    InteractAbilityBuffer [{i}]");
+            LogUtil.LogInfo($"      Ability: {LookupPrefabName(ibb.Ability)}");
+            LogUtil.LogInfo($"      Importance: {ibb.Importance}");
+            LogUtil.LogInfo($"      HideInteractHUDWhileCasting: {ibb.HideInteractHUDWhileCasting}");
+            LogUtil.LogInfo("    ----");
+        }
+    }
+
+    public static void LogAttachedBuffer(Entity entity)
+    {
+        var entityManager = WorldUtil.Game.EntityManager;
+        if (!entityManager.HasBuffer<AttachedBuffer>(entity))
+        {
+            return;
+        }
+        LogUtil.LogInfo($"  AttachedBuffer [Buffer]:");
+        var buffer = entityManager.GetBuffer<AttachedBuffer>(entity);
+        for (var i = 0; i < buffer.Length; i++)
+        {
+            var ab = buffer[i];
+            LogUtil.LogInfo($"    AttachedBuffer [{i}]");
+            LogUtil.LogInfo($"      PrefabGuid: {LookupPrefabName(ab.PrefabGuid)}");
+            LogUtil.LogInfo("    ----");
+        }
+    }
+
+    public static void LogCastleTeleporterElement(Entity entity)
+    {
+        var entityManager = WorldUtil.Game.EntityManager;
+        if (!entityManager.HasBuffer<CastleTeleporterElement>(entity))
+        {
+            return;
+        }
+        LogUtil.LogInfo($"  CastleTeleporterElement [Buffer]:");
+        var buffer = entityManager.GetBuffer<CastleTeleporterElement>(entity);
+        for (var i = 0; i < buffer.Length; i++)
+        {
+            var cte = buffer[i];
+            LogUtil.LogInfo($"    CastleTeleporterElement [{i}]");
+            LogUtil.LogInfo($"      Group: {cte.Group}");
+            LogUtil.LogInfo("    ----");
+        }
+    }
+
+    public static string LookupPrefabName(Entity entity)
+    {
+        var entityManager = WorldUtil.Game.EntityManager;
+        if (!entityManager.HasComponent<PrefabGUID>(entity))
+        {
+            return "Entity does not have PrefabGUID component";
+        }
+        var prefabGuid = entityManager.GetComponentData<PrefabGUID>(entity);
+        return LookupPrefabName(prefabGuid);
+    }
+
     public static string LookupPrefabName(PrefabGUID prefabGuid)
     {
         var prefabCollectionSystem = WorldUtil.Game.GetExistingSystemManaged<PrefabCollectionSystem>();
@@ -364,8 +446,7 @@ public static class DebugUtil
             return $"{prefabLookupMap.GetName(prefabGuid)} PrefabGUID({prefabGuid.GuidHash})";
         }
         return $"GUID Not Found {prefabGuid._Value}";
-    }
-    
+    }   
 
 
 }

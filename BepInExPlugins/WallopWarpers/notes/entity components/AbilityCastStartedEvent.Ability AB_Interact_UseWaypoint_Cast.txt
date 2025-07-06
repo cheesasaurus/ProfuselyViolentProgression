@@ -1,0 +1,37 @@
+// AbilityCastStartedEvent.Ability AB_Interact_UseWaypoint_Cast
+
+ProjectM.AbilityTarget
+ProjectM.HideWeapon
+ProjectM.Attach
+ProjectM.EntityOwner
+ProjectM.EntityCreator
+ProjectM.AbilityState
+ProjectM.Network.ModifyRotationDuringCast
+ProjectM.AbilityPriority
+ProjectM.AbilityCastTimeData
+ProjectM.HideWeaponDuringCast
+ProjectM.DestroyData
+ProjectM.DestroyState
+ProjectM.AbilityCooldownState
+ProjectM.AbilityCooldownData
+ProjectM.Network.Networked
+ProjectM.Network.UpToDateUserBitMask
+ProjectM.Network.SyncToUserBitMask
+ProjectM.Network.FrameChanged
+ProjectM.Network.NetworkSnapshot
+ProjectM.Network.ModifyMovementDuringCastData
+ProjectM.Network.NetworkId
+Stunlock.Core.PrefabGUID
+ProjectM.Attached
+ProjectM.AbilitySpawnPrefabOnCast [Buffer]
+ProjectM.Network.SyncToUserBuffer [Buffer]
+ProjectM.AbilityCastCondition [Buffer]
+ProjectM.Network.NetSnapshot [Buffer]
+ProjectM.Network.SnapshotFrameChangedBuffer [Buffer]
+ProjectM.AbilityHoldToCastData
+ProjectM.PreventDisableWhenNoPlayersInRange
+ProjectM.Network.OnlySyncToUsersTag
+Unity.Entities.Simulate
+Unity.Entities.BlobAssetOwner
+ProjectM.AttachedDepth
+ProjectM.Network.NetworkSnapshotType
