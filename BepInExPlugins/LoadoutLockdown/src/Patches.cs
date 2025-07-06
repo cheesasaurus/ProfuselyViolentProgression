@@ -257,9 +257,6 @@ public static unsafe class Patches
                 isCosmetic: equipItemEvents[i].IsCosmetic
             );
 
-            // todo: config option to log all rulings
-            //LogUtil.LogDebug(ruling.Judgement);
-
             if (!ruling.IsAllowed)
             {
                 EntityManager.DestroyEntity(entities[i]);
@@ -344,15 +341,18 @@ public static unsafe class Patches
         var fromCharacters = query.ToComponentDataArray<FromCharacter>(Allocator.Temp);
         for (var i = 0; i < entities.Length; i++)
         {
-            var isValidDrop = LoadoutService.IsValidItemDrop(
-                character: fromCharacters[i].Character,
+            var character = fromCharacters[i].Character;
+
+            var ruling = LoadoutService.ValidateItemDropFromInventory(
+                character: character,
                 fromInventory: fromCharacters[i].Character,
                 slotIndex: dropItemAtSlotEvents[i].SlotIndex
             );
 
-            if (!isValidDrop)
+            if (!ruling.IsAllowed)
             {
                 EntityManager.DestroyEntity(entities[i]);
+                LoadoutService.SendMessageDisallowed(character, ruling.Judgement);
             }
         }
 
@@ -410,6 +410,7 @@ public static unsafe class Patches
 
         for (var i = 0; i < entities.Length; i++)
         {
+            var character = fromCharacters[i].Character;
             var inventoryNetworkId = dropInventoryItemEvents[i].Inventory;
             if (!networkIdToEntityMap.TryGetValue(inventoryNetworkId, out var fromInventoryEntity))
             {
@@ -417,15 +418,16 @@ public static unsafe class Patches
                 continue;
             }
 
-            var isValidDrop = LoadoutService.IsValidItemDrop(
-                character: fromCharacters[i].Character,
+            var ruling = LoadoutService.ValidateItemDropFromInventory(
+                character: character,
                 fromInventory: fromInventoryEntity,
                 slotIndex: dropInventoryItemEvents[i].SlotIndex
             );
 
-            if (!isValidDrop)
+            if (!ruling.IsAllowed)
             {
                 EntityManager.DestroyEntity(entities[i]);
+                LoadoutService.SendMessageDisallowed(character, ruling.Judgement);
             }
         }
     }

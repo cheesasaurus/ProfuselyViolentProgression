@@ -981,23 +981,46 @@ internal class LoadoutLockdownService
         }
     }
 
-    public bool IsValidItemDrop(Entity character, Entity fromInventory, int slotIndex)
+    public RulingItemDropFromInventory ValidateItemDropFromInventory(Entity character, Entity fromInventory, int slotIndex)
+    {
+        var ruling = _ValidateItemDropFromInventory(character, fromInventory, slotIndex);
+        RulingLogger.LogItemDropFromInventory(ruling);
+        return ruling;
+    }
+
+    public RulingItemDropFromInventory _ValidateItemDropFromInventory(Entity character, Entity fromInventory, int slotIndex)
     {
         if (!InventoryUtilities.TryGetItemAtSlot(EntityManager, fromInventory, slotIndex: slotIndex, out InventoryBuffer itemIB))
         {
-            LogUtil.LogWarning("IsValidItemDrop could not find candidateIB");
-            return false;
+            LogUtil.LogWarning("ValidateItemDropFromInventory could not find itemIB");
+            return RulingItemDropFromInventory.Allowed(Judgement.Allowed_Exception);
         }
 
         bool isNotDroppingFromWeaponSlot = !IsValidWeaponSlot(slotIndex);
-
-        if (!IsInRestrictiveCombat(character) || isNotDroppingFromWeaponSlot || IsWasteInWeaponSlot(itemIB))
+        if (isNotDroppingFromWeaponSlot)
         {
-            return true;
+            return RulingItemDropFromInventory.Allowed(Judgement.Allowed_NoEquipmentSlotsInvolved);
         }
 
-        SendMessageCannotMenuSwapDuringPVP(character);
-        return false;
+        var combatRestriction = CheckCombatRestriction(character);
+        if (combatRestriction is CombatRestriction.None)
+        {
+            return RulingItemDropFromInventory.Allowed(Judgement.Allowed_NotInRestrictiveCombat);
+        }
+
+        if (IsWasteInWeaponSlot(itemIB))
+        {
+            return RulingItemDropFromInventory.Allowed(Judgement.Allowed_DropFromWastedSlot);
+        }
+
+        if (combatRestriction is CombatRestriction.PvPCombat)
+        {
+            return RulingItemDropFromInventory.Disallowed(Judgement.Disallowed_CannotMenuSwapDuringPvPCombat);
+        }
+        else
+        {
+            return RulingItemDropFromInventory.Disallowed(Judgement.Disallowed_CannotMenuSwapDuringAnyCombat);
+        }
     }
 
     public bool IsValidItemDropFromDedicatedSlot(Entity character, EquipmentType equipmentType)

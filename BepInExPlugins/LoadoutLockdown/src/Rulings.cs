@@ -16,6 +16,7 @@ public enum Judgement
     Allowed_RearrangeWeaponSlots,
     Allowed_EquipmentInValidSlot,
     Allowed_InsertIntoEmptySlot,
+    Allowed_DropFromWastedSlot,
     Allowed_SwapIntoWastedSlot,
     Allowed_EquipmentCanAlwaysBeSwappedIntoAppropriateSlot,
     Allowed_TryAutoEquipAlwaysAllowedUnlessEquipmentToEquipIsForbidden,
@@ -140,6 +141,24 @@ public struct RulingUnEquipItemFromDesignatedSlotToInventory
     };
 
     public static RulingUnEquipItemFromDesignatedSlotToInventory Disallowed(Judgement judgement) => new()
+    {
+        Judgement = judgement,
+        IsAllowed = false,
+    };
+}
+
+public struct RulingItemDropFromInventory
+{
+    public Judgement Judgement;
+    public bool IsAllowed;
+
+    public static RulingItemDropFromInventory Allowed(Judgement judgement) => new()
+    {
+        Judgement = judgement,
+        IsAllowed = true,
+    };
+
+    public static RulingItemDropFromInventory Disallowed(Judgement judgement) => new()
     {
         Judgement = judgement,
         IsAllowed = false,
