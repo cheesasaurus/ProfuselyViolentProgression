@@ -45,6 +45,17 @@ public static class RulingLogger
         LogUtil.LogDebug(sb.ToString());
     }
 
+    public static void LogUnEquipItemFromDesignatedSlotToInventory(RulingUnEquipItemFromDesignatedSlotToInventory ruling)
+    {
+        if (!Enabled) return;
+        var sb = new StringBuilder();
+        sb.AppendLine("Ruling Made.");
+        sb.AppendLine($"  ValidateUnEquipItemFromDesignatedSlotToInventory");
+        sb.AppendLine($"  IsAllowed: {ruling.IsAllowed}");
+        sb.AppendLine($"  Judgement: {ruling.Judgement}");
+        LogUtil.LogDebug(sb.ToString());
+    }
+
     
 
 }

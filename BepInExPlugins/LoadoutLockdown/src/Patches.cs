@@ -32,6 +32,11 @@ public static unsafe class Patches
     [HarmonyPrefix]
     public static void TryAddItem_Prefix(ref AddItemSettings addItemSettings, Entity target, PrefabGUID itemType, int amount)
     {
+        if (!addItemSettings.EquipIfPossible)
+        {
+            return;
+        }
+
         var autoEquipRuling = LoadoutService.ValidateTryAutoEquipAfterAddItem(itemType);
         if (!autoEquipRuling.IsAllowed)
         {
@@ -43,6 +48,11 @@ public static unsafe class Patches
     [HarmonyPrefix]
     public static void TryAddItem_Prefix(ref AddItemSettings addItemSettings, Entity target, InventoryBuffer inventoryItem)
     {
+        if (!addItemSettings.EquipIfPossible)
+        {
+            return;
+        }
+
         var autoEquipRuling = LoadoutService.ValidateTryAutoEquipAfterAddItem(inventoryItem.ItemType);
         if (!autoEquipRuling.IsAllowed)
         {
@@ -148,16 +158,16 @@ public static unsafe class Patches
             return EXECUTE_ORIGINAL_METHOD;
         }
 
-        if (!LoadoutService.IsInRestrictiveCombat(target) || LoadoutService.CanDirectlyMoveOutOfSlotDuringPVP(item))
+        var ruling = LoadoutService.ValidateUnEquipItemFromDesignatedSlotToInventory(target, item);
+        if (!ruling.IsAllowed)
         {
-            // allow unequipping; execute original method to do the unequip.
-            return EXECUTE_ORIGINAL_METHOD;
+            LoadoutService.SendMessageDisallowed(target, ruling.Judgement);
+            __result = false;
+            return SKIP_ORIGINAL_METHOD;
         }
-
-        // do not allow unequipping
-        LoadoutService.SendMessageCannotMenuSwapDuringPVP(target);
-        __result = false;
-        return SKIP_ORIGINAL_METHOD;
+        
+        // allow unequipping; execute original method to do the unequip.
+        return EXECUTE_ORIGINAL_METHOD;        
     }
 
 

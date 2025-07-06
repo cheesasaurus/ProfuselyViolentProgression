@@ -951,6 +951,36 @@ internal class LoadoutLockdownService
         return RulingTryAutoEquipAfterAddItem.Allowed(Judgement.Allowed_TryAutoEquipAlwaysAllowedUnlessEquipmentToEquipIsForbidden);
     }
 
+    public RulingUnEquipItemFromDesignatedSlotToInventory ValidateUnEquipItemFromDesignatedSlotToInventory(Entity character, Entity item)
+    {
+        var ruling = _ValidateUnEquipItemFromDesignatedSlotToInventory(character, item);
+        RulingLogger.LogUnEquipItemFromDesignatedSlotToInventory(ruling);
+        return ruling;
+    }
+
+    private RulingUnEquipItemFromDesignatedSlotToInventory _ValidateUnEquipItemFromDesignatedSlotToInventory(Entity character, Entity item)
+    {
+        var combatRestriction = CheckCombatRestriction(character);
+        if (combatRestriction is CombatRestriction.None)
+        {
+            return RulingUnEquipItemFromDesignatedSlotToInventory.Allowed(Judgement.Allowed_NotInRestrictiveCombat);
+        }
+
+        if (CanDirectlyMoveOutOfSlotDuringPVP(item))
+        {
+            return RulingUnEquipItemFromDesignatedSlotToInventory.Allowed(Judgement.Allowed_EquipmentCanAlwaysBeUnEquipped);
+        }
+
+        if (combatRestriction is CombatRestriction.PvPCombat)
+        {
+            return RulingUnEquipItemFromDesignatedSlotToInventory.Disallowed(Judgement.Disallowed_CannotMenuSwapDuringPvPCombat);
+        }
+        else
+        {
+            return RulingUnEquipItemFromDesignatedSlotToInventory.Disallowed(Judgement.Disallowed_CannotMenuSwapDuringAnyCombat);
+        }
+    }
+
     public bool IsValidItemDrop(Entity character, Entity fromInventory, int slotIndex)
     {
         if (!InventoryUtilities.TryGetItemAtSlot(EntityManager, fromInventory, slotIndex: slotIndex, out InventoryBuffer itemIB))
