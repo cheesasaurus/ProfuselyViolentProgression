@@ -21,6 +21,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoadoutLockdown", "BepInExP
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CollisionCorrection", "BepInExPlugins\CollisionCorrection\CollisionCorrection.csproj", "{DABAEDFF-4CD4-4894-84C1-77724B7C6C9B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GatekeepPowerCreep", "BepInExPlugins\GatekeepPowerCreep\GatekeepPowerCreep.csproj", "{6262C67E-47E1-41B9-8325-E8D0FE63B3BF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -127,6 +129,18 @@ Global
 		{DABAEDFF-4CD4-4894-84C1-77724B7C6C9B}.Release|x64.Build.0 = Release|Any CPU
 		{DABAEDFF-4CD4-4894-84C1-77724B7C6C9B}.Release|x86.ActiveCfg = Release|Any CPU
 		{DABAEDFF-4CD4-4894-84C1-77724B7C6C9B}.Release|x86.Build.0 = Release|Any CPU
+		{6262C67E-47E1-41B9-8325-E8D0FE63B3BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6262C67E-47E1-41B9-8325-E8D0FE63B3BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6262C67E-47E1-41B9-8325-E8D0FE63B3BF}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{6262C67E-47E1-41B9-8325-E8D0FE63B3BF}.Debug|x64.Build.0 = Debug|Any CPU
+		{6262C67E-47E1-41B9-8325-E8D0FE63B3BF}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{6262C67E-47E1-41B9-8325-E8D0FE63B3BF}.Debug|x86.Build.0 = Debug|Any CPU
+		{6262C67E-47E1-41B9-8325-E8D0FE63B3BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6262C67E-47E1-41B9-8325-E8D0FE63B3BF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6262C67E-47E1-41B9-8325-E8D0FE63B3BF}.Release|x64.ActiveCfg = Release|Any CPU
+		{6262C67E-47E1-41B9-8325-E8D0FE63B3BF}.Release|x64.Build.0 = Release|Any CPU
+		{6262C67E-47E1-41B9-8325-E8D0FE63B3BF}.Release|x86.ActiveCfg = Release|Any CPU
+		{6262C67E-47E1-41B9-8325-E8D0FE63B3BF}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -140,5 +154,6 @@ Global
 		{DEDC5E7D-A1C0-47BE-A99C-774A015E5321} = {7D8597F0-604A-73FE-498F-EB701F30ED31}
 		{56C425E0-EC81-4060-ACB3-1487142EA0D6} = {7D8597F0-604A-73FE-498F-EB701F30ED31}
 		{DABAEDFF-4CD4-4894-84C1-77724B7C6C9B} = {7D8597F0-604A-73FE-498F-EB701F30ED31}
+		{6262C67E-47E1-41B9-8325-E8D0FE63B3BF} = {7D8597F0-604A-73FE-498F-EB701F30ED31}
 	EndGlobalSection
 EndGlobal
