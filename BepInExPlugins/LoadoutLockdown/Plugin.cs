@@ -94,6 +94,14 @@ public class Plugin : BasePlugin
     public void HandleDebugLogRulingsChanged(object sender, EventArgs e)
     {
         RulingLogger.Enabled = DebugLogRulings.Value;
+        if (RulingLogger.Enabled)
+        {
+            LogUtil.LogInfo("LogRulings is now enabled.");
+        }
+        else
+        {
+            LogUtil.LogInfo("LogRulings is now disabled.");
+        }
     }
 
     public void HandleRulesetChanged(LoadoutLockdownConfig config)

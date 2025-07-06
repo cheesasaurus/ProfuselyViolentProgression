@@ -27,6 +27,7 @@ Configuration files are created after the mod runs. Saved changes are automatica
 The following configuration settings are available in `(VRisingFolder)/BepInEx/config/LoadoutLockdown.cfg`.
 
 - `RulesetFilepath` [default `MyRuleset.jsonc`]: The location of the ruleset file to use for configuration.
+- `LogRulings` [default `false`]: When enabled, logs details about every ruling made. For debugging purposes.
 
 ### Rulesets
 
