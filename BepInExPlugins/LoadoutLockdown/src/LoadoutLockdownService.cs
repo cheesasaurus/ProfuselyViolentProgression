@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using ProfuselyViolentProgression.Core.Utilities;
 using ProfuselyViolentProgression.LoadoutLockdown.Config;
+using ProfuselyViolentProgression.LoadoutLockdown.Rulings;
 using ProjectM;
 using ProjectM.Network;
 using ProjectM.Scripting;
@@ -705,32 +706,7 @@ internal class LoadoutLockdownService
         return false;
     }
 
-    public struct ItemMoveRuling
-    {
-        public bool IsAllowed;
-        public bool ShouldUnEquipItemBeforeMoving;
-        public EquippedItem ItemToUnEquip;
-
-        public struct EquippedItem
-        {
-            public Entity Character;
-            public Entity Item;
-        }
-
-        public static ItemMoveRuling Allowed => new ItemMoveRuling
-        {
-            IsAllowed = true,
-            ShouldUnEquipItemBeforeMoving = false
-        };
-        
-        public static ItemMoveRuling Disallowed => new ItemMoveRuling
-        {
-            IsAllowed = false,
-            ShouldUnEquipItemBeforeMoving = false
-        };
-    }
-
-    public ItemMoveRuling ValidateItemMove(MoveItemBetweenInventoriesEvent moveEvent, Entity toInventory, Entity fromInventory)
+    public RulingItemMoveBetweenInventorySlots ValidateItemMove(MoveItemBetweenInventoriesEvent moveEvent, Entity toInventory, Entity fromInventory)
     {
         bool isFromPlayerInventory = IsPlayerInventory(fromInventory);
         bool isToPlayerInventory = IsPlayerInventory(toInventory);
@@ -748,17 +724,20 @@ internal class LoadoutLockdownService
 
         if (!foundPlayerCharacter)
         {
-            return ItemMoveRuling.Allowed;
+            return RulingItemMoveBetweenInventorySlots.Allowed(Judgement.Allowed_NoPlayerCharactersInvolved);
         }
 
         bool fromWeaponSlot = isFromPlayerInventory && IsValidWeaponSlot(moveEvent.FromSlot);
         bool toWeaponSlot = isToPlayerInventory && IsValidWeaponSlot(moveEvent.ToSlot);
-        bool doesNotInvolveWeaponSlot = !fromWeaponSlot && !toWeaponSlot;
-        bool isRearrangingWeaponSlots = fromWeaponSlot && toWeaponSlot;
 
-        if (doesNotInvolveWeaponSlot || isRearrangingWeaponSlots)
+        if (!fromWeaponSlot && !toWeaponSlot)
         {
-            return ItemMoveRuling.Allowed;
+            return RulingItemMoveBetweenInventorySlots.Allowed(Judgement.Allowed_NoEquipmentSlotsInvolved);
+        }
+
+        if (fromWeaponSlot && toWeaponSlot)
+        {
+            return RulingItemMoveBetweenInventorySlots.Allowed(Judgement.Allowed_RearrangeWeaponSlots);
         }
 
         InventoryBuffer menuSlotIB;
@@ -778,18 +757,18 @@ internal class LoadoutLockdownService
 
         if (isMenuSlotEmpty && isWeaponSlotEmpty)
         {
-            return ItemMoveRuling.Allowed;
+            return RulingItemMoveBetweenInventorySlots.Allowed(Judgement.Allowed_Exception);
         }
 
         if (!EntityManager.TryGetComponentData<Equipment>(playerCharacter, out var equipment))
         {
             LogUtil.LogWarning("ValidateItemMove failed to find Equipment on character");
-            return ItemMoveRuling.Allowed;
+            return RulingItemMoveBetweenInventorySlots.Allowed(Judgement.Allowed_Exception);
         }
 
         Entity weaponSlotItem = weaponSlotIB.ItemEntity._Entity;
 
-        var allowedWithPotentialUnEquip = new ItemMoveRuling
+        var allowedWithPotentialUnEquip = new RulingItemMoveBetweenInventorySlots
         {
             IsAllowed = true,
             ShouldUnEquipItemBeforeMoving = equipment.IsEquipped(weaponSlotItem) && !IsEquippableWithoutSlot(weaponSlotItem),
@@ -800,8 +779,11 @@ internal class LoadoutLockdownService
             }
         };
 
-        if (!IsInRestrictiveCombat(playerCharacter))
+        var combatRestriction = CheckCombatRestriction(playerCharacter);
+
+        if (combatRestriction is CombatRestriction.None)
         {
+            allowedWithPotentialUnEquip.Judgement = Judgement.Allowed_NotInRestrictiveCombat;
             return allowedWithPotentialUnEquip;
         }
 
@@ -809,25 +791,34 @@ internal class LoadoutLockdownService
 
         if (!isMenuSlotEmpty && !doesItemInMenuHaveDesignatedSlot && AlwaysAllowSwapIntoSlot(menuSlotIB.ItemEntity._Entity))
         {
+            allowedWithPotentialUnEquip.Judgement = Judgement.Allowed_EquipmentCanAlwaysBeSwappedIntoAppropriateSlot;
             return allowedWithPotentialUnEquip;
         }
 
         if (!isMenuSlotEmpty && !doesItemInMenuHaveDesignatedSlot && CanMenuSwapIntoFilledSlotDuringPVP(menuSlotIB.ItemEntity._Entity))
         {
+            allowedWithPotentialUnEquip.Judgement = Judgement.Allowed_EquipmentCanAlwaysBeSwappedIntoAppropriateSlot;
             return allowedWithPotentialUnEquip;
         }
 
-        if (isWeaponSlotEmpty || IsWasteInWeaponSlot(weaponSlotIB))
+        if (isWeaponSlotEmpty)
         {
-            return ItemMoveRuling.Allowed;
+            return RulingItemMoveBetweenInventorySlots.Allowed(Judgement.Allowed_InsertIntoEmptySlot);
         }
 
-        if (isMenuSlotEmpty && IsWasteInWeaponSlot(weaponSlotIB))
+        if (IsWasteInWeaponSlot(weaponSlotIB))
         {
-            return ItemMoveRuling.Allowed;
+            return RulingItemMoveBetweenInventorySlots.Allowed(Judgement.Allowed_SwapIntoWastedSlot);
         }
 
-        return ItemMoveRuling.Disallowed;
+        if (combatRestriction is CombatRestriction.PvPCombat)
+        {
+            return RulingItemMoveBetweenInventorySlots.Disallowed(Judgement.Disallowed_CannotMenuSwapDuringPvPCombat);
+        }
+        else
+        {
+            return RulingItemMoveBetweenInventorySlots.Disallowed(Judgement.Disallowed_CannotMenuSwapDuringAnyCombat);
+        }
     }
 
     public bool IsValidItemDrop(Entity character, Entity fromInventory, int slotIndex)
@@ -938,6 +929,19 @@ internal class LoadoutLockdownService
             }
         }
         return count;
+    }
+
+    public CombatRestriction CheckCombatRestriction(Entity character)
+    {
+        if (IsInPvPCombat(character))
+        {
+            return CombatRestriction.PvPCombat;
+        }
+        if (_config.ApplyPvpMenuSwapRulesToPVE && IsInCombat(character))
+        {
+            return CombatRestriction.AnyCombat;
+        }
+        return CombatRestriction.None;
     }
 
     public bool IsInRestrictiveCombat(Entity character)
