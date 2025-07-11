@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <AssemblyName>WallopWarpers</AssemblyName>
-    <Description>Description of your mod</Description>
+    <Description>Prevent waygate use during PvP combat. Better protection after teleporting. Configurable.</Description>
     <Version>1.0.0</Version>
     <Authors>Nicholas Toby</Authors>
     <Copyright>Copyright (c) Nicholas Toby 2025</Copyright>

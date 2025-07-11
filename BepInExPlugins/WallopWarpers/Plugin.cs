@@ -53,7 +53,7 @@ public class Plugin : BasePlugin
 
     private void HandleConfigReloaded(object sender, EventArgs e)
     {
-        LogUtil.LogInfo("Reloaded config.");
+        Log.LogInfo("Reloaded config.");
     }
 
 }
