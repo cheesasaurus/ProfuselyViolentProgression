@@ -76,6 +76,20 @@ public static class DebugUtil
         LogUtil.LogInfo($"    ModificationId: {bmfd.ModificationId}");
     }
 
+    public static void LogBuffCategory(Entity entity)
+    {
+        var entityManager = WorldUtil.Game.EntityManager;
+        if (!entityManager.HasComponent<BuffCategory>(entity))
+        {
+            return;
+        }
+        var bc = entityManager.GetComponentData<BuffCategory>(entity);
+        LogUtil.LogInfo($"  BuffCategory:");
+        LogUtil.LogInfo($"    Level: {bc.Level}");
+        LogUtil.LogInfo($"    Groups: {bc.Groups}");
+        LogUtil.LogInfo($"    KeepOldest: {bc.KeepOldest}");
+    }
+
     public static void LogBuffs(Entity entity)
     {
         var entityManager = WorldUtil.Game.EntityManager;
@@ -89,6 +103,19 @@ public static class DebugUtil
         {
             LogUtil.LogInfo($"    {LookupPrefabName(buff.PrefabGuid)}");
         }
+    }
+
+    public static void LogLifeTime(Entity entity)
+    {
+        var entityManager = WorldUtil.Game.EntityManager;
+        if (!entityManager.HasComponent<LifeTime>(entity))
+        {
+            return;
+        }
+        var lt = entityManager.GetComponentData<LifeTime>(entity);
+        LogUtil.LogInfo($"  LifeTime:");
+        LogUtil.LogInfo($"    Duration: {lt.Duration}");
+        LogUtil.LogInfo($"    EndAction: {lt.EndAction}");
     }
 
     public static void LogSpellModSet(Entity entity)

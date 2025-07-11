@@ -150,7 +150,7 @@ public static class Patches
     {
         var query = __instance._Query;
         var entities = query.ToEntityArray(Allocator.Temp);
-        var buffs = query.ToComponentDataArray<ProjectM.LifeTime>(Allocator.Temp);
+        var lifeTimes = query.ToComponentDataArray<ProjectM.LifeTime>(Allocator.Temp);
 
         for (var i = 0; i < entities.Length; i++)
         {
@@ -162,14 +162,28 @@ public static class Patches
             if (prefabGUID.Equals(WallopWarpersUtil.Buff_General_Phasing))
             {
                 WallopWarpersUtil.ModifyBuffBeforeSpawn_DoNotImpairWaypointUse(entity);
-                // todo: extend lifetime
+
+                var lifeTime = lifeTimes[i];
+                lifeTime.Duration = 10; // seconds
+                EntityManager.SetComponentData(entity, lifeTime);
+
                 // todo: don't remove phasing buff when interact with tp
+                // that would involve the DestroyOnAbilityCast component probably
             }
 
-            LogUtil.LogDebug("------------------------");
-            DebugUtil.LogComponentTypes(entity);
-            DebugUtil.LogPrefabGuid(entity);
-            DebugUtil.LogBuffModificationFlagData(entity);
+            //LogUtil.LogDebug("------------------------");
+            //DebugUtil.LogComponentTypes(entity);
+            //DebugUtil.LogPrefabGuid(entity);
+            //DebugUtil.LogBuffModificationFlagData(entity);
+            //DebugUtil.LogLifeTime(entity);
+            //DebugUtil.LogBuffCategory(entity);
+
+            //if (EntityManager.TryGetComponentData<EntityCreator>(entity, out var entityCreator))
+            //{
+            //    LogUtil.LogInfo("creator --");
+            //    DebugUtil.LogPrefabGuid(entityCreator.Creator._Entity);
+            //    DebugUtil.LogComponentTypes(entityCreator.Creator._Entity);
+            //}
         }
     }
 
