@@ -1,0 +1,26 @@
+UpdateBuffsBuffer_Destroy | Buff_General_Phasing PrefabGUID(-79611032)
+-------------------------------------------
+ProjectM.Attach
+ProjectM.EntityOwner
+ProjectM.EntityCreator
+ProjectM.Buff
+ProjectM.DestroyOnAbilityCast
+ProjectM.DestroyData
+ProjectM.DestroyState
+ProjectM.Age
+ProjectM.BuffCategory
+ProjectM.LifeTime
+ProjectM.BuffModificationFlagData
+ProjectM.Network.Networked
+ProjectM.Network.UpToDateUserBitMask
+ProjectM.Network.FrameChanged
+ProjectM.Network.NetworkSnapshot
+ProjectM.Network.NetworkId
+Stunlock.Core.PrefabGUID
+ProjectM.Attached
+ProjectM.Network.NetSnapshot [Buffer]
+ProjectM.Network.SnapshotFrameChangedBuffer [Buffer]
+Unity.Entities.DestroyTag
+Unity.Entities.Simulate
+ProjectM.AttachedDepth
+ProjectM.Network.NetworkSnapshotType

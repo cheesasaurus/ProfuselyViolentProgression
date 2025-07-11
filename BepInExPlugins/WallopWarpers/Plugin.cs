@@ -36,7 +36,7 @@ public class Plugin : BasePlugin
         _hookDOTS = new HookDOTS.API.HookDOTS(MyPluginInfo.PLUGIN_GUID, Log);
         _hookDOTS.RegisterAnnotatedHooks();
 
-        DebugThingsToCharacter("Dingus");
+        //DebugThingsToCharacter("Dingus");
     }
 
     public override bool Unload()

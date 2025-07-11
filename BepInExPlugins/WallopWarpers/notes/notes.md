@@ -35,8 +35,9 @@ InteractAbilityBuffer looks suspicious. But lots of blob/prefab string stuff her
 
  AB_Interact_UseWaypoint_Blocked - This opens the waygate map when buff applied.
 
-ValidateAbilityGroupsSystem - this runs when an ability slot is changed (e.g. when swapping weapons)
+ValidateAbilityGroupsSystem - this runs when an ability slot is changed (e.g. when swapping weapons, spells)
 
+GameplayDebugRecorder.CreateAbilityEvent - could this be used to interrupt?
 
 
 other ideas for WallopWarpers:

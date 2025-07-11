@@ -1,10 +1,12 @@
 using System;
+using System.Collections.Generic;
 using HarmonyLib;
 using HookDOTS.API.Attributes;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using ProfuselyViolentProgression.Core.Utilities;
 using ProjectM;
 using ProjectM.Gameplay;
+using ProjectM.Gameplay.Systems;
 using ProjectM.Scripting;
 using ProjectM.Shared;
 using Stunlock.Core;
@@ -76,6 +78,8 @@ public static class Patches
                 //WallopWarpersUtil.InterruptCast1(entity, ev); // this doesn't work
                 //WallopWarpersUtil.InterruptCast2(entity, ev); // this doesn't work
                 //EntityManager.DestroyEntity(entity); // this doesn't work, and causes jank
+
+                WallopWarpersUtil.InterruptCast3(entity, ev);
             }
             catch (Exception ex)
             {
@@ -83,25 +87,6 @@ public static class Patches
             }
         }
     }
-
-    //[EcsSystemUpdatePostfix(typeof(AbilityStartCastingSystem_Server))]
-    //unsafe public static void AbilityStartCastingSystem_Server_OnUpdate_Postfix(SystemState* systemState)
-    //{
-    //    var query = EntityManager.CreateEntityQuery(new EntityQueryDesc()
-    //    {
-    //        All = new ComponentType[] {
-    //            ComponentType.ReadOnly<AbilityCastStartedEvent>(),
-    //        },
-    //    });
-    //
-    //    var entities = query.ToEntityArray(Allocator.Temp);
-    //    var events = query.ToComponentDataArray<AbilityCastStartedEvent>(Allocator.Temp);
-    //    for (var i = 0; i < events.Length; i++)
-    //    {
-    //        var ev = events[i];
-    //        OnCastStarted(entities[i], ev);
-    //    }
-    //}
 
     // todo: fiddle with these
     // TeleportBuffSystem_Server
@@ -120,8 +105,7 @@ public static class Patches
         for (var i = 0; i < entities.Length; i++)
         {
             var entity = entities[0];
-            //DebugUtil.LogComponentTypes(entity);
-            DebugUtil.LogPrefabGuid(entity);
+            LogUtil.LogDebug($"TeleportBuffSpawnSystem | {DebugUtil.LookupPrefabName(entity)}");
         }
     }
 
@@ -159,31 +143,18 @@ public static class Patches
             {
                 continue;
             }
-            if (prefabGUID.Equals(WallopWarpersUtil.Buff_General_Phasing))
+            if (prefabGUID.Equals(PrefabGuids.Buff_General_Phasing))
             {
                 WallopWarpersUtil.ModifyBuffBeforeSpawn_DoNotImpairWaypointUse(entity);
 
                 var lifeTime = lifeTimes[i];
                 lifeTime.Duration = 10; // seconds
                 EntityManager.SetComponentData(entity, lifeTime);
-
-                // todo: don't remove phasing buff when interact with tp
-                // that would involve the DestroyOnAbilityCast component probably
             }
-
-            //LogUtil.LogDebug("------------------------");
-            //DebugUtil.LogComponentTypes(entity);
-            //DebugUtil.LogPrefabGuid(entity);
-            //DebugUtil.LogBuffModificationFlagData(entity);
-            //DebugUtil.LogLifeTime(entity);
-            //DebugUtil.LogBuffCategory(entity);
-
-            //if (EntityManager.TryGetComponentData<EntityCreator>(entity, out var entityCreator))
-            //{
-            //    LogUtil.LogInfo("creator --");
-            //    DebugUtil.LogPrefabGuid(entityCreator.Creator._Entity);
-            //    DebugUtil.LogComponentTypes(entityCreator.Creator._Entity);
-            //}
+            else
+            {
+                LogUtil.LogDebug($"BuffSystem_Spawn_Server | {DebugUtil.LookupPrefabName(entity)}");
+            }
         }
     }
 

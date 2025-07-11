@@ -1,5 +1,6 @@
 using ProfuselyViolentProgression.Core.Utilities;
 using ProjectM;
+using ProjectM.Debugging;
 using ProjectM.Scripting;
 using Stunlock.Core;
 using Unity.Entities;
@@ -10,25 +11,19 @@ namespace ProfuselyViolentProgression.WallopWarpers;
 
 public static class WallopWarpersUtil
 {
-    public static PrefabGUID AB_Interact_UseWaypoint_Cast = new PrefabGUID(-402025199);
-    public static PrefabGUID AB_Interact_UseWaypoint_Castle_Cast = new PrefabGUID(-1252882299);
-    public static PrefabGUID Buff_InCombat_PvPVampire = new PrefabGUID(697095869);
-    public static PrefabGUID Buff_Waypoint_Travel = new PrefabGUID(150521246);
-    public static PrefabGUID Buff_Waypoint_TravelEnd = new PrefabGUID(-1361133205);
-    public static PrefabGUID Buff_General_Phasing = new PrefabGUID(-79611032);
 
     private static EntityManager EntityManager => WorldUtil.Server.EntityManager;
     private static EndSimulationEntityCommandBufferSystem EndSimulationEntityCommandBufferSystem => WorldUtil.Server.GetExistingSystemManaged<EndSimulationEntityCommandBufferSystem>();
 
     public static bool IsUseWaypointCast(PrefabGUID prefabGUID)
     {
-        return prefabGUID.Equals(AB_Interact_UseWaypoint_Cast)
-            || prefabGUID.Equals(AB_Interact_UseWaypoint_Castle_Cast);
+        return prefabGUID.Equals(PrefabGuids.AB_Interact_UseWaypoint_Cast)
+            || prefabGUID.Equals(PrefabGuids.AB_Interact_UseWaypoint_Castle_Cast);
     }
 
     public static bool IsInPvpCombat(Entity character)
     {
-        return BuffUtility.HasBuff(EntityManager, character, Buff_InCombat_PvPVampire);
+        return BuffUtility.HasBuff(EntityManager, character, PrefabGuids.Buff_InCombat_PvPVampire);
     }
 
     public static void SendMessageTeleportDisallowed(Entity character)
@@ -49,9 +44,9 @@ public static class WallopWarpersUtil
             translation.Value,
             color,
             character
-            //value,
-            //sct,
-            //player.UserEntity
+        //value,
+        //sct,
+        //player.UserEntity
         );
     }
 
@@ -139,6 +134,11 @@ public static class WallopWarpersUtil
         // at Il2CppInterop.Runtime.Il2CppException.RaiseExceptionIfNecessary(IntPtr returnedException) in C:\Work\-\VRisingBepInExBuild\Il2CppInterop\Il2CppInterop.Runtime\Il2CppException.cs:line 36
         // at ProjectM.AbilityBarUtility.Interrupt(EntityCommandBuffer& commandBuffer, AbilityBar_Shared& abilityBar, Entity character, Double serverTime, EventPrefabs& eventPrefabs, DebugData& debugData)
         // at ProfuselyViolentProgression.WallopWarpers.Patches.InterruptCast2(Entity entity, AbilityCastStartedEvent ev)
+    }
+
+    unsafe public static void InterruptCast3(Entity entity, AbilityCastStartedEvent ev)
+    {
+        // todo: try something with GameplayDebugRecorder.CreateAbilityEvent
     }
     
 }

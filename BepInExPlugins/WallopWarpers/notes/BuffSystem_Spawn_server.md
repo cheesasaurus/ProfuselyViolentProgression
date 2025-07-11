@@ -11,7 +11,7 @@ Buff.Target might be more reliable? Also not 100% sure, but the naming sure is c
 EntityCreator is the entity that's triggering this buff to be spawned.
 E.g. An entity with prefabGuid Buff_Waypoint_TravelEnd causes Buff_General_Phasing to be spawned.
 
-## Noteworthy comnponents seen on the entities matched (varies)
+## Noteworthy components seen on the entities matched (varies)
 
 - PrefabGUID - the buff to spawn. pretty sure its always there.
 - ProjectM.BuffModificationFlagData - contains a `long` flag, to be interpreted as BuffModificationTypes.
