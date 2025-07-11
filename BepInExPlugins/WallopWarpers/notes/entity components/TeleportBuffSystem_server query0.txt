@@ -1,0 +1,46 @@
+// happens every frame after teleport request approved, until spawn complete.
+
+ProjectM.Attach
+ProjectM.EntityOwner
+ProjectM.EntityCreator
+ProjectM.Buff
+ProjectM.GetTranslationOnSpawn
+ProjectM.ServerControlsPositionModifications
+ProjectM.SpawnPrefabOnDestroy
+ProjectM.FadeToBlack
+ProjectM.FadeToBlack_Manual
+ProjectM.DestroyData
+ProjectM.DestroyState
+ProjectM.Age
+ProjectM.HideTargetHUD
+ProjectM.TeleportBuff
+ProjectM.LastTranslation
+ProjectM.ManualFirstFrameLastTranslation
+ProjectM.Team
+ProjectM.BuffModificationFlagData
+ProjectM.Network.Networked
+ProjectM.Network.UpToDateUserBitMask
+ProjectM.Network.FrameChanged
+ProjectM.Network.NetworkSnapshot
+Unity.Transforms.Rotation
+Unity.Transforms.Translation
+Unity.Transforms.LocalToWorld
+Unity.Transforms.LocalTransform
+ProjectM.TeamReference
+ProjectM.Network.NetworkId
+Stunlock.Core.PrefabGUID
+ProjectM.Attached
+ProjectM.CreateGameplayEventsOnSpawn [Buffer]
+ProjectM.GameplayEventIdMapping [Buffer]
+ProjectM.PlaySequenceOnGameplayEvent [Buffer]
+ProjectM.GameplayEventListeners [Buffer]
+ProjectM.Network.NetSnapshot [Buffer]
+ProjectM.Network.SnapshotFrameChangedBuffer [Buffer]
+ProjectM.GetOwnerTeamOnSpawn
+ProjectM.ServerControlsMovementBuff
+ProjectM.ServerControlsRotationBuff
+ProjectM.ModifyObstacleFadeoutBuff
+Unity.Entities.Simulate
+Unity.Entities.BlobAssetOwner
+ProjectM.AttachedDepth
+ProjectM.Network.NetworkSnapshotType

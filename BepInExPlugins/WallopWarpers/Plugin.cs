@@ -36,7 +36,7 @@ public class Plugin : BasePlugin
         _hookDOTS = new HookDOTS.API.HookDOTS(MyPluginInfo.PLUGIN_GUID, Log);
         _hookDOTS.RegisterAnnotatedHooks();
 
-        //DebugThingsToCharacter("Dingus");
+        DebugThingsToCharacter("Dingus");
     }
 
     public override bool Unload()
@@ -71,7 +71,27 @@ public class Plugin : BasePlugin
             //DebugUtil.LogComponentTypes(entity);
 
             // WallopWarpersUtil.ImpairWaypointUse(entity);
+            //LetMeBuild(entity);
+            //Enable(entity, BuffModificationTypes.AbilityCastImpair);
         }
+    }
+
+    public static void On(Entity character, BuffModificationTypes flag)
+    {
+        var EntityManager = WorldUtil.Server.EntityManager;
+        var bfs = EntityManager.GetComponentData<BuffableFlagState>(character);
+        bfs.Value._Value |= (long)flag;
+        EntityManager.SetComponentData(character, bfs);
+        DebugUtil.LogBuffableFlagState(character);
+    }
+
+    public static void Off(Entity character, BuffModificationTypes flag)
+    {
+        var EntityManager = WorldUtil.Server.EntityManager;
+        var bfs = EntityManager.GetComponentData<BuffableFlagState>(character);
+        bfs.Value._Value &= ~(long)flag;
+        EntityManager.SetComponentData(character, bfs);
+        DebugUtil.LogBuffableFlagState(character);
     }
 
 }

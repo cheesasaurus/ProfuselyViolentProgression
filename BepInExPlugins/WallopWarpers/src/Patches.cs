@@ -42,8 +42,7 @@ public static class Patches
     [HarmonyPrefix]
     public static void AbilityRunScriptsSystem_Prefix(AbilityRunScriptsSystem __instance)
     {
-        // disabled until i get it working
-        //ProcessQuery_OnCastStarted(__instance);
+        ProcessQuery_OnCastStarted(__instance);
     }
 
     private static void ProcessQuery_OnCastStarted(AbilityRunScriptsSystem __instance)
@@ -72,6 +71,7 @@ public static class Patches
         {
             try
             {
+                WallopWarpersUtil.SendMessageTeleportDisallowed(ev.Character);
                 //WallopWarpersUtil.ImpairWaypointUse(ev.Character);
                 //WallopWarpersUtil.InterruptCast1(entity, ev); // this doesn't work
                 //WallopWarpersUtil.InterruptCast2(entity, ev); // this doesn't work
@@ -102,5 +102,75 @@ public static class Patches
     //        OnCastStarted(entities[i], ev);
     //    }
     //}
+
+    // todo: fiddle with these
+    // TeleportBuffSystem_Server
+    // TeleportBuffSpawnSystem
+
+
+    [HarmonyPatch(typeof(TeleportBuffSpawnSystem), nameof(TeleportBuffSpawnSystem.OnUpdate))]
+    [HarmonyPrefix]
+    public static void TeleportBuffSpawnSystem_OnUpdate_Prefix(TeleportBuffSpawnSystem __instance)
+    {
+        var query = __instance.__query_2122398975_0;
+        var entities = query.ToEntityArray(Allocator.Temp);
+        var buffs = query.ToComponentDataArray<Buff>(Allocator.Temp);
+        var teleportBuffs = query.ToComponentDataArray<TeleportBuff>(Allocator.Temp);
+
+        for (var i = 0; i < entities.Length; i++)
+        {
+            var entity = entities[0];
+            //DebugUtil.LogComponentTypes(entity);
+            DebugUtil.LogPrefabGuid(entity);
+        }
+    }
+
+    [HarmonyPatch(typeof(TeleportBuffSystem_Server), nameof(TeleportBuffSystem_Server.OnUpdate))]
+    [HarmonyPrefix]
+    public static void TeleportBuffSpawnSystem_OnUpdate_Prefix(TeleportBuffSystem_Server __instance)
+    {
+        var query = __instance.__query_2122398833_1;
+        var entities = query.ToEntityArray(Allocator.Temp);
+        var buffs = query.ToComponentDataArray<Buff>(Allocator.Temp);
+        var teleportBuffs = query.ToComponentDataArray<TeleportBuff>(Allocator.Temp);
+
+        for (var i = 0; i < entities.Length; i++)
+        {
+            var entity = entities[0];
+            //DebugUtil.LogComponentTypes(entity);
+            //LogUtil.LogDebug("------------------------");
+            //DebugUtil.LogPrefabGuid(entity);
+            //DebugUtil.LogSpawnPrefabOnDestroy(entity);
+        }
+    }
+
+    [HarmonyPatch(typeof(BuffSystem_Spawn_Server), nameof(BuffSystem_Spawn_Server.OnUpdate))]
+    [HarmonyPrefix]
+    public static void BuffSystem_Spawn_Server_OnUpdate_Prefix(BuffSystem_Spawn_Server __instance)
+    {
+        var query = __instance._Query;
+        var entities = query.ToEntityArray(Allocator.Temp);
+        var buffs = query.ToComponentDataArray<ProjectM.LifeTime>(Allocator.Temp);
+
+        for (var i = 0; i < entities.Length; i++)
+        {
+            var entity = entities[0];
+            if (!EntityManager.TryGetComponentData<PrefabGUID>(entity, out var prefabGUID))
+            {
+                continue;
+            }
+            if (prefabGUID.Equals(WallopWarpersUtil.Buff_General_Phasing))
+            {
+                WallopWarpersUtil.ModifyBuffBeforeSpawn_DoNotImpairWaypointUse(entity);
+                // todo: extend lifetime
+                // todo: don't remove phasing buff when interact with tp
+            }
+
+            LogUtil.LogDebug("------------------------");
+            DebugUtil.LogComponentTypes(entity);
+            DebugUtil.LogPrefabGuid(entity);
+            DebugUtil.LogBuffModificationFlagData(entity);
+        }
+    }
 
 }

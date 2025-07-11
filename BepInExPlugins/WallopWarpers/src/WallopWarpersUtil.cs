@@ -13,6 +13,9 @@ public static class WallopWarpersUtil
     public static PrefabGUID AB_Interact_UseWaypoint_Cast = new PrefabGUID(-402025199);
     public static PrefabGUID AB_Interact_UseWaypoint_Castle_Cast = new PrefabGUID(-1252882299);
     public static PrefabGUID Buff_InCombat_PvPVampire = new PrefabGUID(697095869);
+    public static PrefabGUID Buff_Waypoint_Travel = new PrefabGUID(150521246);
+    public static PrefabGUID Buff_Waypoint_TravelEnd = new PrefabGUID(-1361133205);
+    public static PrefabGUID Buff_General_Phasing = new PrefabGUID(-79611032);
 
     private static EntityManager EntityManager => WorldUtil.Server.EntityManager;
     private static EndSimulationEntityCommandBufferSystem EndSimulationEntityCommandBufferSystem => WorldUtil.Server.GetExistingSystemManaged<EndSimulationEntityCommandBufferSystem>();
@@ -25,7 +28,6 @@ public static class WallopWarpersUtil
 
     public static bool IsInPvpCombat(Entity character)
     {
-        //return true; // todo: remove short
         return BuffUtility.HasBuff(EntityManager, character, Buff_InCombat_PvPVampire);
     }
 
@@ -57,13 +59,27 @@ public static class WallopWarpersUtil
     public static void ImpairWaypointUse(Entity character)
     {
         var EntityManager = WorldUtil.Server.EntityManager;
-        DebugUtil.LogBuffableFlagState(character);
         var bfs = EntityManager.GetComponentData<BuffableFlagState>(character);
         bfs.Value._Value |= (long)BuffModificationTypes.WaypointImpair;
         //bfs.Value._Value |= (long)BuffModificationTypes.LocalTeleporterImpaired; // already handled by the vanilla game
         EntityManager.SetComponentData(character, bfs);
+    }
 
-        DebugUtil.LogBuffableFlagState(character);
+    public static void UnImpairWaypointUse(Entity character)
+    {
+        var EntityManager = WorldUtil.Server.EntityManager;
+        var bfs = EntityManager.GetComponentData<BuffableFlagState>(character);
+        bfs.Value._Value &= ~(long)BuffModificationTypes.WaypointImpair;
+        EntityManager.SetComponentData(character, bfs);
+    }
+
+    public static void ModifyBuffBeforeSpawn_DoNotImpairWaypointUse(Entity entity)
+    {
+        if (EntityManager.TryGetComponentData<BuffModificationFlagData>(entity, out var bmfd))
+        {
+            bmfd.ModificationTypes &= ~(long)BuffModificationTypes.WaypointImpair;
+            EntityManager.SetComponentData(entity, bmfd);
+        }
     }
 
     // this doesn't work

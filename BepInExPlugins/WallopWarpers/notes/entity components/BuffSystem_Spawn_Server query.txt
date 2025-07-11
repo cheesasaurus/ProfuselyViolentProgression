@@ -1,0 +1,30 @@
+ProjectM.Attach
+ProjectM.EntityOwner
+ProjectM.EntityCreator
+ProjectM.Buff
+ProjectM.DisableAggroBuff
+ProjectM.DestroyData
+ProjectM.DestroyState
+ProjectM.Age
+ProjectM.BuffCategory
+ProjectM.LifeTime
+ProjectM.BuffModificationFlagData
+ProjectM.Scripting.ScriptDestroy
+ProjectM.Network.Networked
+ProjectM.Network.UpToDateUserBitMask
+ProjectM.Network.FrameChanged
+ProjectM.Network.NetworkSnapshot
+ProjectM.Gameplay.Scripting.UpdateBuffTargetSpawnPosition_DataServer
+ProjectM.Gameplay.Scripting.Script_Buff_Stealth_Duration_DataServer
+ProjectM.Network.NetworkId
+Stunlock.Core.PrefabGUID
+ProjectM.Attached
+ProjectM.Network.NetSnapshot [Buffer]
+ProjectM.Network.SnapshotFrameChangedBuffer [Buffer]
+ProjectM.PreventDisableBuff
+ProjectM.Scripting.ScriptSpawn
+ProjectM.Scripting.ScriptUpdate
+Unity.Entities.SpawnTag
+Unity.Entities.Simulate
+ProjectM.AttachedDepth
+ProjectM.Network.NetworkSnapshotType

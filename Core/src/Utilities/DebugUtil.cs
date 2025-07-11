@@ -63,6 +63,19 @@ public static class DebugUtil
         LogUtil.LogInfo($"      BuffModificationTypes: {(BuffModificationTypes)bfs.Value._Value}");
     }
 
+    public static void LogBuffModificationFlagData(Entity entity)
+    {
+        var entityManager = WorldUtil.Game.EntityManager;
+        if (!entityManager.HasComponent<BuffModificationFlagData>(entity))
+        {
+            return;
+        }
+        var bmfd = entityManager.GetComponentData<BuffModificationFlagData>(entity);
+        LogUtil.LogInfo($"  BuffModificationFlagData:");
+        LogUtil.LogInfo($"    ModificationTypes: {(BuffModificationTypes)bmfd.ModificationTypes}");
+        LogUtil.LogInfo($"    ModificationId: {bmfd.ModificationId}");
+    }
+
     public static void LogBuffs(Entity entity)
     {
         var entityManager = WorldUtil.Game.EntityManager;
@@ -424,6 +437,18 @@ public static class DebugUtil
             LogUtil.LogInfo($"      Group: {cte.Group}");
             LogUtil.LogInfo("    ----");
         }
+    }
+
+    public static void LogSpawnPrefabOnDestroy(Entity entity)
+    {
+        var entityManager = WorldUtil.Game.EntityManager;
+        if (!entityManager.HasComponent<SpawnPrefabOnDestroy>(entity))
+        {
+            return;
+        }
+        var spod = entityManager.GetComponentData<SpawnPrefabOnDestroy>(entity);
+        LogUtil.LogInfo($"  SpawnPrefabOnDestroy:");
+        LogUtil.LogInfo($"    SpawnPrefab: {LookupPrefabName(spod.SpawnPrefab)}");
     }
 
     public static string LookupPrefabName(Entity entity)
