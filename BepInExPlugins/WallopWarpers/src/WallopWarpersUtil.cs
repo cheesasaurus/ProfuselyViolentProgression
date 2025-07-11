@@ -53,19 +53,12 @@ public static class WallopWarpersUtil
     // the effect applied here is pretty fragile, it can get removed by all sorts of things. can't really rely on this
     public static void ImpairWaypointUse(Entity character)
     {
-        var EntityManager = WorldUtil.Server.EntityManager;
-        var bfs = EntityManager.GetComponentData<BuffableFlagState>(character);
-        bfs.Value._Value |= (long)BuffModificationTypes.WaypointImpair;
-        //bfs.Value._Value |= (long)BuffModificationTypes.LocalTeleporterImpaired; // already handled by the vanilla game
-        EntityManager.SetComponentData(character, bfs);
+        BuffUtil.ToggleBuffableFlagState_On(character, BuffModificationTypes.WaypointImpair);
     }
 
     public static void UnImpairWaypointUse(Entity character)
     {
-        var EntityManager = WorldUtil.Server.EntityManager;
-        var bfs = EntityManager.GetComponentData<BuffableFlagState>(character);
-        bfs.Value._Value &= ~(long)BuffModificationTypes.WaypointImpair;
-        EntityManager.SetComponentData(character, bfs);
+        BuffUtil.ToggleBuffableFlagState_Off(character, BuffModificationTypes.WaypointImpair);
     }
 
     public static void ModifyBuffBeforeSpawn_DoNotImpairWaypointUse(Entity entity)

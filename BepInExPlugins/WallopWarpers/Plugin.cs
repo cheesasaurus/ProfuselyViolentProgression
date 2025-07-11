@@ -1,18 +1,10 @@
 ﻿using System;
-using System.Runtime.InteropServices;
 using BepInEx;
+using BepInEx.Configuration;
 using BepInEx.Unity.IL2CPP;
 using HarmonyLib;
-using HookDOTS;
-using Il2CppInterop.Runtime;
-using Il2CppSystem.Collections.Generic;
-using Il2CppSystem.Linq;
+using ProfuselyViolentProgression.Core.Config;
 using ProfuselyViolentProgression.Core.Utilities;
-using ProjectM;
-using ProjectM.CastleBuilding;
-using Stunlock.Core;
-using Unity.Collections;
-using Unity.Entities;
 
 namespace ProfuselyViolentProgression.WallopWarpers;
 
@@ -20,78 +12,48 @@ namespace ProfuselyViolentProgression.WallopWarpers;
 [BepInDependency("HookDOTS.API")]
 public class Plugin : BasePlugin
 {
+    public static ConfigEntry<bool> PvPCombat_AllowWaygateUse;
+    public static ConfigEntry<int> SpawnProtectionSeconds;
+    public static ConfigEntry<bool> SpawnProtection_AllowWaygateUse;
+
     Harmony _harmony;
     HookDOTS.API.HookDOTS _hookDOTS;
+    BepInExConfigReloader BepInExConfigReloader;
+
+    public Plugin() : base()
+    {
+        LogUtil.Init(Log);
+        PvPCombat_AllowWaygateUse = Config.Bind("General", "PvPCombat_AllowWaygateUse", false, "Whether or not to allow waygate use during PvP combat. Allowed in vanilla.");
+        SpawnProtectionSeconds = Config.Bind("General", "SpawnProtectionSeconds", 12, "How long the Phasing protection buff lasts, after teleporting in. Only 5 seconds in vanilla.");
+        SpawnProtection_AllowWaygateUse = Config.Bind("General", "SpawnProtection_AllowWaygateUse", true, "Whether or not to allow waygate use during Phasing. Not allowed in vanilla.");
+    }
 
     public override void Load()
     {
-        // Plugin startup logic
-        LogUtil.Init(Log);
-        Log.LogInfo($"Plugin {MyPluginInfo.PLUGIN_GUID} version {MyPluginInfo.PLUGIN_VERSION} is loaded!");
+        BepInExConfigReloader = new BepInExConfigReloader(Config);
+        Config.ConfigReloaded += HandleConfigReloaded;
 
-        // Harmony patching
         _harmony = new Harmony(MyPluginInfo.PLUGIN_GUID);
         _harmony.PatchAll(System.Reflection.Assembly.GetExecutingAssembly());
 
         _hookDOTS = new HookDOTS.API.HookDOTS(MyPluginInfo.PLUGIN_GUID, Log);
         _hookDOTS.RegisterAnnotatedHooks();
-
-        //DebugThingsToCharacter("Dingus");
+        
+        Log.LogInfo($"Plugin {MyPluginInfo.PLUGIN_GUID} version {MyPluginInfo.PLUGIN_VERSION} is loaded!");
     }
 
     public override bool Unload()
     {
+        Config.ConfigReloaded -= HandleConfigReloaded;
+        BepInExConfigReloader?.Dispose();
         _hookDOTS.Dispose();
         _harmony?.UnpatchSelf();
         return true;
-    }
+    }    
 
-    private void DebugThingsToCharacter(string targetCharacterName)
+    private void HandleConfigReloaded(object sender, EventArgs e)
     {
-        var EntityManager = WorldUtil.Server.EntityManager;
-        var query = EntityManager.CreateEntityQuery(new EntityQueryDesc()
-        {
-            All = new ComponentType[] {
-                ComponentType.ReadOnly<PlayerCharacter>(),
-            },
-        });
-
-        var entities = query.ToEntityArray(Allocator.Temp);
-        var playerCharacters = query.ToComponentDataArray<PlayerCharacter>(Allocator.Temp);
-        //var components = query.ToComponentDataArray<DealDamageEvent>(Allocator.Temp);
-        for (var i = 0; i < entities.Length; i++)
-        {
-            var playerCharacter = playerCharacters[i];
-            if (!playerCharacter.Name.Equals(targetCharacterName))
-            {
-                continue;
-            }
-            var entity = entities[i];
-            LogUtil.LogInfo($"{playerCharacter.Name} ==========================================");
-            //DebugUtil.LogComponentTypes(entity);
-
-            // WallopWarpersUtil.ImpairWaypointUse(entity);
-            //LetMeBuild(entity);
-            //Enable(entity, BuffModificationTypes.AbilityCastImpair);
-        }
-    }
-
-    public static void On(Entity character, BuffModificationTypes flag)
-    {
-        var EntityManager = WorldUtil.Server.EntityManager;
-        var bfs = EntityManager.GetComponentData<BuffableFlagState>(character);
-        bfs.Value._Value |= (long)flag;
-        EntityManager.SetComponentData(character, bfs);
-        DebugUtil.LogBuffableFlagState(character);
-    }
-
-    public static void Off(Entity character, BuffModificationTypes flag)
-    {
-        var EntityManager = WorldUtil.Server.EntityManager;
-        var bfs = EntityManager.GetComponentData<BuffableFlagState>(character);
-        bfs.Value._Value &= ~(long)flag;
-        EntityManager.SetComponentData(character, bfs);
-        DebugUtil.LogBuffableFlagState(character);
+        LogUtil.LogInfo("Reloaded config.");
     }
 
 }

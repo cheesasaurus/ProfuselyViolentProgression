@@ -24,8 +24,12 @@ public static class Patches
     [HarmonyPrefix]
     public static void TeleportationRequestSystem_OnUpdate_Prefix(TeleportationRequestSystem __instance)
     {
-        var query = __instance._TeleportRequestQuery;
+        if (Plugin.PvPCombat_AllowWaygateUse.Value)
+        {
+            return;
+        }
 
+        var query = __instance._TeleportRequestQuery;
         var entities = query.ToEntityArray(Allocator.Temp);
         var events = query.ToComponentDataArray<TeleportationRequest>(Allocator.Temp);
         for (var i = 0; i < events.Length; i++)
@@ -44,6 +48,10 @@ public static class Patches
     [HarmonyPrefix]
     public static void AbilityRunScriptsSystem_Prefix(AbilityRunScriptsSystem __instance)
     {
+        if (Plugin.PvPCombat_AllowWaygateUse.Value)
+        {
+            return;
+        }
         ProcessQuery_OnCastStarted(__instance);
     }
 
@@ -111,7 +119,7 @@ public static class Patches
 
     [HarmonyPatch(typeof(TeleportBuffSystem_Server), nameof(TeleportBuffSystem_Server.OnUpdate))]
     [HarmonyPrefix]
-    public static void TeleportBuffSpawnSystem_OnUpdate_Prefix(TeleportBuffSystem_Server __instance)
+    public static void TeleportBuffSystem_Server_OnUpdate_Prefix(TeleportBuffSystem_Server __instance)
     {
         var query = __instance.__query_2122398833_1;
         var entities = query.ToEntityArray(Allocator.Temp);
@@ -121,6 +129,7 @@ public static class Patches
         for (var i = 0; i < entities.Length; i++)
         {
             var entity = entities[0];
+            LogUtil.LogDebug($"TeleportBuffSystem_Server | {DebugUtil.LookupPrefabName(entity)}");
             //DebugUtil.LogComponentTypes(entity);
             //LogUtil.LogDebug("------------------------");
             //DebugUtil.LogPrefabGuid(entity);
@@ -145,10 +154,13 @@ public static class Patches
             }
             if (prefabGUID.Equals(PrefabGuids.Buff_General_Phasing))
             {
-                WallopWarpersUtil.ModifyBuffBeforeSpawn_DoNotImpairWaypointUse(entity);
+                if (Plugin.SpawnProtection_AllowWaygateUse.Value)
+                {
+                    WallopWarpersUtil.ModifyBuffBeforeSpawn_DoNotImpairWaypointUse(entity);
+                }
 
                 var lifeTime = lifeTimes[i];
-                lifeTime.Duration = 10; // seconds
+                lifeTime.Duration = Plugin.SpawnProtectionSeconds.Value;
                 EntityManager.SetComponentData(entity, lifeTime);
             }
             else

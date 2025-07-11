@@ -19,11 +19,12 @@ public static class NotAllAbilitiesDestroy_Phasing_Patch
 {
     public static EntityManager EntityManager => WorldUtil.Server.EntityManager;
 
+    private static bool _queryAbilityCastStarted_cached = false;
     private static EntityQuery _queryAbilityCastStarted;
     private static EntityQuery QueryAbilityCastStarted {
         get
         {
-            if (_queryAbilityCastStarted == default)
+            if (!_queryAbilityCastStarted_cached)
             {
                 _queryAbilityCastStarted = EntityManager.CreateEntityQuery(new EntityQueryDesc()
                 {
@@ -36,11 +37,12 @@ public static class NotAllAbilitiesDestroy_Phasing_Patch
         }
     }
 
+    private static bool _queryDestroyBuffsOnAbilityCast_cached = false;
     private static EntityQuery _queryDestroyBuffsOnAbilityCast;
     private static EntityQuery QueryDestroyBuffsOnAbilityCast {
         get
         {
-            if (_queryDestroyBuffsOnAbilityCast == default)
+            if (!_queryDestroyBuffsOnAbilityCast_cached)
             {
                 _queryDestroyBuffsOnAbilityCast = EntityManager.CreateEntityQuery(new EntityQueryDesc()
                 {
@@ -61,6 +63,11 @@ public static class NotAllAbilitiesDestroy_Phasing_Patch
     [EcsSystemUpdatePrefix(typeof(DestroyOnAbilityCastSystem))]
     public static void DestroyOnAbilityCastSystem_Prefix()
     {
+        if (!Plugin.SpawnProtection_AllowWaygateUse.Value)
+        {
+            return;
+        }
+
         _tpSafetyBalance.Clear();
         
         var castStartedEvents = QueryAbilityCastStarted.ToComponentDataArray<AbilityCastStartedEvent>(Allocator.Temp);
