@@ -1,6 +1,5 @@
 using ProfuselyViolentProgression.Core.Utilities;
 using ProjectM;
-using ProjectM.Debugging;
 using ProjectM.Scripting;
 using Stunlock.Core;
 using Unity.Entities;
@@ -26,7 +25,7 @@ public static class WallopWarpersUtil
         return BuffUtility.HasBuff(EntityManager, character, PrefabGuids.Buff_InCombat_PvPVampire);
     }
 
-    public static void SendMessageTeleportDisallowed(Entity character)
+    public static void SendMessagePvPTeleportDisallowed(Entity character)
     {
         CreateSCTMessage(character, SCTMessage_NoTeleport_InCombat_PvP, ColorRed);
     }

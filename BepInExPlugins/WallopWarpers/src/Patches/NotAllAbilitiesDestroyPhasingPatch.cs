@@ -8,14 +8,14 @@ using Stunlock.Core;
 using Unity.Collections;
 using Unity.Entities;
 
-namespace ProfuselyViolentProgression.WallopWarpers;
+namespace ProfuselyViolentProgression.WallopWarpers.Patches;
 
 
 /// <summary>
 /// Keeps the phasing buff if the ability casted is a waypoint interaction
 /// </summary>
 [HarmonyPatch]
-public static class NotAllAbilitiesDestroy_Phasing_Patch
+public static class NotAllAbilitiesDestroyPhasingPatch
 {
     public static EntityManager EntityManager => WorldUtil.Server.EntityManager;
 
