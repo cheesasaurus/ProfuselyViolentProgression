@@ -2,7 +2,7 @@
 
 ## Objective
 
-Enable players to safely team up for pvp. Mititgates "insiding" (griefing from clan members).
+Enable players to safely clan up for pvp. Mititgates "insiding" (griefing from clan members).
 
 ## initial thoughts
 
@@ -57,24 +57,39 @@ Enable players to safely team up for pvp. Mititgates "insiding" (griefing from c
 ## bit flags enums
 
 - misc (listed to user without the qualifier. ie. just "building", not "misc.building")
-  - building
+  - building - mvp
   - waygates
-  - lockbox
+  - lockbox - mvp
   - musicbox
   - throne
   - research
   - plantSeeds
+  - all (used internally. if the user specifies "all", use each enum's all flag)
 - craft
-  - accessStations - todo: be sure this doesn't interfere with prison cells
-  - useTreasury
+  - accessStations - be sure this doesn't interfere with prison cells
+  - useTreasury - mvp
   - toggleRecipes
   - all
-- doors
-  - servantLocked
-  - notServantLocked
-  - narrow
-  - wide
+- doors - OpenDoorSystem
+  - servantLocked - mvp
+  - notServantLocked - mvp
+  - thin - mvp
+  - wide - mvp
   - fence
+  - palisade
+  - thinBasic
+  - thinBattlement
+  - thinCordial
+  - thinVerdant
+  - thinRoyal
+  - thinPlagueSanctum
+  - thinAncientSymphony1
+  - thinAncientSymphony2
+  - thinNocturnalOpulenceRed,green,blue... - todo: check actual names and colors. one entry per color.
+  - thinPrison
+  - thinBarrier
+  - wideBars
+  - widePlanks
   - all
 - prisoners
   - subdue
@@ -84,16 +99,16 @@ Enable players to safely team up for pvp. Mititgates "insiding" (griefing from c
   - feedUnSafeFood
   - all
 - servants
-  - convert
-  - terminate
-  - gear
-  - rename
+  - convert - mvp
+  - terminate - mvp
+  - gear - mvp
+  - rename - NameableInteractableSystem
   - all
 - tp
-  - red
-  - yellow
-  - purple
-  - blue
+  - red - mvp
+  - yellow - mvp
+  - purple - mvp
+  - blue - mvp
   - all
 - redist
   - quickSend
@@ -103,7 +118,7 @@ Enable players to safely team up for pvp. Mititgates "insiding" (griefing from c
 - arena
   - startContest
   - rules - todo: not sure if this is shared state
-  - zonePainting (including "clear arena zone")
+  - zonePainting - mvp. (including "clear arena zone")
   - all
 
 
@@ -112,7 +127,6 @@ Enable players to safely team up for pvp. Mititgates "insiding" (griefing from c
 - waygates
 - research
 - plantSeeds
-- doors.fence
 - doors.notServantLocked
 - doors.wide (release the servants to battle!)
 - craft.accessStations
