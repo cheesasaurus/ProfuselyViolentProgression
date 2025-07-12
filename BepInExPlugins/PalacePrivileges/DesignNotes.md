@@ -18,14 +18,17 @@ Enable players to safely clan up for pvp. Mititgates "insiding" (griefing from c
 
 ## Example commands
 
-- `.castleprivs grant [building, lockbox, doors.all] player Bilbo`
-- `.castleprivs ungrant [doors.notServantLocked] clan`
-- `.castleprivs forbid [all] player Gollum` - in case Gollum gets in the clan, don't let him do anything
-- `.castleprivs unforbid [jukebox] player Gollum` - i guess it wouldn't hurt to let him play some music
+- `.castleprivs grant player Bilbo "building|lockbox|doors.all"`
+- `.castleprivs ungrant clan "doors.notServantLocked"`
+- `.castleprivs forbid player Gollum "all"` - in case Gollum gets in the clan, don't let him do anything
+- `.castleprivs unforbid player Gollum "jukebox"` - i guess it wouldn't hurt to let him play some music
 - `.castleprivs check player Bilbo`
 - `.castleprivs check clan`
 - `.castleprivs check`
 - `.castleprivs reset` - reset all granted/forbidden privileges
+- `.castleprivs list`
+
+Use term `ungrant` instead of `revoke` to hopefully avoid conflation with `forbid`.
 
 ## Misc
 
@@ -58,7 +61,6 @@ Enable players to safely clan up for pvp. Mititgates "insiding" (griefing from c
 
 - misc (listed to user without the qualifier. ie. just "building", not "misc.building")
   - building - mvp
-  - waygates
   - lockbox - mvp
   - musicbox
   - throne
@@ -105,6 +107,7 @@ Enable players to safely clan up for pvp. Mititgates "insiding" (griefing from c
   - rename - NameableInteractableSystem
   - all
 - tp
+  - waygates
   - red - mvp
   - yellow - mvp
   - purple - mvp
@@ -124,7 +127,7 @@ Enable players to safely clan up for pvp. Mititgates "insiding" (griefing from c
 
 ## default clan privs
 
-- waygates
+- tp.waygates
 - research
 - plantSeeds
 - doors.notServantLocked
