@@ -78,9 +78,10 @@ public static class InterruptWaygateInteractPatch
                 //WallopWarpersUtil.ImpairWaypointUse(ev.Character);
                 //WallopWarpersUtil.InterruptCast1(entity, ev); // this doesn't work
                 //WallopWarpersUtil.InterruptCast2(entity, ev); // this doesn't work
+                //WallopWarpersUtil.InterruptCast3(entity, ev); // this doesn't work
                 //EntityManager.DestroyEntity(entity); // this doesn't work, and causes jank
 
-                WallopWarpersUtil.InterruptCast3(entity, ev);
+                WallopWarpersUtil.InterruptCast4(entity, ev);
             }
             catch (Exception ex)
             {

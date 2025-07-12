@@ -1,7 +1,9 @@
+using System;
 using ProfuselyViolentProgression.Core.Utilities;
 using ProjectM;
 using ProjectM.Scripting;
 using Stunlock.Core;
+using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
@@ -128,7 +130,40 @@ public static class WallopWarpersUtil
         // at ProfuselyViolentProgression.WallopWarpers.Patches.InterruptCast2(Entity entity, AbilityCastStartedEvent ev)
     }
 
+    // this also doesn't work (same approach as #2, but using our own EntityCommandBuffer)
     unsafe public static void InterruptCast3(Entity entity, AbilityCastStartedEvent ev)
+    {
+        if (!EntityManager.TryGetComponentData<AbilityBar_Shared>(ev.Character, out var abilityBar_Shared))
+        {
+            return;
+        }
+        var ssm = WorldUtil.Server.GetExistingSystemManaged<ServerScriptMapper>();
+        var sgm = ssm.GetServerGameManager();
+
+        var ascssHandle = WorldUtil.Server.GetExistingSystem<AbilityStartCastingSystem_Server>();
+        var ascssRef = WorldUtil.Server.Unmanaged.GetUnsafeSystemRef<AbilityStartCastingSystem_Server>(ascssHandle);
+        var eventPrefabs = ascssRef._EventPrefabs;
+
+        var debugData = new DebugData
+        {
+            CurrentFrame = sgm.ServerFrame,
+            IsClient = false,
+        };
+
+        try
+        {
+            var ecb = new EntityCommandBuffer(Allocator.Temp);
+            AbilityBarUtility.Interrupt(ref ecb, ref abilityBar_Shared, ev.Character, sgm.ServerTime, ref eventPrefabs, ref debugData);
+            ecb.Playback(EntityManager);
+            ecb.Dispose();
+        }
+        catch (Exception ex)
+        {
+            LogUtil.LogError(ex);
+        }
+    }
+
+    unsafe public static void InterruptCast4(Entity entity, AbilityCastStartedEvent ev)
     {
         // todo: try something with GameplayDebugRecorder.CreateAbilityEvent
     }
