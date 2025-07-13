@@ -119,6 +119,7 @@ public enum BuildPrivs : long
 {
     None = 0,
     All = -1,
+    UseTreasury = 1,
 }
 
 [Flags]

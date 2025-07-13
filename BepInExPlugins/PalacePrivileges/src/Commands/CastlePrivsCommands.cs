@@ -10,8 +10,10 @@ namespace ProfuselyViolentProgression.LoadoutLockdown.Commands;
 [CommandGroup("castlePrivs")]
 public class CastlePrivsCommands
 {
+    protected string CommandColor = VampireCommandFramework.Color.Command;
     protected string CategoryColor = VampireCommandFramework.Color.Teal;
-    protected string PrivColor = VampireCommandFramework.Color.Green;
+    protected string PrivColorValid = VampireCommandFramework.Color.Green;
+    protected string PrivColorInvalid = VampireCommandFramework.Color.Gold;
     protected string PrivSeparator = " <color=grey>|</color> ";
     protected int PrivsPerChunk = 10;
 
@@ -48,7 +50,7 @@ public class CastlePrivsCommands
         var groupedNames = PrivilegeParser.Instance.PrivilegeNamesGrouped(CastlePrivileges.All);
 
         var topLevelNames = string.Join(PrivSeparator, groupedNames[""]);
-        ctx.Reply($"Misc castle privileges:\n  <color={PrivColor}>{topLevelNames}</color>");
+        ctx.Reply($"Misc castle privileges:\n  <color={PrivColorValid}>{topLevelNames}</color>");
 
         var categoryNames = string.Join(PrivSeparator, groupedNames.Keys.Where(k => k != "").OrderBy(k => k));
         var sb = new StringBuilder();
@@ -58,7 +60,7 @@ public class CastlePrivsCommands
 
         sb.Clear();
         sb.AppendLine($"View privileges within a category using:");
-        sb.AppendLine($"  <color={VampireCommandFramework.Color.Command}>.castlePrivs list <<color={CategoryColor}>category></color></color>");
+        sb.AppendLine($"  <color={CommandColor}>.castlePrivs list <color={CategoryColor}>category</color></color>");
         ctx.Reply(sb.ToString());
     }
 
@@ -78,13 +80,13 @@ public class CastlePrivsCommands
 
         var sb = new StringBuilder();
         sb.AppendLine($"Found <color=#eb0>{count}</color> privileges in category <color={CategoryColor}>{category}</color>:");
-        sb.AppendLine($"<color={PrivColor}>{firstChunkString}</color>");
+        sb.AppendLine($"<color={PrivColorValid}>{firstChunkString}</color>");
         ctx.Reply(sb.ToString());
 
         for (var i = 1; i < privNameChunks.Count; i++)
         {
             var chunkString = string.Join(PrivSeparator, privNameChunks[i]);
-            ctx.Reply($"<color={PrivColor}>{chunkString}</color>");
+            ctx.Reply($"<color={PrivColorValid}>{chunkString}</color>");
         }
     }
 
@@ -96,7 +98,7 @@ public class CastlePrivsCommands
         ctx.Reply("Not implemented");
     }
 
-    [Command("check", description: "Check castle privileges granted/forbidden to others.")]
+    [Command("check", description: "List players to whom you've granted/forbade privileges.")]
     public void CommandCheck(ChatCommandContext ctx)
     {
         LogUtil.LogDebug(".castleprivs check");
@@ -106,11 +108,11 @@ public class CastlePrivsCommands
 
     [Command("check", description: "Check castle privileges granted to your clan", usage: "clan")]
     public void CommandCheckClan(ChatCommandContext ctx, string targetType)
-    {
-        var exampleUsage = ".castlePrivs check clan";
+    {        
         if (!targetType.ToLowerInvariant().Equals("clan"))
         {
-            ctx.Reply($"invalid format. example usage: \"{exampleUsage}\"");
+            var exampleUsage = ".castlePrivs check clan";
+            SendFormatInvalidMessage(ctx, exampleUsage);
             return;
         }
         LogUtil.LogDebug(".castleprivs check clan");
@@ -120,72 +122,102 @@ public class CastlePrivsCommands
 
     [Command("check", description: "Check castle privileges granted/forbidden to a player", usage: "player Bilbo")]
     public void CommandCheckPlayer(ChatCommandContext ctx, string targetType, string playerName)
-    {
-        var exampleUsage = ".castlePrivs check player Bilbo";
+    {        
         if (!targetType.ToLowerInvariant().Equals("player"))
         {
-            ctx.Reply($"invalid format. example usage: \"{exampleUsage}\"");
+            var exampleUsage = ".castlePrivs check player Bilbo";
+            SendFormatInvalidMessage(ctx, exampleUsage);
             return;
         }
-        LogUtil.LogDebug(".castleprivs grant player");
+        LogUtil.LogDebug(".castleprivs check player");
         // todo: implement
         ctx.Reply("Not implemented");
     }
 
     [Command("grant", description: "Grant castle privileges to your clan.", usage: "clan \"build.all tp.all doors.all\"")]
     public void CommandGrantClan(ChatCommandContext ctx, string targetType, string privileges)
-    {
-        var exampleUsage = ".castlePrivs grant clan \"build.all tp.all doors.all\"";
+    {        
         if (!targetType.ToLowerInvariant().Equals("clan"))
         {
-            ctx.Reply($"invalid format. example usage: \"{exampleUsage}\"");
+            var exampleUsage = ".castlePrivs grant clan \"build.all tp.all doors.all\"";
+            SendFormatInvalidMessage(ctx, exampleUsage);
             return;
         }
-        LogUtil.LogDebug(".castleprivs grant clan");
+
+        if (!ParseAndSendValidationMessages(ctx, privileges, out var parseResult))
+        {
+            return;
+        }
+
         // todo: implement
-        ctx.Reply("Not implemented");
+
+        var privNamesStr = string.Join(PrivSeparator, parseResult.ValidPrivNames);
+        ctx.Reply($"Granted privileges to clan:\n<color={PrivColorValid}>{privNamesStr}</color>");
     }
 
-    [Command("grant", description: "Grant castle privileges to a player. Privileges only apply while they are in your clan.", usage: "player Bilbo \"build.all tp.all doors.all\"")]
+    [Command("grant", description: "Grant extra castle privileges to a player. Privileges only apply while they are in your clan.", usage: "player Bilbo \"build.all tp.all doors.all\"")]
     public void CommandGrantPlayer(ChatCommandContext ctx, string targetType, string playerName, string privileges)
-    {
-        var exampleUsage = ".castlePrivs grant player Bilbo \"build.all tp.all doors.all\"";
+    {        
         if (!targetType.ToLowerInvariant().Equals("player"))
         {
-            ctx.Reply($"invalid format. example usage: \"{exampleUsage}\"");
+            var exampleUsage = ".castlePrivs grant player Bilbo \"build.all tp.all doors.all\"";
+            SendFormatInvalidMessage(ctx, exampleUsage);
             return;
         }
-        LogUtil.LogDebug(".castleprivs grant player");
+
+        if (!ParseAndSendValidationMessages(ctx, privileges, out var parseResult))
+        {
+            return;
+        }
+
         // todo: implement
-        ctx.Reply("Not implemented");
+
+        // todo: should unforbid as well as grant
+
+        var privNamesStr = string.Join(PrivSeparator, parseResult.ValidPrivNames);
+        ctx.Reply($"Granted privileges to player {playerName}:\n<color={PrivColorValid}>{privNamesStr}</color>");
     }
 
     [Command("ungrant", description: "Revoke castle privileges granted to your clan.", usage: "clan \"build.all tp.all doors.all\"")]
     public void CommandUnGrantClan(ChatCommandContext ctx, string targetType, string privileges)
-    {
-        var exampleUsage = ".castlePrivs ungrant clan \"build.all tp.all doors.all\"";
+    {        
         if (!targetType.ToLowerInvariant().Equals("clan"))
         {
-            ctx.Reply($"invalid format. example usage: \"{exampleUsage}\"");
+            var exampleUsage = ".castlePrivs ungrant clan \"build.all tp.all doors.all\"";
+            SendFormatInvalidMessage(ctx, exampleUsage);
             return;
         }
-        LogUtil.LogDebug(".castleprivs ungrant clan");
+
+        if (!ParseAndSendValidationMessages(ctx, privileges, out var parseResult))
+        {
+            return;
+        }
+
         // todo: implement
-        ctx.Reply("Not implemented");
+
+        var privNamesStr = string.Join(PrivSeparator, parseResult.ValidPrivNames);
+        ctx.Reply($"Revoked privileges for your clan:\n<color={PrivColorValid}>{privNamesStr}</color>");
     }
 
-    [Command("ungrant", description: "Revoke castle privileges granted to a player.", usage: "player Bilbo \"build.all tp.all doors.all\"")]
+    [Command("ungrant", description: "Revoke extra castle privileges granted to a player.", usage: "player Bilbo \"build.all tp.all doors.all\"")]
     public void CommandUnGrantPlayer(ChatCommandContext ctx, string targetType, string playerName, string privileges)
-    {
-        var exampleUsage = ".castlePrivs ungrant player Bilbo \"build.all tp.all doors.all\"";
+    {        
         if (!targetType.ToLowerInvariant().Equals("player"))
         {
-            ctx.Reply($"invalid format. example usage: \"{exampleUsage}\"");
+            var exampleUsage = ".castlePrivs ungrant player Bilbo \"build.all tp.all doors.all\"";
+            SendFormatInvalidMessage(ctx, exampleUsage);
             return;
         }
-        LogUtil.LogDebug(".castleprivs ungrant player");
+
+        if (!ParseAndSendValidationMessages(ctx, privileges, out var parseResult))
+        {
+            return;
+        }
+
         // todo: implement
-        ctx.Reply("Not implemented");
+
+        var privNamesStr = string.Join(PrivSeparator, parseResult.ValidPrivNames);
+        ctx.Reply($"Revoked extra privileges for player {playerName}:\n<color={PrivColorValid}>{privNamesStr}</color>");
     }
 
     [Command("forbid", description: "Forbid a player from getting specific castle privileges while in your clan.", usage: "player Gollum \"build.all tp.all doors.all\"")]
@@ -193,9 +225,17 @@ public class CastlePrivsCommands
     {
         var exampleUsage = ".castlePrivs forbid Gollum \"build.all tp.all doors.all\"";
 
-        LogUtil.LogDebug(".castleprivs forbid");
+        if (!ParseAndSendValidationMessages(ctx, privileges, out var parseResult))
+        {
+            return;
+        }
+
         // todo: implement
-        ctx.Reply("Not implemented");
+
+        // todo: should ungrant as well as forbid
+
+        var privNamesStr = string.Join(PrivSeparator, parseResult.ValidPrivNames);
+        ctx.Reply($"Disqualified player {playerName} from potential clan privileges:\n<color={PrivColorValid}>{privNamesStr}</color>");
     }
 
     [Command("unforbid", description: "UnForbid a player from getting specific castle privileges while in your clan.", usage: "player Gollum \"build.all tp.all doors.all\"")]
@@ -203,10 +243,40 @@ public class CastlePrivsCommands
     {
         var exampleUsage = ".castlePrivs unforbid Gollum \"build.all tp.all doors.all\"";
 
-        LogUtil.LogDebug(".castleprivs unforbid");
+        if (!ParseAndSendValidationMessages(ctx, privileges, out var parseResult))
+        {
+            return;
+        }
+
         // todo: implement
-        ctx.Reply("Not implemented");
+
+        var privNamesStr = string.Join(PrivSeparator, parseResult.ValidPrivNames);
+        ctx.Reply($"Requalified player {playerName} for potential clan privileges:\n<color={PrivColorValid}>{privNamesStr}</color>");
     }
 
-    // todo: more commands
+    private bool ParseAndSendValidationMessages(ChatCommandContext ctx, string privileges, out PrivilegeParser.ParseResult parseResult)
+    {
+        parseResult = PrivilegeParser.Instance.ParsePrivilegesFromCommandString(privileges);
+        if (parseResult.InvalidPrivNames.Any())
+        {
+            ctx.Reply($"Invalid privileges\n<color={PrivColorInvalid}>{string.Join(PrivSeparator, parseResult.InvalidPrivNames)}</color>");
+        }
+
+        var isValid = parseResult.ValidPrivNames.Any();
+        if (!isValid)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("<color=red>No valid privileges specified.</color>");
+            sb.Append("To list possible privileges, use ");
+            sb.AppendLine($"<color={CommandColor}>.castlePrivs list</color>");
+            ctx.Reply(sb.ToString());
+        }
+        return isValid;
+    }
+
+    private void SendFormatInvalidMessage(ChatCommandContext ctx, string exampleCommand)
+    {
+        ctx.Reply($"<color=red>Invalid format.</color> Example usage:\n<color={CommandColor}>{exampleCommand}</color>");
+    }
+    
 }

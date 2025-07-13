@@ -15,11 +15,32 @@ public class PrivilegeParser
         InitPrivsLookup();
     }
 
-    public CastlePrivileges PrivilegesFromCommandString(string str)
+    public struct ParseResult()
     {
-        // todo: implement
-        throw new NotImplementedException();
+        public CastlePrivileges Privs;
+        public List<string> ValidPrivNames { get; set; } = [];
+        public List<string> InvalidPrivNames { get; set; } = [];
     }
+
+    public ParseResult ParsePrivilegesFromCommandString(string str)
+    {
+        var result = new ParseResult();
+        var privNames = str.Split(" ", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        foreach (var privName in privNames)
+        {
+            var lookupKey = privName.ToLowerInvariant();
+            if (PrivsLookup.TryGetValue(lookupKey, out var namedPrivs))
+            {
+                result.ValidPrivNames.Add(namedPrivs.Name);
+                result.Privs |= namedPrivs.Privs;
+            }
+            else
+            {
+                result.InvalidPrivNames.Add(privName);
+            }
+        }
+        return result;
+    }    
 
     public Dictionary<string, List<string>> PrivilegeNamesGrouped(CastlePrivileges privs)
     {
