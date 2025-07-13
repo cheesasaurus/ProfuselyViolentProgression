@@ -54,6 +54,8 @@ Use term `ungrant` instead of `revoke` to hopefully avoid conflation with `forbi
     - if actor is in clan, privs for clan
     - otherwise privs for player
   - throttle warning messages to the owner for each owner-actor pair
+- keep record of ungranted clan privs. Combine it with default clan privs, so we can add more default privs later.
+  - `privs = (granted | default) & ~ungranted`
 
 
 

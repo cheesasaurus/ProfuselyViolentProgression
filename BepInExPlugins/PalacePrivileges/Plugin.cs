@@ -2,6 +2,7 @@
 using BepInEx.Unity.IL2CPP;
 using HarmonyLib;
 using ProfuselyViolentProgression.Core.Utilities;
+using ProfuselyViolentProgression.LoadoutLockdown.Commands;
 using VampireCommandFramework;
 
 namespace ProfuselyViolentProgression.PalacePrivileges;
@@ -16,7 +17,7 @@ public class Plugin : BasePlugin
 
     public override void Load()
     {
-        LogUtil.Init(Log);        
+        LogUtil.Init(Log);
 
         _harmony = new Harmony(MyPluginInfo.PLUGIN_GUID);
         _harmony.PatchAll(System.Reflection.Assembly.GetExecutingAssembly());
@@ -25,6 +26,8 @@ public class Plugin : BasePlugin
         _hookDOTS.RegisterAnnotatedHooks();
 
         CommandRegistry.RegisterAll();
+
+        PrivilegeParser.Instance = new();
 
         Log.LogInfo($"Plugin {MyPluginInfo.PLUGIN_GUID} version {MyPluginInfo.PLUGIN_VERSION} is loaded!");
     }

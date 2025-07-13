@@ -1,4 +1,6 @@
 using System;
+using System.Linq;
+using System.Text;
 using ProfuselyViolentProgression.Core.Utilities;
 using ProfuselyViolentProgression.PalacePrivileges.Models;
 using VampireCommandFramework;
@@ -8,6 +10,11 @@ namespace ProfuselyViolentProgression.LoadoutLockdown.Commands;
 [CommandGroup("castlePrivs")]
 public class CastlePrivsCommands
 {
+    protected string CategoryColor = VampireCommandFramework.Color.Teal;
+    protected string PrivColor = VampireCommandFramework.Color.Green;
+    protected string PrivSeparator = " <color=grey>|</color> ";
+    protected int PrivsPerChunk = 10;
+
     // todo: remove
     [Command("debug", description: "debug stuff")]
     public void CommandDebug(ChatCommandContext ctx)
@@ -35,12 +42,50 @@ public class CastlePrivsCommands
         ctx.Reply("did debug thing");
     }
 
-    [Command("list", description: "List all possible castle privileges.")]
+    [Command("list", description: "List possible castle privileges and categories.")]
     public void CommandList(ChatCommandContext ctx)
     {
-        LogUtil.LogDebug(".castlePrivs list");
-        // todo: implement
-        ctx.Reply("Not implemented");
+        var groupedNames = PrivilegeParser.Instance.PrivilegeNamesGrouped(CastlePrivileges.All);
+
+        var topLevelNames = string.Join(PrivSeparator, groupedNames[""]);
+        ctx.Reply($"Misc castle privileges:\n  <color={PrivColor}>{topLevelNames}</color>");
+
+        var categoryNames = string.Join(PrivSeparator, groupedNames.Keys.Where(k => k != "").OrderBy(k => k));
+        var sb = new StringBuilder();
+        sb.AppendLine($"More privileges can be found in these categories:");
+        sb.AppendLine($"  <color={CategoryColor}>{categoryNames}</color>");
+        ctx.Reply(sb.ToString());
+
+        sb.Clear();
+        sb.AppendLine($"View privileges within a category using:");
+        sb.AppendLine($"  <color={VampireCommandFramework.Color.Command}>.castlePrivs list <<color={CategoryColor}>category></color></color>");
+        ctx.Reply(sb.ToString());
+    }
+
+    [Command("list", description: "List all possible castle privileges in a category.")]
+    public void CommandList(ChatCommandContext ctx, string category)
+    {
+        var groupedNames = PrivilegeParser.Instance.PrivilegeNamesGrouped(CastlePrivileges.All);
+        if (!groupedNames.ContainsKey(category))
+        {
+            ctx.Reply($"<color=red>No privileges found in category <color={CategoryColor}>{category}</color></color>");
+            return;
+        }
+
+        var count = groupedNames[category].Count;
+        var privNameChunks = groupedNames[category].Chunk(PrivsPerChunk).ToList();
+        var firstChunkString = string.Join(PrivSeparator, privNameChunks[0]);
+
+        var sb = new StringBuilder();
+        sb.AppendLine($"Found <color=#eb0>{count}</color> privileges in category <color={CategoryColor}>{category}</color>:");
+        sb.AppendLine($"<color={PrivColor}>{firstChunkString}</color>");
+        ctx.Reply(sb.ToString());
+
+        for (var i = 1; i < privNameChunks.Count; i++)
+        {
+            var chunkString = string.Join(PrivSeparator, privNameChunks[i]);
+            ctx.Reply($"<color={PrivColor}>{chunkString}</color>");
+        }
     }
 
     [Command("reset", description: "Reset castle privilges granted/forbidden to others.")]
