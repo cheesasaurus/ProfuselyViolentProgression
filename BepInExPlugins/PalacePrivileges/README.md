@@ -34,7 +34,7 @@ Recently-separated clan members cannot use keys on your castle heart.\
 By default, clan members will have the following privileges:
   - Opening/closing doors without servant locks.
     - To restrict areas of your castle, put them behind servant-locked doors.
-  - Opening/closing portcullises (the 2-tile-wide doors).
+  - Opening/closing portcullises (the 2-tile-wide doors). Even with servant locks.
     - Getting raided? Release the Kraken!
   - Using waygates to teleport in/out.
   - Using crafting stations / refineries.
@@ -77,12 +77,13 @@ Privileges can be granted / ungranted / forbidden.
 - Suzy wants to milk the prisoners.
   - Grant them the `prisoners.extractBlood` and `prisoners.feedSafeFood` privileges.
   - Suzy will not be able to feed them gruel or corrupted fish.
+- Billy is a total sleazebag but you have a common enemy.
+  - Forbid Billy the `all` privilege and join his clan.
 - Johnny's favorite color is yellow and you made a special room just for him.
   - Block off his room with the yellow-colored door from the Oakveil DLC.
   - Put a servant lock on his door.
   - Grant Johnny the `doors.noctOpYellow` privilege.
-- Billy is a total sleazebag but you have a common enemy.
-  - Forbid Billy the `all` privilege and join his clan.
+
 
 
 ### Miscellaneous privileges

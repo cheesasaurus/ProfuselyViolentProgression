@@ -139,40 +139,44 @@ public enum DoorPrivs : long
     All = -1,
     ServantLocked = 1, // !Door.CanBeOpenedByServant
     NotServantLocked = 1 << 1, // Door.CanBeOpenedByServant
+    ThinFence = 1 << 2,
+    ThinPalisade = 1 << 3, // PalisadesBuildMenuGroup ? TM_Castle_Wall_Door_Palisade_Tier01 ?
+    ThinBasic = 1 << 4, // DoorTier02BuildMenuGroup ?
+    ThinBattlement = 1 << 5, // DoorTier02Standard01BuildMenuGroup ?
+    ThinCordial = 1 << 6, // DoorTier02Standard02BuildMenuGroup ?
+    ThinVerdant = 1 << 7, // DoorTier02Standard03BuildMenuGroup ?
+    ThinRoyal = 1 << 8, // DoorTier02_DLC01_DraculasRelic_BuildMenuGroup ?
+    ThinPlagueSanctum = 1 << 9, // DoorTier02_DLC02_Gloomrot_BuildMenuGroup ?
+    ThinAncientSymphony1 = 1 << 10, // DoorTier02_DLC_ProjectK01_BuildMenuGroup ?
+    ThinAncientSymphony2 = 1 << 11, // DoorTier02_DLC_ProjectK02_BuildMenuGroup ?
+    ThinNocturnalOpulence = 1 << 12, // DoorTier02_DLC_StrongbladeDLC01_BuildMenuGroup ?
+    ThinNocturnalOpulenceRed = 1 << 13,
+    ThinNocturnalOpulenceOrange = 1 << 14,
+    ThinNocturnalOpulenceYellow = 1 << 15,
+    ThinNocturnalOpulenceGreen = 1 << 16,
+    ThinNocturnalOpulenceGreenLight = 1 << 17, // todo: actual color name. light green
+    ThinNocturnalOpulenceBlueLight = 1 << 18, // todo: actual color name. light blue
+    ThinNocturnalOpulenceBlue = 1 << 19,
+    ThinNocturnalOpulencePurple = 1 << 20,
+    ThinNocturnalOpulencePink = 1 << 21,
+    ThinNocturnalOpulenceWhite = 1 << 22,
+    ThinNocturnalOpulenceGrey = 1 << 23,
+    ThinNocturnalOpulenceBlack = 1 << 24,
+    ThinPrison = 1 << 25, // DoorTier02_PrisonStyle01_BuildMenuGroup ?
+    ThinBarrier = 1 << 26, // DoorTier02_PrisonStyle02_BuildMenuGroup ?
+    WideBars = 1 << 27, // DoorTier02_Wide_01_BuildMenuGroup ?
+    WidePlanks = 1 << 28, // DoorTier02_Wide_02_BuildMenuGroup ?
 
-    // todo: figure out what to do with thin/wide generalisation
-    // should let players apply Thin as a generalisation, and then unset specific bits
-    // and vice-versa.
-    // But also have forwards-compatibility with new doors, without having to explicitly add privileges for them if generalisation was set.
-    Thin = 1 << 2, // to future-proof, we will do a separate check for thin/wide, rather than combining bits. But that is actually less user friendly
-    Wide = 1 << 3, // to future-proof, we will do a separate check for thin/wide, rather than combining bits. But that is actually less user friendly
-    ThinFence = 1 << 4,
-    ThinPalisade = 1 << 5, // PalisadesBuildMenuGroup ? TM_Castle_Wall_Door_Palisade_Tier01 ?
-    ThinBasic = 1 << 6, // DoorTier02BuildMenuGroup ?
-    ThinBattlement = 1 << 7, // DoorTier02Standard01BuildMenuGroup ?
-    ThinCordial = 1 << 8, // DoorTier02Standard02BuildMenuGroup ?
-    ThinVerdant = 1 << 9, // DoorTier02Standard03BuildMenuGroup ?
-    ThinRoyal = 1 << 10, // DoorTier02_DLC01_DraculasRelic_BuildMenuGroup ?
-    ThinPlagueSanctum = 1 << 11, // DoorTier02_DLC02_Gloomrot_BuildMenuGroup ?
-    ThinAncientSymphony1 = 1 << 12, // DoorTier02_DLC_ProjectK01_BuildMenuGroup ?
-    ThinAncientSymphony2 = 1 << 13, // DoorTier02_DLC_ProjectK02_BuildMenuGroup ?
-    ThinNocturnalOpulence = 1 << 14, // DoorTier02_DLC_StrongbladeDLC01_BuildMenuGroup ?
-    ThinNocturnalOpulenceRed = 1 << 15,
-    ThinNocturnalOpulenceOrange = 1 << 16,
-    ThinNocturnalOpulenceYellow = 1 << 17,
-    ThinNocturnalOpulenceGreen = 1 << 18,
-    ThinNocturnalOpulenceGreenLight = 1 << 19, // todo: actual color name. light green
-    ThinNocturnalOpulenceBlueLight = 1 << 20, // todo: actual color name. light blue
-    ThinNocturnalOpulenceBlue = 1 << 21,
-    ThinNocturnalOpulencePurple = 1 << 22,
-    ThinNocturnalOpulencePink = 1 << 23,
-    ThinNocturnalOpulenceWhite = 1 << 24,
-    ThinNocturnalOpulenceGrey = 1 << 25,
-    ThinNocturnalOpulenceBlack = 1 << 26,
-    ThinPrison = 1 << 27, // DoorTier02_PrisonStyle01_BuildMenuGroup ?
-    ThinBarrier = 1 << 28, // DoorTier02_PrisonStyle02_BuildMenuGroup ?
-    WideBars = 1 << 29, // DoorTier02_Wide_01_BuildMenuGroup ?
-    WidePlanks = 1 << 30, // DoorTier02_Wide_02_BuildMenuGroup ?
+    Thin = ThinFence | ThinPalisade | ThinBattlement | ThinCordial | ThinVerdant
+        | ThinRoyal | ThinPlagueSanctum | ThinAncientSymphony1 | ThinAncientSymphony2
+        | ThinNocturnalOpulence | ThinNocturnalOpulenceRed | ThinNocturnalOpulenceOrange
+        | ThinNocturnalOpulenceYellow | ThinNocturnalOpulenceGreen | ThinNocturnalOpulenceGreenLight
+        | ThinNocturnalOpulenceBlueLight | ThinNocturnalOpulenceBlue | ThinNocturnalOpulencePurple
+        | ThinNocturnalOpulencePink | ThinNocturnalOpulenceWhite | ThinNocturnalOpulenceGrey
+        | ThinNocturnalOpulenceBlack
+        | ThinPrison | ThinBarrier,
+
+    Wide = WideBars | WidePlanks,
 }
 
 [Flags]

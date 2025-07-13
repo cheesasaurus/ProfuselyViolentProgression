@@ -108,7 +108,7 @@ public class CastlePrivsCommands
 
     [Command("check", description: "Check castle privileges granted to your clan", usage: "clan")]
     public void CommandCheckClan(ChatCommandContext ctx, string targetType)
-    {        
+    {
         if (!targetType.ToLowerInvariant().Equals("clan"))
         {
             var exampleUsage = ".castlePrivs check clan";
@@ -122,7 +122,7 @@ public class CastlePrivsCommands
 
     [Command("check", description: "Check castle privileges granted/forbidden to a player", usage: "player Bilbo")]
     public void CommandCheckPlayer(ChatCommandContext ctx, string targetType, string playerName)
-    {        
+    {
         if (!targetType.ToLowerInvariant().Equals("player"))
         {
             var exampleUsage = ".castlePrivs check player Bilbo";
@@ -136,7 +136,7 @@ public class CastlePrivsCommands
 
     [Command("grant", description: "Grant castle privileges to your clan.", usage: "clan \"build.all tp.all doors.all\"")]
     public void CommandGrantClan(ChatCommandContext ctx, string targetType, string privileges)
-    {        
+    {
         if (!targetType.ToLowerInvariant().Equals("clan"))
         {
             var exampleUsage = ".castlePrivs grant clan \"build.all tp.all doors.all\"";
@@ -157,7 +157,7 @@ public class CastlePrivsCommands
 
     [Command("grant", description: "Grant extra castle privileges to a player. Privileges only apply while they are in your clan.", usage: "player Bilbo \"build.all tp.all doors.all\"")]
     public void CommandGrantPlayer(ChatCommandContext ctx, string targetType, string playerName, string privileges)
-    {        
+    {
         if (!targetType.ToLowerInvariant().Equals("player"))
         {
             var exampleUsage = ".castlePrivs grant player Bilbo \"build.all tp.all doors.all\"";
@@ -180,7 +180,7 @@ public class CastlePrivsCommands
 
     [Command("ungrant", description: "Revoke castle privileges granted to your clan.", usage: "clan \"build.all tp.all doors.all\"")]
     public void CommandUnGrantClan(ChatCommandContext ctx, string targetType, string privileges)
-    {        
+    {
         if (!targetType.ToLowerInvariant().Equals("clan"))
         {
             var exampleUsage = ".castlePrivs ungrant clan \"build.all tp.all doors.all\"";
@@ -201,7 +201,7 @@ public class CastlePrivsCommands
 
     [Command("ungrant", description: "Revoke extra castle privileges granted to a player.", usage: "player Bilbo \"build.all tp.all doors.all\"")]
     public void CommandUnGrantPlayer(ChatCommandContext ctx, string targetType, string playerName, string privileges)
-    {        
+    {
         if (!targetType.ToLowerInvariant().Equals("player"))
         {
             var exampleUsage = ".castlePrivs ungrant player Bilbo \"build.all tp.all doors.all\"";
@@ -278,5 +278,9 @@ public class CastlePrivsCommands
     {
         ctx.Reply($"<color=red>Invalid format.</color> Example usage:\n<color={CommandColor}>{exampleCommand}</color>");
     }
+
+    // todo: command to check global settings
+    
+    // todo: commands to set global settings (admin only)
     
 }
