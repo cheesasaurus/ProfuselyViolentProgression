@@ -179,11 +179,14 @@ public class PrivilegeParser
         RegisterPrivs("servants.rename", ServantPrivs.Rename); // planned feature
 
         RegisterPrivs("tp.all", TeleporterPrivs.All); // planned feature
-        RegisterPrivs("tp.waygates", TeleporterPrivs.Waygates); // planned feature
+        RegisterPrivs("tp.waygate", TeleporterPrivs.Waygate); // planned feature
+        RegisterPrivs("tp.waygateOut", TeleporterPrivs.WaygateOut); // planned feature
+        RegisterPrivs("tp.waygateIn", TeleporterPrivs.WaygateIn); // planned feature
         RegisterPrivs("tp.red", TeleporterPrivs.Red); // planned feature
         RegisterPrivs("tp.yellow", TeleporterPrivs.Yellow); // planned feature
         RegisterPrivs("tp.purple", TeleporterPrivs.Purple); // planned feature
         RegisterPrivs("tp.blue", TeleporterPrivs.Blue); // planned feature
+        RegisterPrivs("tp.allSmall", TeleporterPrivs.AllSmall); // planned feature
 
         RegisterPrivs("redist.all", RedistributionPrivs.All); // planned feature
         RegisterPrivs("redist.quickSend", RedistributionPrivs.QuickSend); // planned feature
@@ -211,18 +214,18 @@ public class PrivilegeParser
         RegisterPrivs("doors.ancientSymphony1", DoorPrivs.ThinAncientSymphony1);
         RegisterPrivs("doors.ancientSymphony2", DoorPrivs.ThinAncientSymphony2);
         RegisterPrivs("doors.noctOp", DoorPrivs.ThinNocturnalOpulence);
-        // RegisterPrivs("doors.noctOpRed", DoorPrivs.ThinNocturnalOpulenceRed); // planned feature
-        // RegisterPrivs("doors.noctOpOrange", DoorPrivs.ThinNocturnalOpulenceOrange); // planned feature
-        // RegisterPrivs("doors.noctOpYellow", DoorPrivs.ThinNocturnalOpulenceYellow); // planned feature
-        // RegisterPrivs("doors.noctOpGreen", DoorPrivs.ThinNocturnalOpulenceGreen); // planned feature
-        // RegisterPrivs("doors.noctOpGreenLight", DoorPrivs.ThinNocturnalOpulenceGreenLight); // planned feature
-        // RegisterPrivs("doors.noctOpBlueLight", DoorPrivs.ThinNocturnalOpulenceBlueLight); // planned feature
-        // RegisterPrivs("doors.noctOpBlue", DoorPrivs.ThinNocturnalOpulenceBlue); // planned feature
-        // RegisterPrivs("doors.noctOpPurple", DoorPrivs.ThinNocturnalOpulencePurple); // planned feature
-        // RegisterPrivs("doors.noctOpPink", DoorPrivs.ThinNocturnalOpulencePink); // planned feature
-        // RegisterPrivs("doors.noctOpWhite", DoorPrivs.ThinNocturnalOpulenceWhite); // planned feature
-        // RegisterPrivs("doors.noctOpGrey", DoorPrivs.ThinNocturnalOpulenceGrey); // planned feature
-        // RegisterPrivs("doors.noctOpBlack", DoorPrivs.ThinNocturnalOpulenceBlack); // planned feature
+        RegisterPrivs("doors.noctOpRed", DoorPrivs.ThinNocturnalOpulenceRed); // planned feature
+        RegisterPrivs("doors.noctOpOrange", DoorPrivs.ThinNocturnalOpulenceOrange); // planned feature
+        RegisterPrivs("doors.noctOpYellow", DoorPrivs.ThinNocturnalOpulenceYellow); // planned feature
+        RegisterPrivs("doors.noctOpGreen", DoorPrivs.ThinNocturnalOpulenceGreen); // planned feature
+        RegisterPrivs("doors.noctOpGreenLight", DoorPrivs.ThinNocturnalOpulenceGreenLight); // planned feature
+        RegisterPrivs("doors.noctOpBlueLight", DoorPrivs.ThinNocturnalOpulenceBlueLight); // planned feature
+        RegisterPrivs("doors.noctOpBlue", DoorPrivs.ThinNocturnalOpulenceBlue); // planned feature
+        RegisterPrivs("doors.noctOpPurple", DoorPrivs.ThinNocturnalOpulencePurple); // planned feature
+        RegisterPrivs("doors.noctOpPink", DoorPrivs.ThinNocturnalOpulencePink); // planned feature
+        RegisterPrivs("doors.noctOpWhite", DoorPrivs.ThinNocturnalOpulenceWhite); // planned feature
+        RegisterPrivs("doors.noctOpGrey", DoorPrivs.ThinNocturnalOpulenceGrey); // planned feature
+        RegisterPrivs("doors.noctOpBlack", DoorPrivs.ThinNocturnalOpulenceBlack); // planned feature
         RegisterPrivs("doors.prison", DoorPrivs.ThinPrison);
         RegisterPrivs("doors.barrier", DoorPrivs.ThinBarrier);
         RegisterPrivs("doors.wideBars", DoorPrivs.WideBars);

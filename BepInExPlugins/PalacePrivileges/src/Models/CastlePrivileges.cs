@@ -139,8 +139,13 @@ public enum DoorPrivs : long
     All = -1,
     ServantLocked = 1, // !Door.CanBeOpenedByServant
     NotServantLocked = 1 << 1, // Door.CanBeOpenedByServant
-    Thin = 1 << 2, // to future-proof, we will do a separate check for thin/wide, rather than combining bits
-    Wide = 1 << 3, // to future-proof, we will do a separate check for thin/wide, rather than combining bits
+
+    // todo: figure out what to do with thin/wide generalisation
+    // should let players apply Thin as a generalisation, and then unset specific bits
+    // and vice-versa.
+    // But also have forwards-compatibility with new doors, without having to explicitly add privileges for them if generalisation was set.
+    Thin = 1 << 2, // to future-proof, we will do a separate check for thin/wide, rather than combining bits. But that is actually less user friendly
+    Wide = 1 << 3, // to future-proof, we will do a separate check for thin/wide, rather than combining bits. But that is actually less user friendly
     ThinFence = 1 << 4,
     ThinPalisade = 1 << 5, // PalisadesBuildMenuGroup ? TM_Castle_Wall_Door_Palisade_Tier01 ?
     ThinBasic = 1 << 6, // DoorTier02BuildMenuGroup ?
@@ -198,11 +203,14 @@ public enum TeleporterPrivs : long
 {
     None = 0,
     All = -1,
-    Waygates = 1,
-    Red = 1 << 1,
-    Yellow = 1 << 2,
-    Purple = 1 << 3,
-    Blue = 1 << 4,
+    WaygateOut = 1,
+    WaygateIn = 1 << 1,
+    Waygate = WaygateIn | WaygateOut,
+    Red = 1 << 2,
+    Yellow = 1 << 3,
+    Purple = 1 << 4,
+    Blue = 1 << 5,
+    AllSmall = Red | Yellow | Purple | Blue,
 }
 
 [Flags]
