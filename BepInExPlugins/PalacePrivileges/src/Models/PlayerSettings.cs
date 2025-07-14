@@ -3,14 +3,9 @@ using ProfuselyViolentProgression.PalacePrivileges.Models;
 
 namespace ProfuselyViolentProgression.PalacePrivileges.Services;
 
-public class PlayerSettingsStore
+public struct PlayerIndex(ulong platformId)
 {
-    public Dictionary<PlayerIndex, PlayerSettings> SettingsLookup { get; set; }
-}
-
-public struct PlayerIndex
-{
-    public ulong PlatformId { get; set; }
+    public ulong PlatformId { get; set; } = platformId;
 }
 
 public struct PlayerSettings
@@ -23,10 +18,5 @@ public struct ActingPlayerPrivileges
 {
     public CastlePrivileges Granted { get; set; }
     public CastlePrivileges Forbidden { get; set; }
-
-    /// <summary>
-    /// expected to be set by whatever is managing Granted and Forbidden
-    /// </summary>
-    public CastlePrivileges PrecomputedEffective { get; set; }
 }
 

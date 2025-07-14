@@ -138,3 +138,10 @@ Use term `ungrant` instead of `revoke` to hopefully avoid conflation with `forbi
 - servants.convert
 - redist.quickSend
 - arena.startContest
+
+## exploit mitigation
+
+There's a rumor going around about a client-side lockpicker mod.
+
+Not sure if true, but would be easy to add validation with this to counter those sorts of things.
+And detection / logging.

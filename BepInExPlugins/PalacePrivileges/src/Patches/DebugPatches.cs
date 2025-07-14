@@ -32,12 +32,4 @@ public unsafe class DebugPatches
         // todo
     }
 
-    //[HarmonyPatch(typeof(SystemBaseRegistry), nameof(SystemBaseRegistry.CallOnUpdate))]
-    //[HarmonyPrefix]
-    unsafe public static void SomePatchThingDOTS(SystemState* systemState)
-    {
-        var systemTypeIndex = systemState->m_SystemTypeIndex;
-        LogUtil.LogInfo(TypeManager.GetSystemType(systemTypeIndex).FullName);
-    }
-
 }

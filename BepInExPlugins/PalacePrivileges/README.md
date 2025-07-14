@@ -91,8 +91,6 @@ Privileges can be granted / ungranted / forbidden.
 `all`
 `lockbox`
 `musicbox`
-`throne`
-`research`
 `plantSeeds`
 
 ### Build privileges
@@ -118,6 +116,7 @@ Privileges can be granted / ungranted / forbidden.
 `servants.terminate`
 `servants.gear`
 `servants.rename`
+`servants.throne`
 
 ### Teleporter privileges
 `tp.all`
@@ -135,6 +134,13 @@ Privileges can be granted / ungranted / forbidden.
 `redist.quickSend`
 `redist.toggleAutoSend`
 `redist.edit`
+
+### Research privileges
+`research.all`
+`research.t1`
+`research.t2`
+`research.t3`
+`research.stygian`
 
 ### Arena privileges
 `arena.all`

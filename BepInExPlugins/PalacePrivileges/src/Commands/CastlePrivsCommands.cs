@@ -1,11 +1,10 @@
-using System;
 using System.Linq;
 using System.Text;
 using ProfuselyViolentProgression.Core.Utilities;
 using ProfuselyViolentProgression.PalacePrivileges.Models;
 using VampireCommandFramework;
 
-namespace ProfuselyViolentProgression.LoadoutLockdown.Commands;
+namespace ProfuselyViolentProgression.PalacePrivileges.Commands;
 
 [CommandGroup("castlePrivs")]
 public class CastlePrivsCommands
@@ -19,35 +18,15 @@ public class CastlePrivsCommands
 
     // todo: remove
     [Command("debug", description: "debug stuff")]
-    public void CommandDebug(ChatCommandContext ctx)
+    public unsafe void CommandDebug(ChatCommandContext ctx)
     {
-        var a = new CastlePrivileges();
-        a.Misc |= MiscPrivs.Lockbox;
-        a.Arena |= ArenaPrivs.StartContest;
-        a.Prisoner |= PrisonerPrivs.Kill | PrisonerPrivs.Subdue;
-
-        var b = new CastlePrivileges();
-        b.Misc |= MiscPrivs.Throne;
-        b.Prisoner |= PrisonerPrivs.Subdue;
-
-        var c = a | b;
-        LogUtil.LogDebug($"{c.Misc} | {c.Arena} | {c.Prisoner}");
-
-        var d = CastlePrivileges.All;
-        d &= a;
-        LogUtil.LogDebug($"{d.Misc} | {d.Arena} | {d.Prisoner}");
-
-        var e = CastlePrivileges.All;
-        LogUtil.LogDebug($"{e.Misc} | {e.Arena} | {e.Prisoner}");
-
-
-        ctx.Reply("did debug thing");
+        ctx.Reply("A");
     }
 
     [Command("list", description: "List possible castle privileges and categories.")]
     public void CommandList(ChatCommandContext ctx)
     {
-        var groupedNames = PrivilegeParser.Instance.PrivilegeNamesGrouped(CastlePrivileges.All);
+        var groupedNames = Core.PrivilegeParser.PrivilegeNamesGrouped(CastlePrivileges.All);
 
         var topLevelNames = string.Join(PrivSeparator, groupedNames[""]);
         ctx.Reply($"Misc castle privileges:\n  <color={PrivColorValid}>{topLevelNames}</color>");
@@ -67,7 +46,7 @@ public class CastlePrivsCommands
     [Command("list", description: "List all possible castle privileges in a category.")]
     public void CommandList(ChatCommandContext ctx, string category)
     {
-        var groupedNames = PrivilegeParser.Instance.PrivilegeNamesGrouped(CastlePrivileges.All);
+        var groupedNames = Core.PrivilegeParser.PrivilegeNamesGrouped(CastlePrivileges.All);
         if (!groupedNames.ContainsKey(category))
         {
             ctx.Reply($"<color=red>No privileges found in category <color={CategoryColor}>{category}</color></color>");
@@ -112,7 +91,7 @@ public class CastlePrivsCommands
         if (!targetType.ToLowerInvariant().Equals("clan"))
         {
             var exampleUsage = ".castlePrivs check clan";
-            SendFormatInvalidMessage(ctx, exampleUsage);
+            SendMessage_FormatInvalid(ctx, exampleUsage);
             return;
         }
         LogUtil.LogDebug(".castleprivs check clan");
@@ -126,7 +105,7 @@ public class CastlePrivsCommands
         if (!targetType.ToLowerInvariant().Equals("player"))
         {
             var exampleUsage = ".castlePrivs check player Bilbo";
-            SendFormatInvalidMessage(ctx, exampleUsage);
+            SendMessage_FormatInvalid(ctx, exampleUsage);
             return;
         }
         LogUtil.LogDebug(".castleprivs check player");
@@ -140,7 +119,7 @@ public class CastlePrivsCommands
         if (!targetType.ToLowerInvariant().Equals("clan"))
         {
             var exampleUsage = ".castlePrivs grant clan \"build.all tp.all doors.all\"";
-            SendFormatInvalidMessage(ctx, exampleUsage);
+            SendMessage_FormatInvalid(ctx, exampleUsage);
             return;
         }
 
@@ -161,7 +140,7 @@ public class CastlePrivsCommands
         if (!targetType.ToLowerInvariant().Equals("player"))
         {
             var exampleUsage = ".castlePrivs grant player Bilbo \"build.all tp.all doors.all\"";
-            SendFormatInvalidMessage(ctx, exampleUsage);
+            SendMessage_FormatInvalid(ctx, exampleUsage);
             return;
         }
 
@@ -184,7 +163,7 @@ public class CastlePrivsCommands
         if (!targetType.ToLowerInvariant().Equals("clan"))
         {
             var exampleUsage = ".castlePrivs ungrant clan \"build.all tp.all doors.all\"";
-            SendFormatInvalidMessage(ctx, exampleUsage);
+            SendMessage_FormatInvalid(ctx, exampleUsage);
             return;
         }
 
@@ -205,7 +184,7 @@ public class CastlePrivsCommands
         if (!targetType.ToLowerInvariant().Equals("player"))
         {
             var exampleUsage = ".castlePrivs ungrant player Bilbo \"build.all tp.all doors.all\"";
-            SendFormatInvalidMessage(ctx, exampleUsage);
+            SendMessage_FormatInvalid(ctx, exampleUsage);
             return;
         }
 
@@ -256,7 +235,7 @@ public class CastlePrivsCommands
 
     private bool ParseAndSendValidationMessages(ChatCommandContext ctx, string privileges, out PrivilegeParser.ParseResult parseResult)
     {
-        parseResult = PrivilegeParser.Instance.ParsePrivilegesFromCommandString(privileges);
+        parseResult = Core.PrivilegeParser.ParsePrivilegesFromCommandString(privileges);
         if (parseResult.InvalidPrivNames.Any())
         {
             ctx.Reply($"Invalid privileges\n<color={PrivColorInvalid}>{string.Join(PrivSeparator, parseResult.InvalidPrivNames)}</color>");
@@ -274,7 +253,7 @@ public class CastlePrivsCommands
         return isValid;
     }
 
-    private void SendFormatInvalidMessage(ChatCommandContext ctx, string exampleCommand)
+    private void SendMessage_FormatInvalid(ChatCommandContext ctx, string exampleCommand)
     {
         ctx.Reply($"<color=red>Invalid format.</color> Example usage:\n<color={CommandColor}>{exampleCommand}</color>");
     }

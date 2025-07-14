@@ -13,6 +13,7 @@ public struct CastlePrivileges
     public TeleporterPrivs Teleporter { get; set; }
     public RedistributionPrivs Redistribution { get; set; }
     public ArenaPrivs Arena { get; set; }
+    public ResearchPrivs Research { get; set; }
 
     public readonly bool Intersects(CastlePrivileges other)
     {
@@ -53,6 +54,7 @@ public struct CastlePrivileges
         Teleporter = TeleporterPrivs.All,
         Redistribution = RedistributionPrivs.All,
         Arena = ArenaPrivs.All,
+        Research = ResearchPrivs.All,
     };
 
     public static CastlePrivileges operator |(CastlePrivileges left, CastlePrivileges right)
@@ -109,9 +111,7 @@ public enum MiscPrivs : long
     All = -1,
     Lockbox = 1 << 1,
     Musicbox = 1 << 2,
-    Throne = 1 << 3,
-    Research = 1 << 4,
-    PlantSeeds = 1 << 5,
+    PlantSeeds = 1 << 3,
 }
 
 [Flags]
@@ -130,6 +130,17 @@ public enum CraftPrivs : long
     UseTreasury = 1,
     AccessStations = 1 << 1,
     ToggleRecipes = 1 << 2,
+}
+
+[Flags]
+public enum ResearchPrivs : long
+{
+    None = 0,
+    All = -1,
+    DeskTier1 = 1,
+    DeskTier2 = 1 << 1,
+    DeskTier3 = 1 << 2,
+    AltarStygian = 1 << 3,
 }
 
 [Flags]
@@ -200,6 +211,7 @@ public enum ServantPrivs : long
     Terminate = 1 << 1,
     Gear = 1 << 2,
     Rename = 1 << 3,
+    Throne = 1 << 4,
 }
 
 [Flags]

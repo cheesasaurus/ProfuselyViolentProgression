@@ -2,12 +2,10 @@ using System;
 using System.Collections.Generic;
 using ProfuselyViolentProgression.PalacePrivileges.Models;
 
-namespace ProfuselyViolentProgression.LoadoutLockdown.Commands;
+namespace ProfuselyViolentProgression.PalacePrivileges.Commands;
 
 public class PrivilegeParser
 {
-    public static PrivilegeParser Instance;
-
     protected Dictionary<string, NamedCastlePrivileges> PrivsLookup = [];
 
     public PrivilegeParser()
@@ -146,6 +144,14 @@ public class PrivilegeParser
         });
     }
 
+    private void RegisterPrivs(string name, ResearchPrivs privs)
+    {
+        RegisterPrivs(name, new CastlePrivileges
+        {
+            Research = privs,
+        });
+    }
+
     private void InitPrivsLookup()
     {
         // todo: comment out anything not functional before release
@@ -154,8 +160,6 @@ public class PrivilegeParser
 
         RegisterPrivs("lockbox", MiscPrivs.Lockbox);
         RegisterPrivs("musicbox", MiscPrivs.Musicbox); // planned feature
-        RegisterPrivs("throne", MiscPrivs.Throne); // planned feature
-        RegisterPrivs("research", MiscPrivs.Research); // planned feature
         RegisterPrivs("plantSeeds", MiscPrivs.PlantSeeds); // planned feature
 
         RegisterPrivs("build.all", BuildPrivs.All);
@@ -177,6 +181,7 @@ public class PrivilegeParser
         RegisterPrivs("servants.terminate", ServantPrivs.Terminate); // planned feature
         RegisterPrivs("servants.gear", ServantPrivs.Gear); // planned feature
         RegisterPrivs("servants.rename", ServantPrivs.Rename); // planned feature
+        RegisterPrivs("servants.throne", ServantPrivs.Throne); // planned feature
 
         RegisterPrivs("tp.all", TeleporterPrivs.All); // planned feature
         RegisterPrivs("tp.waygate", TeleporterPrivs.Waygate); // planned feature
@@ -197,6 +202,12 @@ public class PrivilegeParser
         RegisterPrivs("arena.startContest", ArenaPrivs.StartContest); // planned feature
         RegisterPrivs("arena.editRules", ArenaPrivs.EditRules); // planned feature
         RegisterPrivs("arena.zonePainting", ArenaPrivs.ZonePainting); // planned feature
+
+        RegisterPrivs("research.all", ResearchPrivs.All); // planned feature
+        RegisterPrivs("research.t1", ResearchPrivs.DeskTier1); // planned feature
+        RegisterPrivs("research.t2", ResearchPrivs.DeskTier2); // planned feature
+        RegisterPrivs("research.t3", ResearchPrivs.DeskTier3); // planned feature
+        RegisterPrivs("research.stygian", ResearchPrivs.AltarStygian); // planned feature
 
         RegisterPrivs("doors.all", DoorPrivs.All);
         RegisterPrivs("doors.servantLocked", DoorPrivs.ServantLocked);
