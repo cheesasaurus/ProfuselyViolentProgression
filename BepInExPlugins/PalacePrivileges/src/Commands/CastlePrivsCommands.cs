@@ -105,8 +105,9 @@ public class CastlePrivsCommands
     {
         if (!targetType.ToLowerInvariant().Equals("clan"))
         {
-            var exampleUsage = ".castlePrivs check clan";
-            SendMessage_FormatInvalid(ctx, exampleUsage);
+            // most likely the user meant to check a player
+            var playerName = targetType;
+            CommandCheckPlayer(ctx, "player", playerName);
             return;
         }
 
