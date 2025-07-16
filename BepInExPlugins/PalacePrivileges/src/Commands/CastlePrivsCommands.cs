@@ -264,7 +264,33 @@ public class CastlePrivsCommands
         ctx.Reply($"Revoked extra privileges for player {playerName}:\n<color={PrivColorValid}>{privNamesStr}</color>");
     }
 
+    /// <summary>
+    /// This particular version of "forbid" is for convenience / consistency.
+    /// During development, I got so used to typing "player" for the other commands,
+    /// that I kept typing it for "forbid" too, even though it's for players only.
+    /// I'm sure it would happen to somebody else as well.
+    /// </summary>
     [Command("forbid", description: "Forbid a player from getting specific castle privileges while in your clan.", usage: "player Gollum \"build.all tp.all doors.all\"")]
+    public void CommandForbid(ChatCommandContext ctx, string target, string playerName, string privileges)
+    {
+        switch (target.ToLowerInvariant())
+        {
+            case "clan":
+                ctx.Reply($"<color=red>\"forbid\" is only for players</color>");
+                break;
+
+            case "player":
+                CommandForbid(ctx, playerName, privileges);
+                break;
+
+            default:
+                var exampleUsage = ".castlePrivs forbid player Gollum \"build.all tp.all doors.all\"";
+                SendMessage_FormatInvalid(ctx, exampleUsage);
+                break;
+        }
+    }
+
+    [Command("forbid", description: "Forbid a player from getting specific castle privileges while in your clan.", usage: "Gollum \"build.all tp.all doors.all\"")]
     public void CommandForbid(ChatCommandContext ctx, string playerName, string privileges)
     {
         if (!CheckNotReferringToSelf_SendValidationMessages(ctx, playerName))
@@ -288,7 +314,33 @@ public class CastlePrivsCommands
         ctx.Reply($"Disqualified player <color={ColorGold}>{playerName}</color> from potential clan privileges:\n<color={PrivColorForbidden}>{privNamesStr}</color>");
     }
 
+    /// <summary>
+    /// This particular version of "unforbid" is for convenience / consistency.
+    /// During development, I got so used to typing "player" for the other commands,
+    /// that I kept typing it for "unforbid" too, even though it's for players only.
+    /// I'm sure it would happen to somebody else as well.
+    /// </summary>
     [Command("unforbid", description: "UnForbid a player from getting specific castle privileges while in your clan.", usage: "player Gollum \"build.all tp.all doors.all\"")]
+    public void CommandUnForbid(ChatCommandContext ctx, string target, string playerName, string privileges)
+    {
+        switch (target.ToLowerInvariant())
+        {
+            case "clan":
+                ctx.Reply($"<color=red>\"unforbid\" is only for players</color>");
+                break;
+
+            case "player":
+                CommandUnForbid(ctx, playerName, privileges);
+                break;
+
+            default:
+                var exampleUsage = ".castlePrivs unforbid player Gollum \"build.all tp.all doors.all\"";
+                SendMessage_FormatInvalid(ctx, exampleUsage);
+                break;
+        }
+    }
+
+    [Command("unforbid", description: "UnForbid a player from getting specific castle privileges while in your clan.", usage: "Gollum \"build.all tp.all doors.all\"")]
     public void CommandUnForbid(ChatCommandContext ctx, string playerName, string privileges)
     {
         if (!CheckNotReferringToSelf_SendValidationMessages(ctx, playerName))
