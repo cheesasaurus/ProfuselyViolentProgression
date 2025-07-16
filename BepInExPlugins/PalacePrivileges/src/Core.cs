@@ -21,14 +21,11 @@ public static class Core
         CastlePrivilegesService = new CastlePrivilegesService(
             log: log,
             globalSettingsRepo: new GlobalSettingsRepository(log, MyPluginInfo.PLUGIN_GUID, "GlobalSettings.json"),
-            playerSettingsRepo: new PlayerSettingsRepository(log, MyPluginInfo.PLUGIN_GUID, "PlayerSettings.json"),
+            playerSettingsRepo: new PlayerSettingsRepository(log, MyPluginInfo.PLUGIN_GUID, "PlayerSettings"),
             doorService: DoorService
         );
         CastlePrivilegesService.LoadSettings();
-        // todo: enable saving
-        // Hooks.BeforeWorldSave += CastlePrivilegesService.SaveSettings;
-
-        
+        Hooks.BeforeWorldSave += CastlePrivilegesService.SaveSettings;
     }
 
     public static void Dispose()
@@ -39,6 +36,11 @@ public static class Core
         }
         IsInitialized = false;
         Hooks.BeforeWorldSave -= CastlePrivilegesService.SaveSettings;
+    }
+
+    public static void Save()
+    {
+        CastlePrivilegesService?.SaveSettings();
     }
 
 }

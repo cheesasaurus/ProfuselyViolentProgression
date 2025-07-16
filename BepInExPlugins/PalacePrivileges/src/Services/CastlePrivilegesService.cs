@@ -70,7 +70,7 @@ public class CastlePrivilegesService
         {
             playerSettings = new PlayerSettings();
             playerSettings.ClanPrivs = _defaultClanPrivileges;
-            _playerSettingsRepo.SetPlayerSettings(castleOwnerPlatformId, playerSettings);
+            _playerSettingsRepo.SetPlayerSettings(castleOwnerPlatformId, ref playerSettings);
         }
         return playerSettings;
     }

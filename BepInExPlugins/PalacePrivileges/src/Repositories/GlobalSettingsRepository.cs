@@ -10,7 +10,7 @@ namespace ProfuselyViolentProgression.PalacePrivileges.Services;
 public class GlobalSettingsRepository
 {
     private readonly string _filePath;
-    private readonly ManualLogSource _Log;
+    private readonly ManualLogSource _log;
 
     private GlobalSettings _globalSettings;
     private int _revision = 0;
@@ -22,7 +22,7 @@ public class GlobalSettingsRepository
         var dir = Path.Combine(bepinexPath, @"PluginSaveData", pluginGUID);
         Directory.CreateDirectory(dir);
         _filePath = Path.Combine(dir, filename);
-        _Log = log;
+        _log = log;
     }
 
     public GlobalSettings GetOrCreateGlobalSettings()
@@ -40,20 +40,19 @@ public class GlobalSettingsRepository
     {
         if (!File.Exists(_filePath))
         {
-            _Log.LogDebug($"Cannot load global settings from non-existent file: {_filePath}");
+            _log.LogDebug($"Cannot load global settings from non-existent file: {_filePath}");
             return false;
         }
 
         try
         {
-            // todo: something faster than json
             var json = File.ReadAllText(_filePath);
             _globalSettings = JsonSerializer.Deserialize<GlobalSettings>(json);
             return true;
         }
         catch (Exception ex)
         {
-            _Log.LogError($"Could not load global settings: {ex}");
+            _log.LogError($"Could not load global settings: {ex}");
             return false;
         }
     }
@@ -67,15 +66,15 @@ public class GlobalSettingsRepository
 
         try
         {
-            // todo: something faster than json
             var json = JsonSerializer.Serialize(_globalSettings);
             File.WriteAllText(_filePath, json);
             _revisionSaved = _revision;
+            _log.LogDebug("Saved global settings.");
             return true;
         }
         catch (Exception ex)
         {
-            _Log.LogError($"Could not save global settings: {ex}");
+            _log.LogError($"Could not save global settings: {ex}");
             return false;
         }
     }

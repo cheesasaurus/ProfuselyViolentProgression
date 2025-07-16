@@ -37,6 +37,7 @@ public class Plugin : BasePlugin
         CommandRegistry.UnregisterAssembly();
         _hookDOTS.Dispose();
         _harmony?.UnpatchSelf();
+        Core.Save();
         Core.Dispose();
         return true;
     }
