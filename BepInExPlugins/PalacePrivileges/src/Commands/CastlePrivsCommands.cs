@@ -147,13 +147,20 @@ public class CastlePrivsCommands
         }
 
         var grantedPrivNames = Core.PrivilegeParser.PrivilegeNames(actingPlayerPrivileges.Granted);
+        var forbiddenPrivNames = Core.PrivilegeParser.PrivilegeNames(actingPlayerPrivileges.Forbidden);
+
+        if (!grantedPrivNames.Any() && !forbiddenPrivNames.Any())
+        {
+            ctx.Reply($"No custom privileges granted/forbidden to player {playerNameFormatted}");
+            return;
+        }
+
         if (grantedPrivNames.Any())
         {
             ctx.Reply($"Privileges <color=green>granted</color> for player {playerNameFormatted}:");
             SendMessages_Privileges(ctx, grantedPrivNames);
         }
-
-        var forbiddenPrivNames = Core.PrivilegeParser.PrivilegeNames(actingPlayerPrivileges.Forbidden);
+        
         if (forbiddenPrivNames.Any())
         {
             ctx.Reply($"Privileges <color={PrivColorForbidden}>forbidden</color> for player {playerNameFormatted}:");
@@ -166,8 +173,9 @@ public class CastlePrivsCommands
     {
         if (!targetType.ToLowerInvariant().Equals("clan"))
         {
-            var exampleUsage = ".castlePrivs grant clan \"build.all tp.all doors.all\"";
-            SendMessage_FormatInvalid(ctx, exampleUsage);
+            // most likely the user meant to grant to a player
+            var playerName = targetType;
+            CommandGrantPlayer(ctx, "player", playerName, privileges);
             return;
         }
 
@@ -207,10 +215,10 @@ public class CastlePrivsCommands
             return;
         }
 
-        Core.CastlePrivilegesService.GrantPlayerPrivileges(ctx.User.PlatformId, userModel.User.PlatformId, parseResult.Privs);        
+        Core.CastlePrivilegesService.GrantPlayerPrivileges(ctx.User.PlatformId, userModel.User.PlatformId, parseResult.Privs);
 
-        var privNamesStr = string.Join(PrivSeparator, parseResult.ValidPrivNames);
-        ctx.Reply($"Granted extra privileges to player {playerName}:\n<color={PrivColorValid}>{privNamesStr}</color>");
+        ctx.Reply($"Granted extra privileges to player <color={ColorGold}>{playerName}:</color>");
+        SendMessages_Privileges(ctx, parseResult.ValidPrivNames);
     }
 
     [Command("ungrant", description: "Revoke castle privileges granted to your clan.", usage: "clan \"build.all tp.all doors.all\"")]
@@ -218,8 +226,9 @@ public class CastlePrivsCommands
     {
         if (!targetType.ToLowerInvariant().Equals("clan"))
         {
-            var exampleUsage = ".castlePrivs ungrant clan \"build.all tp.all doors.all\"";
-            SendMessage_FormatInvalid(ctx, exampleUsage);
+            // most likely the user meant to ungrant to a player
+            var playerName = targetType;
+            CommandUnGrantPlayer(ctx, "player", playerName, privileges);
             return;
         }
 
@@ -259,10 +268,10 @@ public class CastlePrivsCommands
             return;
         }
 
-        Core.CastlePrivilegesService.UnGrantPlayerPrivileges(ctx.User.PlatformId, userModel.User.PlatformId, parseResult.Privs);        
-
-        var privNamesStr = string.Join(PrivSeparator, parseResult.ValidPrivNames);
-        ctx.Reply($"Revoked extra privileges for player {playerName}:\n<color={PrivColorValid}>{privNamesStr}</color>");
+        Core.CastlePrivilegesService.UnGrantPlayerPrivileges(ctx.User.PlatformId, userModel.User.PlatformId, parseResult.Privs);
+        
+        ctx.Reply($"Revoked extra privileges for player <color={ColorGold}>{playerName}:</color>");
+        SendMessages_Privileges(ctx, parseResult.ValidPrivNames);
     }
 
     /// <summary>
