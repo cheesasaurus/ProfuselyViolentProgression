@@ -7,25 +7,42 @@ namespace ProfuselyViolentProgression.PalacePrivileges;
 public static class Core
 {
     public static bool IsInitialized { get; private set; } = false;
-    public static DoorService DoorService { get; private set; }
+    public static SCTService SCTService { get; private set; }
+    public static UserService UserService { get; private set; }
+    public static AntiCheatService AntiCheatService { get; private set; }
+    public static CastleService CastleService { get; private set; }
+    public static CastleDoorService CastleDoorService { get; private set; }
     public static PrivilegeParser PrivilegeParser { get; private set; }
     public static CastlePrivilegesService CastlePrivilegesService { get; private set; }
+    public static RestrictionService RestrictionService { get; private set; }
+    
 
     public static void Initialize(ManualLogSource log)
     {
         IsInitialized = true;
 
-        DoorService = new DoorService();
+        SCTService = new();
+        UserService = new();
+        AntiCheatService = new(log);
+        CastleService = new(UserService);
+        CastleDoorService = new(CastleService);
         PrivilegeParser = new();
 
-        CastlePrivilegesService = new CastlePrivilegesService(
+        CastlePrivilegesService = new(
             log: log,
-            globalSettingsRepo: new GlobalSettingsRepository(log, MyPluginInfo.PLUGIN_GUID, "GlobalSettings.json"),
-            playerSettingsRepo: new PlayerSettingsRepository(log, MyPluginInfo.PLUGIN_GUID, "PlayerSettings"),
-            doorService: DoorService
+            globalSettingsRepo: new(log, MyPluginInfo.PLUGIN_GUID, "GlobalSettings.json"),
+            playerSettingsRepo: new(log, MyPluginInfo.PLUGIN_GUID, "PlayerSettings")
         );
         CastlePrivilegesService.LoadSettings();
         Hooks.BeforeWorldSave += CastlePrivilegesService.SaveSettings;
+
+        RestrictionService = new(
+            log: log,
+            castlePrivilegesService: CastlePrivilegesService,
+            userService: UserService,
+            antiCheatService: AntiCheatService,
+            doorService: CastleDoorService
+        );
     }
 
     public static void Dispose()

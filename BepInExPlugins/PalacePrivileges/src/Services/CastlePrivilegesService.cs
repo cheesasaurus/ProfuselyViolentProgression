@@ -5,7 +5,6 @@ using ProfuselyViolentProgression.Core.Utilities;
 using ProfuselyViolentProgression.PalacePrivileges.Models;
 using ProjectM;
 using Unity.Entities;
-using static ProfuselyViolentProgression.Core.Utilities.UserUtil;
 
 namespace ProfuselyViolentProgression.PalacePrivileges.Services;
 
@@ -16,7 +15,6 @@ public class CastlePrivilegesService
     ManualLogSource _log;
     GlobalSettingsRepository _globalSettingsRepo;
     PlayerSettingsRepository _playerSettingsRepo;
-    DoorService _doorService;
     EntityManager _entityManager = WorldUtil.Server.EntityManager;
 
     CastlePrivileges _defaultClanPrivileges = new()
@@ -33,12 +31,15 @@ public class CastlePrivilegesService
         Research = ResearchPrivs.All,
     };
 
-    public CastlePrivilegesService(ManualLogSource log, GlobalSettingsRepository globalSettingsRepo, PlayerSettingsRepository playerSettingsRepo, DoorService doorService)
+    public CastlePrivilegesService(
+        ManualLogSource log,
+        GlobalSettingsRepository globalSettingsRepo,
+        PlayerSettingsRepository playerSettingsRepo
+    )
     {
         _log = log;
         _globalSettingsRepo = globalSettingsRepo;
         _playerSettingsRepo = playerSettingsRepo;
-        _doorService = doorService;
     }
 
     public void LoadSettings()
@@ -111,7 +112,7 @@ public class CastlePrivilegesService
         // todo: user lookup stuff could be optimized,
         // but keeping an up-to-date cache sounds like a lot of work.
         // Might see if I can yoink something from another mod.
-        var userModelLookup = new Dictionary<ulong, UserModel>();
+        var userModelLookup = new Dictionary<ulong, UserUtil.UserModel>();
         foreach (var userModel in UserUtil.FindAllUsers())
         {
             userModelLookup[userModel.User.PlatformId] = userModel;

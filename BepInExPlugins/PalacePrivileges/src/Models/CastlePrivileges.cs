@@ -172,7 +172,10 @@ public enum DoorPrivs : long
     ThinFence = 1 << 2,
     ThinPalisade = 1 << 3, // PalisadesBuildMenuGroup ? TM_Castle_Wall_Door_Palisade_Tier01 ?
     ThinBasic = 1 << 4, // DoorTier02BuildMenuGroup ?
-    ThinBattlement = 1 << 5, // DoorTier02Standard01BuildMenuGroup ?
+
+    // TM_Castle_Wall_Door_Wood_Tier02_Standard01_Standard PrefabGUID(-1720487003)
+    // TM_Castle_Wall_Door_Wood_Tier02_Standard01_ServantLock PrefabGUID(661164434)
+    ThinBattlement = 1 << 5, // DoorTier02Standard01BuildMenuGroup ? 
     ThinCordial = 1 << 6, // DoorTier02Standard02BuildMenuGroup ?
     ThinVerdant = 1 << 7, // DoorTier02Standard03BuildMenuGroup ?
     ThinRoyal = 1 << 8, // DoorTier02_DLC01_DraculasRelic_BuildMenuGroup ?
