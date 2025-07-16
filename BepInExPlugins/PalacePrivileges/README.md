@@ -75,10 +75,11 @@ Privileges can be granted / ungranted / forbidden.
   - Forbid Timmy the `servants.convert` privilege.
   - Other clan members will still be able to convert servants.
 - Suzy wants to milk the prisoners.
-  - Grant them the `prisoners.extractBlood` and `prisoners.feedSafeFood` privileges.
+  - Grant Suzy the `prisoners.extractBlood` and `prisoners.feedSafeFood` privileges.
   - Suzy will not be able to feed them gruel or corrupted fish.
 - Billy is a total sleazebag but you have a common enemy.
   - Forbid Billy the `all` privilege and join his clan.
+  - Billy will have no privileges in your castle, despite being a clan member.
 - Johnny's favorite color is yellow and you made a special room just for him.
   - Block off his room with the yellow-colored door from the Oakveil DLC.
   - Put a servant lock on his door.
@@ -218,7 +219,7 @@ Players can customize access to their castles via chat commands.
   - Check global settings.
 
 ## Admin chat commands
-- `.castlePrivs settings set keyClanCooldownHours 48`
+- `.castlePrivs set keyClanCooldownHours 48.0`
   - When clan members separate, they have to wait `48` hours before using keys on each other's castles.
   - Could be set to e.g. `0.5` to make the waiting time 30 minutes.
   - Can be set to `0` to effectively remove the waiting time.

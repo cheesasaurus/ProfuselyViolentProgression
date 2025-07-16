@@ -2,5 +2,5 @@ namespace ProfuselyViolentProgression.PalacePrivileges.Models;
 
 public struct GlobalSettings()
 {
-    public int KeyClanCooldownHours { get; set; } = 48;
+    public float KeyClanCooldownHours { get; set; } = 48.0f;
 }

@@ -52,12 +52,12 @@ public class CastlePrivilegesService
         _playerSettingsRepo.TrySave();
     }
 
-    public GlobalSettings GetGlobalSettings(int hours)
+    public GlobalSettings GetGlobalSettings()
     {
         return _globalSettingsRepo.GetOrCreateGlobalSettings();
     }
 
-    public void SetGlobalSetting_KeyClanCooldownHours(int hours)
+    public void SetGlobalSetting_KeyClanCooldownHours(float hours)
     {
         var globalSettings = _globalSettingsRepo.GetOrCreateGlobalSettings();
         globalSettings.KeyClanCooldownHours = hours;

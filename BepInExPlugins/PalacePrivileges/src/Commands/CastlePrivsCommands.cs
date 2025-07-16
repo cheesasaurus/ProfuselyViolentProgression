@@ -1,4 +1,4 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,6 +11,7 @@ namespace ProfuselyViolentProgression.PalacePrivileges.Commands;
 [CommandGroup("castlePrivs")]
 public class CastlePrivsCommands
 {
+    protected string ColorGold = VampireCommandFramework.Color.Gold;
     protected string CommandColor = VampireCommandFramework.Color.Command;
     protected string CategoryColor = VampireCommandFramework.Color.Teal;
     protected string PrivColorValid = VampireCommandFramework.Color.Green;
@@ -237,6 +238,47 @@ public class CastlePrivsCommands
         ctx.Reply($"Requalified player {playerName} for potential clan privileges:\n<color={PrivColorValid}>{privNamesStr}</color>");
     }
 
+    [Command("settings", description: "Check global settings.")]
+    public void CommandSettings(ChatCommandContext ctx)
+    {
+        var globalSettings = Core.CastlePrivilegesService.GetGlobalSettings();
+        var keyClanCooldownHours = Math.Round(globalSettings.KeyClanCooldownHours, 2);
+
+        var sb = new StringBuilder();
+        sb.AppendLine($"Global settings:<color={ColorGold}>");
+        sb.AppendLine($"  KeyClanCooldownHours: <color={CommandColor}>{keyClanCooldownHours}</color>");
+        sb.Append("</color>");
+        ctx.Reply(sb.ToString());
+    }
+
+    [Command("set", description: "Set a global setting", adminOnly: true)]
+    public void CommandSettingsSet(ChatCommandContext ctx, string settingName, string value)
+    {
+        switch (settingName.ToLowerInvariant())
+        {
+            case "keyclancooldownhours":
+            case "keyclancooldown":
+                SubCommand_SettingsSet_KeyClanCooldownHours(ctx, value);
+                break;
+
+            default:
+                var invalidSettingName = $"<color={ColorGold}>\"{settingName}\"</color>";
+                ctx.Reply($"<color=red>unknown setting {invalidSettingName}</color>");
+                break;
+        }
+    }
+
+    private void SubCommand_SettingsSet_KeyClanCooldownHours(ChatCommandContext ctx, string value)
+    {
+        if (!float.TryParse(value, out var hours))
+        {
+            ctx.Reply($"<color=red>\"{value}\" doesn't look like a number. Expected format like <color={CommandColor}>48.0</color>");
+            return;
+        }
+        Core.CastlePrivilegesService.SetGlobalSetting_KeyClanCooldownHours(hours);
+        ctx.Reply($"<color={ColorGold}>set global setting KeyClanCooldownHours to <color={CommandColor}>{Math.Round(hours, 2)}</color></color>");
+    }
+
     private bool ParseAndSendValidationMessages(ChatCommandContext ctx, string privileges, out PrivilegeParser.ParseResult parseResult)
     {
         parseResult = Core.PrivilegeParser.ParsePrivilegesFromCommandString(privileges);
@@ -271,9 +313,5 @@ public class CastlePrivsCommands
             ctx.Reply($"<color={PrivColorValid}>{chunkString}</color>");
         }
     }
-
-    // todo: command to check global settings
-
-    // todo: commands to set global settings (admin only)
 
 }
