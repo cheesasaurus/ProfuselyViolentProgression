@@ -85,6 +85,7 @@ public struct CastlePrivileges
         result.Teleporter = left.Teleporter | right.Teleporter;
         result.Redistribution = left.Redistribution | right.Redistribution;
         result.Arena = left.Arena | right.Arena;
+        result.Research = left.Research | right.Research;
         return result;
     }
 
@@ -100,6 +101,7 @@ public struct CastlePrivileges
         result.Teleporter = left.Teleporter & right.Teleporter;
         result.Redistribution = left.Redistribution & right.Redistribution;
         result.Arena = left.Arena & right.Arena;
+        result.Research = left.Research & right.Research;
         return result;
     }
 
@@ -115,6 +117,7 @@ public struct CastlePrivileges
         result.Teleporter = ~operand.Teleporter;
         result.Redistribution = ~operand.Redistribution;
         result.Arena = ~operand.Arena;
+        result.Research = ~operand.Research;
         return result;
     }
     

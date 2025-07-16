@@ -82,9 +82,21 @@ public class CastlePrivsCommands
     [Command("check", description: "List players to whom you've granted/forbade privileges.")]
     public void CommandCheck(ChatCommandContext ctx)
     {
-        LogUtil.LogDebug(".castleprivs check");
-        // todo: implement
-        ctx.Reply("Not implemented");
+        var playerNames = Core.CastlePrivilegesService.NamesOfPlayersWithCustomPrivs(ctx.User.PlatformId);
+        if (!playerNames.Any())
+        {
+            ctx.Reply($"You haven't granted/forbade privileges to any specific players.");
+            return;
+        }
+
+        ctx.Reply($"You've set custom privileges for <color={ColorGold}>{playerNames.Count()}</color> players");
+
+        var chunks = playerNames.Chunk(PrivsPerChunk).ToList();
+        for (var i = 0; i < chunks.Count; i++)
+        {
+            var chunkString = string.Join(PrivSeparator, chunks[i]);
+            ctx.Reply($"<color={ColorGold}>{chunkString}</color>");
+        }
     }
 
     [Command("check", description: "Check castle privileges granted to your clan", usage: "clan")]
@@ -113,9 +125,38 @@ public class CastlePrivsCommands
             SendMessage_FormatInvalid(ctx, exampleUsage);
             return;
         }
-        LogUtil.LogDebug(".castleprivs check player");
-        // todo: implement
-        ctx.Reply("Not implemented");
+
+        if (!CheckNotReferringToSelf_SendValidationMessages(ctx, playerName))
+        {
+            return;
+        }
+
+        if (!TryFindUserAndSendValidationMessages(ctx, playerName, out var userModel))
+        {
+            return;
+        }
+
+        var playerNameFormatted = $"<color={ColorGold}>{userModel.User.CharacterName}</color>";
+
+        if (!Core.CastlePrivilegesService.TryGetCustomPrivilegesForActingPlayer(ctx.User.PlatformId, userModel.User.PlatformId, out var actingPlayerPrivileges))
+        {
+            ctx.Reply($"No custom privileges granted/forbidden to player {playerNameFormatted}");
+            return;
+        }
+
+        var grantedPrivNames = Core.PrivilegeParser.PrivilegeNames(actingPlayerPrivileges.Granted);
+        if (grantedPrivNames.Any())
+        {
+            ctx.Reply($"Privileges <color=green>granted</color> for player {playerNameFormatted}:");
+            SendMessages_Privileges(ctx, grantedPrivNames);
+        }
+
+        var forbiddenPrivNames = Core.PrivilegeParser.PrivilegeNames(actingPlayerPrivileges.Forbidden);
+        if (forbiddenPrivNames.Any())
+        {
+            ctx.Reply($"Privileges <color=red>forbidden</color> for player {playerNameFormatted}:");
+            SendMessages_Privileges(ctx, forbiddenPrivNames);
+        }
     }
 
     [Command("grant", description: "Grant castle privileges to your clan.", usage: "clan \"build.all tp.all doors.all\"")]
@@ -149,17 +190,25 @@ public class CastlePrivsCommands
             return;
         }
 
+        if (!CheckNotReferringToSelf_SendValidationMessages(ctx, playerName))
+        {
+            return;
+        }
+
         if (!ParseAndSendValidationMessages(ctx, privileges, out var parseResult))
         {
             return;
         }
 
-        // todo: implement
+        if (!TryFindUserAndSendValidationMessages(ctx, playerName, out var userModel))
+        {
+            return;
+        }
 
-        // todo: should unforbid as well as grant
+        Core.CastlePrivilegesService.GrantPlayerPrivileges(ctx.User.PlatformId, userModel.User.PlatformId, parseResult.Privs);        
 
         var privNamesStr = string.Join(PrivSeparator, parseResult.ValidPrivNames);
-        ctx.Reply($"Granted privileges to player {playerName}:\n<color={PrivColorValid}>{privNamesStr}</color>");
+        ctx.Reply($"Granted extra privileges to player {playerName}:\n<color={PrivColorValid}>{privNamesStr}</color>");
     }
 
     [Command("ungrant", description: "Revoke castle privileges granted to your clan.", usage: "clan \"build.all tp.all doors.all\"")]
@@ -193,12 +242,22 @@ public class CastlePrivsCommands
             return;
         }
 
+        if (!CheckNotReferringToSelf_SendValidationMessages(ctx, playerName))
+        {
+            return;
+        }
+
         if (!ParseAndSendValidationMessages(ctx, privileges, out var parseResult))
         {
             return;
         }
 
-        // todo: implement
+        if (!TryFindUserAndSendValidationMessages(ctx, playerName, out var userModel))
+        {
+            return;
+        }
+
+        Core.CastlePrivilegesService.UnGrantPlayerPrivileges(ctx.User.PlatformId, userModel.User.PlatformId, parseResult.Privs);        
 
         var privNamesStr = string.Join(PrivSeparator, parseResult.ValidPrivNames);
         ctx.Reply($"Revoked extra privileges for player {playerName}:\n<color={PrivColorValid}>{privNamesStr}</color>");
@@ -207,16 +266,22 @@ public class CastlePrivsCommands
     [Command("forbid", description: "Forbid a player from getting specific castle privileges while in your clan.", usage: "player Gollum \"build.all tp.all doors.all\"")]
     public void CommandForbid(ChatCommandContext ctx, string playerName, string privileges)
     {
-        var exampleUsage = ".castlePrivs forbid Gollum \"build.all tp.all doors.all\"";
+        if (!CheckNotReferringToSelf_SendValidationMessages(ctx, playerName))
+        {
+            return;
+        }
 
         if (!ParseAndSendValidationMessages(ctx, privileges, out var parseResult))
         {
             return;
         }
 
-        // todo: implement
+        if (!TryFindUserAndSendValidationMessages(ctx, playerName, out var userModel))
+        {
+            return;
+        }
 
-        // todo: should ungrant as well as forbid
+        Core.CastlePrivilegesService.ForbidPlayerPrivileges(ctx.User.PlatformId, userModel.User.PlatformId, parseResult.Privs);
 
         var privNamesStr = string.Join(PrivSeparator, parseResult.ValidPrivNames);
         ctx.Reply($"Disqualified player {playerName} from potential clan privileges:\n<color={PrivColorValid}>{privNamesStr}</color>");
@@ -225,14 +290,22 @@ public class CastlePrivsCommands
     [Command("unforbid", description: "UnForbid a player from getting specific castle privileges while in your clan.", usage: "player Gollum \"build.all tp.all doors.all\"")]
     public void CommandUnForbid(ChatCommandContext ctx, string playerName, string privileges)
     {
-        var exampleUsage = ".castlePrivs unforbid Gollum \"build.all tp.all doors.all\"";
+        if (!CheckNotReferringToSelf_SendValidationMessages(ctx, playerName))
+        {
+            return;
+        }
 
         if (!ParseAndSendValidationMessages(ctx, privileges, out var parseResult))
         {
             return;
         }
 
-        // todo: implement
+        if (!TryFindUserAndSendValidationMessages(ctx, playerName, out var userModel))
+        {
+            return;
+        }
+
+        Core.CastlePrivilegesService.UnForbidPlayerPrivileges(ctx.User.PlatformId, userModel.User.PlatformId, parseResult.Privs);
 
         var privNamesStr = string.Join(PrivSeparator, parseResult.ValidPrivNames);
         ctx.Reply($"Requalified player {playerName} for potential clan privileges:\n<color={PrivColorValid}>{privNamesStr}</color>");
@@ -299,6 +372,16 @@ public class CastlePrivsCommands
         return isValid;
     }
 
+    private bool TryFindUserAndSendValidationMessages(ChatCommandContext ctx, string userName, out UserUtil.UserModel userModel)
+    {
+        if (UserUtil.TryFindUserByName(userName, out userModel))
+        {
+            return true;
+        }
+        ctx.Reply($"<color=red>Could not find any player named <color={ColorGold}>\"{userName}\"</color></color>");
+        return false;
+    }
+
     private void SendMessage_FormatInvalid(ChatCommandContext ctx, string exampleCommand)
     {
         ctx.Reply($"<color=red>Invalid format.</color> Example usage:\n<color={CommandColor}>{exampleCommand}</color>");
@@ -312,6 +395,21 @@ public class CastlePrivsCommands
             var chunkString = string.Join(PrivSeparator, privNamesChunks[i]);
             ctx.Reply($"<color={PrivColorValid}>{chunkString}</color>");
         }
+    }
+
+    private bool CheckNotReferringToSelf_SendValidationMessages(ChatCommandContext ctx, string userName)
+    {
+        if (IsSelfReferential(ctx, userName))
+        {
+            ctx.Reply($"Hey <color={ColorGold}>{ctx.Name}</color>, you always have full privileges for your own castle!");
+            return false;
+        }
+        return true;
+    }
+    
+    private bool IsSelfReferential(ChatCommandContext ctx, string userName)
+    {
+        return ctx.Name.ToLowerInvariant().Equals(userName.ToLowerInvariant());
     }
 
 }

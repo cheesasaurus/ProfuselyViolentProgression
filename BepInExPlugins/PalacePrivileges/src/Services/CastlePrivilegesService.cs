@@ -5,6 +5,7 @@ using ProfuselyViolentProgression.Core.Utilities;
 using ProfuselyViolentProgression.PalacePrivileges.Models;
 using ProjectM;
 using Unity.Entities;
+using static ProfuselyViolentProgression.Core.Utilities.UserUtil;
 
 namespace ProfuselyViolentProgression.PalacePrivileges.Services;
 
@@ -82,15 +83,20 @@ public class CastlePrivilegesService
         return ownerSettings.ClanPrivs;
     }
 
-    public CastlePrivileges PrivilegesForActingPlayer(ulong castleOwnerPlatformId, ulong actingPlayerPlatformId)
+    public CastlePrivileges OverallPrivilegesForActingPlayerInClan(ulong castleOwnerPlatformId, ulong actingPlayerPlatformId)
     {
         var ownerSettings = GetOrCreatePlayerSettings(castleOwnerPlatformId);
-        var index = new PlayerIndex(actingPlayerPlatformId);
-        if (!ownerSettings.PlayerPrivsLookup.TryGetValue(index, out var actorPrivs))
+        if (!ownerSettings.PlayerPrivsLookup.TryGetValue(actingPlayerPlatformId, out var actorPrivs))
         {
             return ownerSettings.ClanPrivs;
         }
         return (ownerSettings.ClanPrivs | actorPrivs.Granted) & ~actorPrivs.Forbidden;
+    }
+
+    public bool TryGetCustomPrivilegesForActingPlayer(ulong castleOwnerPlatformId, ulong actingPlayerPlatformId, out ActingPlayerPrivileges actingPlayerPrivileges)
+    {
+        var ownerSettings = GetOrCreatePlayerSettings(castleOwnerPlatformId);
+        return ownerSettings.PlayerPrivsLookup.TryGetValue(actingPlayerPlatformId, out actingPlayerPrivileges);
     }
 
     public void ResetPlayerSettings(ulong castleOwnerPlatformId)
@@ -102,8 +108,17 @@ public class CastlePrivilegesService
 
     public IEnumerable<string> NamesOfPlayersWithCustomPrivs(ulong castleOwnerPlatformId)
     {
+        // todo: user lookup stuff could be optimized,
+        // but keeping an up-to-date cache sounds like a lot of work.
+        // Might see if I can yoink something from another mod.
+        var userModelLookup = new Dictionary<ulong, UserModel>();
+        foreach (var userModel in UserUtil.FindAllUsers())
+        {
+            userModelLookup[userModel.User.PlatformId] = userModel;
+        }
+
         return PlatformIdsOfPlayersWithCustomPrivs(castleOwnerPlatformId)
-            .Select(platformId => platformId.ToString()) // todo: actually get their name
+            .Select(platformId => userModelLookup[platformId].User.CharacterName.ToString())
             .ToList();
     }
 
@@ -111,7 +126,6 @@ public class CastlePrivilegesService
     {
         return GetOrCreatePlayerSettings(castleOwnerPlatformId)
             .PlayerPrivsLookup.Keys
-            .Select(index => index.PlatformId)
             .ToList();
     }
 
@@ -131,17 +145,33 @@ public class CastlePrivilegesService
 
     public void GrantPlayerPrivileges(ulong castleOwnerPlatformId, ulong targetPlayerPlatformId, CastlePrivileges privs)
     {
-        // todo: implement
+        var ownerSettings = GetOrCreatePlayerSettings(castleOwnerPlatformId);
+        if (!ownerSettings.PlayerPrivsLookup.TryGetValue(targetPlayerPlatformId, out var actorPrivs))
+        {
+            actorPrivs = new ActingPlayerPrivileges();
+        }
+        actorPrivs.Granted |= privs;
+        actorPrivs.Forbidden &= ~privs; // unforbid any granted privs
+        ownerSettings.PlayerPrivsLookup[targetPlayerPlatformId] = actorPrivs;
+        _playerSettingsRepo.SetPlayerSettings(castleOwnerPlatformId, ref ownerSettings);
     }
 
     public void UnGrantPlayerPrivileges(ulong castleOwnerPlatformId, ulong targetPlayerPlatformId, CastlePrivileges privs)
     {
-        // todo: implement
+        var ownerSettings = GetOrCreatePlayerSettings(castleOwnerPlatformId);
+        if (!ownerSettings.PlayerPrivsLookup.TryGetValue(targetPlayerPlatformId, out var actorPrivs))
+        {
+            actorPrivs = new ActingPlayerPrivileges();
+        }
+        actorPrivs.Granted &= ~privs;
+        ownerSettings.PlayerPrivsLookup[targetPlayerPlatformId] = actorPrivs;
+        _playerSettingsRepo.SetPlayerSettings(castleOwnerPlatformId, ref ownerSettings);
     }
 
     public void ForbidPlayerPrivileges(ulong castleOwnerPlatformId, ulong targetPlayerPlatformId, CastlePrivileges privs)
     {
         // todo: implement
+        // todo: should ungrant as well as forbid
     }
 
     public void UnForbidPlayerPrivileges(ulong castleOwnerPlatformId, ulong targetPlayerPlatformId, CastlePrivileges privs)

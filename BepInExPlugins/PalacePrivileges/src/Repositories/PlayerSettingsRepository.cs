@@ -1,14 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text.Json;
 using BepInEx;
 using BepInEx.Logging;
 
 namespace ProfuselyViolentProgression.PalacePrivileges.Services;
 
-using PlayerSettingsLookup = Dictionary<PlayerIndex, PlayerSettings>;
+using PlayerSettingsLookup = Dictionary<ulong, PlayerSettings>;
 
 /// <summary>
 /// <para>The PlayerSettingsRepository is responsible for saving/loading player settings.</para>
@@ -44,15 +43,13 @@ public class PlayerSettingsRepository
 
     public bool TryGetPlayerSettings(ulong platformId, out PlayerSettings playerSettings)
     {
-        var index = new PlayerIndex(platformId);
-        return _playerSettingsLookup.TryGetValue(index, out playerSettings);
+        return _playerSettingsLookup.TryGetValue(platformId, out playerSettings);
     }
 
     public void SetPlayerSettings(ulong platformId, ref PlayerSettings playerSettings)
     {
         playerSettings.Revision++;
-        var index = new PlayerIndex(platformId);
-        _playerSettingsLookup[index] = playerSettings;
+        _playerSettingsLookup[platformId] = playerSettings;
     }
 
     public bool TryLoad()
@@ -77,16 +74,21 @@ public class PlayerSettingsRepository
     {
         try
         {
-            var keys = _playerSettingsLookup.Keys;
-            foreach (var index in keys)
+            var saveCount = 0;
+            foreach (var platformId in _playerSettingsLookup.Keys)
             {
-                SaveSettings_ForOnePlayer(index);
+                var saved = MaybeSaveSettings_ForOnePlayer(platformId);
+                if (saved)
+                {
+                    saveCount++;
+                }
             }
-            if (keys.Any())
+            if (saveCount > 0)
             {
-                _log.LogDebug($"Saved updated player settings for {keys.Count} players.");
+                _log.LogDebug($"Saved updated player settings for {saveCount} players.");
+                return true;
             }
-            return true;
+            return false;
         }
         catch (Exception ex)
         {
@@ -102,21 +104,21 @@ public class PlayerSettingsRepository
         playerSettings.RevisionSaved = playerSettings.Revision;
 
         var platformId = ulong.Parse(Path.GetFileNameWithoutExtension(filePath));
-        var index = new PlayerIndex(platformId);
-        _playerSettingsLookup[index] = playerSettings;
+        _playerSettingsLookup[platformId] = playerSettings;
     }
 
-    private void SaveSettings_ForOnePlayer(PlayerIndex index)
+    private bool MaybeSaveSettings_ForOnePlayer(ulong platformId)
     {
-        var playerSettings = _playerSettingsLookup[index];
+        var playerSettings = _playerSettingsLookup[platformId];
         if (playerSettings.Revision == playerSettings.RevisionSaved)
         {
-            return;
+            return false;
         }
         var json = JsonSerializer.Serialize(playerSettings);
-        File.WriteAllText($"{_dirPath}/{index.PlatformId}.json", json);
+        File.WriteAllText($"{_dirPath}/{platformId}.json", json);
         playerSettings.RevisionSaved = playerSettings.Revision;
-        _playerSettingsLookup[index] = playerSettings;
+        _playerSettingsLookup[platformId] = playerSettings;
+        return true;
     }
 
 }
