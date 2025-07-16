@@ -170,14 +170,30 @@ public class CastlePrivilegesService
 
     public void ForbidPlayerPrivileges(ulong castleOwnerPlatformId, ulong targetPlayerPlatformId, CastlePrivileges privs)
     {
-        // todo: implement
-        // todo: should ungrant as well as forbid
+        var ownerSettings = GetOrCreatePlayerSettings(castleOwnerPlatformId);
+        if (!ownerSettings.PlayerPrivsLookup.TryGetValue(targetPlayerPlatformId, out var actorPrivs))
+        {
+            actorPrivs = new ActingPlayerPrivileges();
+        }
+        actorPrivs.Forbidden |= privs;
+        actorPrivs.Granted &= ~privs; // ungrant any forbidden privs
+        ownerSettings.PlayerPrivsLookup[targetPlayerPlatformId] = actorPrivs;
+        _playerSettingsRepo.SetPlayerSettings(castleOwnerPlatformId, ref ownerSettings);
     }
 
     public void UnForbidPlayerPrivileges(ulong castleOwnerPlatformId, ulong targetPlayerPlatformId, CastlePrivileges privs)
     {
-        // todo: implement
+        var ownerSettings = GetOrCreatePlayerSettings(castleOwnerPlatformId);
+        if (!ownerSettings.PlayerPrivsLookup.TryGetValue(targetPlayerPlatformId, out var actorPrivs))
+        {
+            actorPrivs = new ActingPlayerPrivileges();
+        }
+        actorPrivs.Forbidden &= ~privs;
+        ownerSettings.PlayerPrivsLookup[targetPlayerPlatformId] = actorPrivs;
+        _playerSettingsRepo.SetPlayerSettings(castleOwnerPlatformId, ref ownerSettings);
     }
+
+    // todo: can we do a wrapper thing to get rid of all this duplicated code
 
     public ulong GetPlatformIdOfTerritoryOwner(Entity castleTerritoryEntity)
     {

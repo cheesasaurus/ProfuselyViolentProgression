@@ -16,6 +16,7 @@ public class CastlePrivsCommands
     protected string CategoryColor = VampireCommandFramework.Color.Teal;
     protected string PrivColorValid = VampireCommandFramework.Color.Green;
     protected string PrivColorInvalid = VampireCommandFramework.Color.Gold;
+    protected string PrivColorForbidden = VampireCommandFramework.Color.Red;
     protected string PrivSeparator = " <color=grey>|</color> ";
     protected int PrivsPerChunk = 10;
 
@@ -154,8 +155,8 @@ public class CastlePrivsCommands
         var forbiddenPrivNames = Core.PrivilegeParser.PrivilegeNames(actingPlayerPrivileges.Forbidden);
         if (forbiddenPrivNames.Any())
         {
-            ctx.Reply($"Privileges <color=red>forbidden</color> for player {playerNameFormatted}:");
-            SendMessages_Privileges(ctx, forbiddenPrivNames);
+            ctx.Reply($"Privileges <color={PrivColorForbidden}>forbidden</color> for player {playerNameFormatted}:");
+            SendMessages_Privileges(ctx, forbiddenPrivNames, PrivColorForbidden);
         }
     }
 
@@ -284,7 +285,7 @@ public class CastlePrivsCommands
         Core.CastlePrivilegesService.ForbidPlayerPrivileges(ctx.User.PlatformId, userModel.User.PlatformId, parseResult.Privs);
 
         var privNamesStr = string.Join(PrivSeparator, parseResult.ValidPrivNames);
-        ctx.Reply($"Disqualified player {playerName} from potential clan privileges:\n<color={PrivColorValid}>{privNamesStr}</color>");
+        ctx.Reply($"Disqualified player <color={ColorGold}>{playerName}</color> from potential clan privileges:\n<color={PrivColorForbidden}>{privNamesStr}</color>");
     }
 
     [Command("unforbid", description: "UnForbid a player from getting specific castle privileges while in your clan.", usage: "player Gollum \"build.all tp.all doors.all\"")]
@@ -389,11 +390,16 @@ public class CastlePrivsCommands
 
     private void SendMessages_Privileges(ChatCommandContext ctx, List<string> privNames)
     {
+        SendMessages_Privileges(ctx, privNames, PrivColorValid);
+    }
+
+    private void SendMessages_Privileges(ChatCommandContext ctx, List<string> privNames, string color)
+    {
         var privNamesChunks = privNames.Chunk(PrivsPerChunk).ToList();
         for (var i = 0; i < privNamesChunks.Count; i++)
         {
             var chunkString = string.Join(PrivSeparator, privNamesChunks[i]);
-            ctx.Reply($"<color={PrivColorValid}>{chunkString}</color>");
+            ctx.Reply($"<color={color}>{chunkString}</color>");
         }
     }
 
