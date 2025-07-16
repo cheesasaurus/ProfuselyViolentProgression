@@ -45,7 +45,7 @@ public class PlayerSettingsRepository
     public bool TryGetPlayerSettings(ulong platformId, out PlayerSettings playerSettings)
     {
         var index = new PlayerIndex(platformId);
-        return !_playerSettingsLookup.TryGetValue(index, out playerSettings);
+        return _playerSettingsLookup.TryGetValue(index, out playerSettings);
     }
 
     public void SetPlayerSettings(ulong platformId, ref PlayerSettings playerSettings)
@@ -97,7 +97,7 @@ public class PlayerSettingsRepository
 
     private void LoadSettings_ForOnePlayer(string filePath)
     {
-        var json = File.ReadAllText(_dirPath);
+        var json = File.ReadAllText(filePath);
         var playerSettings = JsonSerializer.Deserialize<PlayerSettings>(json);
         playerSettings.RevisionSaved = playerSettings.Revision;
 

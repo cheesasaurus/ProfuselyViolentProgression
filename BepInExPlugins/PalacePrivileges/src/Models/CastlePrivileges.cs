@@ -17,18 +17,19 @@ public struct CastlePrivileges
 
     public readonly bool Intersects(CastlePrivileges other)
     {
-        return MiscPrivs.None != (Misc & other.Misc)
-            || BuildPrivs.None != (Build & other.Build)
-            || CraftPrivs.None != (Craft & other.Craft)
-            || DoorPrivs.None != (Door & other.Door)
-            || PrisonerPrivs.None != (Prisoner & other.Prisoner)
-            || ServantPrivs.None != (Servant & other.Servant)
-            || TeleporterPrivs.None != (Teleporter & other.Teleporter)
-            || RedistributionPrivs.None != (Redistribution & other.Redistribution)
-            || ArenaPrivs.None != (Arena & other.Arena);
+        return MiscPrivs.None != (Misc | other.Misc)
+            || BuildPrivs.None != (Build | other.Build)
+            || CraftPrivs.None != (Craft | other.Craft)
+            || DoorPrivs.None != (Door | other.Door)
+            || PrisonerPrivs.None != (Prisoner | other.Prisoner)
+            || ServantPrivs.None != (Servant | other.Servant)
+            || TeleporterPrivs.None != (Teleporter | other.Teleporter)
+            || RedistributionPrivs.None != (Redistribution | other.Redistribution)
+            || ArenaPrivs.None != (Arena | other.Arena)
+            || ResearchPrivs.None != (Research | other.Research);
     }
 
-    public readonly bool IsSuperset(CastlePrivileges other)
+    public readonly bool IsSupersetOf(CastlePrivileges other)
     {
         return other.Misc == (Misc & other.Misc)
             && other.Build == (Build & other.Build)
@@ -38,7 +39,22 @@ public struct CastlePrivileges
             && other.Servant == (Servant & other.Servant)
             && other.Teleporter == (Teleporter & other.Teleporter)
             && other.Redistribution == (Redistribution & other.Redistribution)
-            && other.Arena == (Arena & other.Arena);
+            && other.Arena == (Arena & other.Arena)
+            && other.Research == (Research & other.Research);
+    }
+
+    public readonly bool IsSubsetOf(CastlePrivileges other)
+    {
+        return Misc == (Misc & other.Misc)
+            && Build == (Build & other.Build)
+            && Craft == (Craft & other.Craft)
+            && Door == (Door & other.Door)
+            && Prisoner == (Prisoner & other.Prisoner)
+            && Servant == (Servant & other.Servant)
+            && Teleporter == (Teleporter & other.Teleporter)
+            && Redistribution == (Redistribution & other.Redistribution)
+            && Arena == (Arena & other.Arena)
+            && Research == (Research & other.Research);
     }
 
     public static readonly CastlePrivileges None = new CastlePrivileges();

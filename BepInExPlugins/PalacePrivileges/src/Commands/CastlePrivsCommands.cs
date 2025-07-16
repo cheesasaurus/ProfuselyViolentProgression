@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using ProfuselyViolentProgression.Core.Utilities;
@@ -72,9 +74,8 @@ public class CastlePrivsCommands
     [Command("reset", description: "Reset castle privilges granted/forbidden to others.")]
     public void CommandReset(ChatCommandContext ctx)
     {
-        LogUtil.LogDebug(".castlePrivs reset");
-        // todo: implement
-        ctx.Reply("Not implemented");
+        Core.CastlePrivilegesService.ResetPlayerSettings(ctx.User.PlatformId);
+        ctx.Reply("Reset all privileges which were granted/forbidden to others.");
     }
 
     [Command("check", description: "List players to whom you've granted/forbade privileges.")]
@@ -94,9 +95,12 @@ public class CastlePrivsCommands
             SendMessage_FormatInvalid(ctx, exampleUsage);
             return;
         }
-        LogUtil.LogDebug(".castleprivs check clan");
-        // todo: implement
-        ctx.Reply("Not implemented");
+
+        var clanPrivs = Core.CastlePrivilegesService.PrivilegesForClan(ctx.User.PlatformId);
+        var privNames = Core.PrivilegeParser.PrivilegeNames(clanPrivs);
+
+        ctx.Reply($"Privileges for clan members:");
+        SendMessages_Privileges(ctx, privNames);
     }
 
     [Command("check", description: "Check castle privileges granted/forbidden to a player", usage: "player Bilbo")]
@@ -128,7 +132,7 @@ public class CastlePrivsCommands
             return;
         }
 
-        // todo: implement
+        Core.CastlePrivilegesService.GrantClanPrivileges(ctx.User.PlatformId, parseResult.Privs);
 
         var privNamesStr = string.Join(PrivSeparator, parseResult.ValidPrivNames);
         ctx.Reply($"Granted privileges to clan:\n<color={PrivColorValid}>{privNamesStr}</color>");
@@ -172,7 +176,7 @@ public class CastlePrivsCommands
             return;
         }
 
-        // todo: implement
+        Core.CastlePrivilegesService.UnGrantClanPrivileges(ctx.User.PlatformId, parseResult.Privs);
 
         var privNamesStr = string.Join(PrivSeparator, parseResult.ValidPrivNames);
         ctx.Reply($"Revoked privileges for your clan:\n<color={PrivColorValid}>{privNamesStr}</color>");
@@ -258,8 +262,18 @@ public class CastlePrivsCommands
         ctx.Reply($"<color=red>Invalid format.</color> Example usage:\n<color={CommandColor}>{exampleCommand}</color>");
     }
 
+    private void SendMessages_Privileges(ChatCommandContext ctx, List<string> privNames)
+    {
+        var privNamesChunks = privNames.Chunk(PrivsPerChunk).ToList();
+        for (var i = 0; i < privNamesChunks.Count; i++)
+        {
+            var chunkString = string.Join(PrivSeparator, privNamesChunks[i]);
+            ctx.Reply($"<color={PrivColorValid}>{chunkString}</color>");
+        }
+    }
+
     // todo: command to check global settings
-    
+
     // todo: commands to set global settings (admin only)
-    
+
 }

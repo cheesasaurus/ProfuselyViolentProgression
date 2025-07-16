@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using ProfuselyViolentProgression.Core.Utilities;
 using ProfuselyViolentProgression.PalacePrivileges.Models;
 
 namespace ProfuselyViolentProgression.PalacePrivileges.Commands;
@@ -38,7 +39,36 @@ public class PrivilegeParser
             }
         }
         return result;
-    }    
+    }
+
+    public List<string> PrivilegeNames(CastlePrivileges privs)
+    {
+        // todo: filter out redundant privileges.
+        // e.g. "cat.all cat.some cat.1 cat.2"
+        // should simply be "cat.all"
+        // Needs some thought; the obvious way would not scale well
+        //
+        // idea: for each group, order by largest flag value first.
+        // then while extracting from that, check if each added thing is a superset before adding.
+        // but still doesn't scale great.
+        //
+        // maybe something else we can do with flags, like creating a master flags to check.
+        // when something is added, turn on its bits in the master flags.
+        // And only check the master flags when extracting.
+        // But not sure that would be correct; need to think about it.
+        //
+        // Probably needs some preprocessing
+        var names = new List<string>();
+        
+        foreach (var (key, namedPriv) in PrivsLookup)
+        {
+            if (namedPriv.Privs.IsSubsetOf(privs))
+            {
+                names.Add(namedPriv.Name);
+            }
+        }
+        return names;
+    }
 
     public Dictionary<string, List<string>> PrivilegeNamesGrouped(CastlePrivileges privs)
     {
@@ -47,7 +77,7 @@ public class PrivilegeParser
 
         foreach (var (key, namedPriv) in PrivsLookup)
         {
-            if (privs.IsSuperset(namedPriv.Privs))
+            if (namedPriv.Privs.IsSubsetOf(privs))
             {
                 if (!groupedNames.ContainsKey(namedPriv.Prefix))
                 {

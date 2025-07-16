@@ -71,8 +71,15 @@ public class CastlePrivilegesService
             playerSettings = new PlayerSettings();
             playerSettings.ClanPrivs = _defaultClanPrivileges;
             _playerSettingsRepo.SetPlayerSettings(castleOwnerPlatformId, ref playerSettings);
+            return playerSettings;
         }
         return playerSettings;
+    }
+
+    public CastlePrivileges PrivilegesForClan(ulong castleOwnerPlatformId)
+    {
+        var ownerSettings = GetOrCreatePlayerSettings(castleOwnerPlatformId);
+        return ownerSettings.ClanPrivs;
     }
 
     public CastlePrivileges PrivilegesForActingPlayer(ulong castleOwnerPlatformId, ulong actingPlayerPlatformId)
@@ -88,7 +95,9 @@ public class CastlePrivilegesService
 
     public void ResetPlayerSettings(ulong castleOwnerPlatformId)
     {
-        // todo: implement
+        var newSettings = new PlayerSettings();
+        newSettings.ClanPrivs = _defaultClanPrivileges;
+        _playerSettingsRepo.SetPlayerSettings(castleOwnerPlatformId, ref newSettings);
     }
 
     public IEnumerable<string> NamesOfPlayersWithCustomPrivs(ulong castleOwnerPlatformId)
@@ -108,12 +117,16 @@ public class CastlePrivilegesService
 
     public void GrantClanPrivileges(ulong castleOwnerPlatformId, CastlePrivileges privs)
     {
-        // todo: implement
+        var settings = GetOrCreatePlayerSettings(castleOwnerPlatformId);
+        settings.ClanPrivs |= privs;
+        _playerSettingsRepo.SetPlayerSettings(castleOwnerPlatformId, ref settings);
     }
 
     public void UnGrantClanPrivileges(ulong castleOwnerPlatformId, CastlePrivileges privs)
     {
-        // todo: implement
+        var settings = GetOrCreatePlayerSettings(castleOwnerPlatformId);
+        settings.ClanPrivs &= ~privs;
+        _playerSettingsRepo.SetPlayerSettings(castleOwnerPlatformId, ref settings);
     }
 
     public void GrantPlayerPrivileges(ulong castleOwnerPlatformId, ulong targetPlayerPlatformId, CastlePrivileges privs)
