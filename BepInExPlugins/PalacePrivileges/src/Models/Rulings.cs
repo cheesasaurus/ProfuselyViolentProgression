@@ -8,9 +8,13 @@ namespace ProfuselyViolentProgression.PalacePrivileges.Models;
 public enum RestrictedCastleActions
 {
     ExceptionMissingData,
+    NotRestricted_SoDoNotCare,
     OpenDoor,
     CloseDoor,
     RenameObject,
+    ServantConvert,
+    ServantTerminate,
+    
 }
 
 
@@ -44,6 +48,12 @@ public struct CastleActionRuling
     {
         IsAllowed = true,
         Action = RestrictedCastleActions.ExceptionMissingData,
+    };
+
+    public static readonly CastleActionRuling NotRestricted = new()
+    {
+        IsAllowed = true,
+        Action = RestrictedCastleActions.NotRestricted_SoDoNotCare,
     };
     
 }

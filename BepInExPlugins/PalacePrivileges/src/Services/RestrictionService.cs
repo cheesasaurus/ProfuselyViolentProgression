@@ -5,6 +5,7 @@ using ProfuselyViolentProgression.Core.Utilities;
 using ProfuselyViolentProgression.PalacePrivileges.Models;
 using ProjectM;
 using ProjectM.CastleBuilding;
+using ProjectM.Network;
 using Stunlock.Core;
 using Unity.Entities;
 
@@ -107,11 +108,11 @@ public class RestrictionService
         return ruling;
     }
 
-    private CastlePrivileges PermissiblePrivsToRenameObject = new()
+    private CastlePrivileges PermissiblePrivsTo_RenameObject = new()
     {
         Misc = MiscPrivs.RenameObjects,
     };
-    
+
     private CastleActionRuling Internal_ValidateAction_RenameCastleObject(
         Entity actingCharacter,
         Entity objectToRename,
@@ -154,12 +155,104 @@ public class RestrictionService
             return ruling.Disallowed();
         }
 
-        ruling.PermissiblePrivs = PermissiblePrivsToRenameObject;
-        ruling.IsAllowed = ruling.ActingUserPrivs.Intersects(PermissiblePrivsToRenameObject);
+        ruling.PermissiblePrivs = PermissiblePrivsTo_RenameObject;
+        ruling.IsAllowed = ruling.ActingUserPrivs.Intersects(PermissiblePrivsTo_RenameObject);
         return ruling;
     }
 
-    
+    public CastleActionRuling ValidateAction_AtCoffin(Entity actingCharacter, Entity coffin, ServantCoffinActionEvent ev)
+    {
+        var ruling = Internal_ValidateAction_AtCoffin(actingCharacter, coffin, ev);
+        _rulingLoggerService.LogRuling(ruling);
+        return ruling;
+    }
 
+    private CastleActionRuling Internal_ValidateAction_AtCoffin(Entity actingCharacter, Entity coffin, ServantCoffinActionEvent ev)
+    {
+        var action = RestrictedCastleAction_FromCoffinAction(ev.Action);
+        if (action == RestrictedCastleActions.NotRestricted_SoDoNotCare)
+        {
+            return CastleActionRuling.NotRestricted;
+        }
+
+        if (!_userService.TryGetUserModel_ForCharacter(actingCharacter, out var actingUser))
+        {
+            return CastleActionRuling.ExceptionMissingData;
+        }
+
+        if (!_castleService.TryGetCastleModel_ForConnectedEntity(coffin, out var castleModel))
+        {
+            return CastleActionRuling.ExceptionMissingData;
+        }
+
+        if (!_entityManager.TryGetComponentData<PrefabGUID>(coffin, out var coffinPrefabGUID))
+        {
+            return CastleActionRuling.ExceptionMissingData;
+        }
+
+        var ruling = new CastleActionRuling();
+        ruling.Action = action;
+        ruling.TargetPrefabGUID = coffinPrefabGUID;
+        HydrateRuling(ref ruling, actingUser, castleModel);
+
+        if (ruling.IsCastleWithoutOwner)
+        {
+            return ruling.Allowed();
+        }
+
+        if (ruling.IsOwnerOfCastle)
+        {
+            return ruling.Allowed();
+        }
+
+        if (!ruling.IsSameClan)
+        {
+            return ruling.Disallowed();
+        }
+
+        ruling.PermissiblePrivs = PermissiblePrivs_ForServantAction(action);
+        ruling.IsAllowed = ruling.ActingUserPrivs.Intersects(ruling.PermissiblePrivs);
+        return ruling;
+    }
+
+    private RestrictedCastleActions RestrictedCastleAction_FromCoffinAction(ServantCoffinAction coffinAction)
+    {
+        switch (coffinAction)
+        {
+            case ServantCoffinAction.Insert:
+                return RestrictedCastleActions.ServantConvert;
+
+            case ServantCoffinAction.Terminate:
+                return RestrictedCastleActions.ServantTerminate;
+
+            default:
+                return RestrictedCastleActions.NotRestricted_SoDoNotCare;
+        }
+    }
+    
+    private CastlePrivileges PermissiblePrivsTo_ServantConvert = new()
+    {
+        Servant = ServantPrivs.Convert,
+    };
+
+    private CastlePrivileges PermissiblePrivsTo_ServantTerminate = new()
+    {
+        Servant = ServantPrivs.Terminate,
+    };
+
+    private CastlePrivileges PermissiblePrivs_ForServantAction(RestrictedCastleActions action)
+    {
+        switch (action)
+        {
+            case RestrictedCastleActions.ServantConvert:
+                return PermissiblePrivsTo_ServantConvert;
+
+            case RestrictedCastleActions.ServantTerminate:
+                return PermissiblePrivsTo_ServantTerminate;
+
+            default:
+                return CastlePrivileges.None;
+        }
+    }
 
 }
