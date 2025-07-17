@@ -30,7 +30,7 @@ public class GlobalSettingsRepository
         return _globalSettings;
     }
 
-    public void SetGlobalSettings(GlobalSettings settings)
+    public void SetGlobalSettings(ref GlobalSettings settings)
     {
         _revision++;
         _globalSettings = settings;

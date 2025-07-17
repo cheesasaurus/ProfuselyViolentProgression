@@ -42,7 +42,7 @@ By default, clan members will have the following privileges:
   - Converting new servants.
   - Starting arena contests.
 
-Notable privileges which they do NOT have:
+Notable privileges they do NOT have:
 - Building.
 - Lockbox access.
 - Using resources from the treasury to craft.
@@ -222,7 +222,10 @@ Players can customize access to their castles via chat commands.
 - `.castlePrivs set keyClanCooldownHours 48.0`
   - When clan members separate, they have to wait `48` hours before using keys on each other's castles.
   - Could be set to e.g. `0.5` to make the waiting time 30 minutes.
-  - Can be set to `0` to effectively remove the waiting time.
+  - Can be set to `0` to remove the waiting time.
+- `.castlePrivs set DebugLogRulings true`
+  - When enabled, logs details about every ruling made. For debugging purposes.
+  - Disabled by default.
 
 
 ## Support

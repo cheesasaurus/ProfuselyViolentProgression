@@ -13,7 +13,6 @@ public class CastlePrivilegesService
     public static CastlePrivilegesService Instance;
 
     ManualLogSource _log;
-    GlobalSettingsRepository _globalSettingsRepo;
     PlayerSettingsRepository _playerSettingsRepo;
     EntityManager _entityManager = WorldUtil.Server.EntityManager;
 
@@ -33,37 +32,21 @@ public class CastlePrivilegesService
 
     public CastlePrivilegesService(
         ManualLogSource log,
-        GlobalSettingsRepository globalSettingsRepo,
         PlayerSettingsRepository playerSettingsRepo
     )
     {
         _log = log;
-        _globalSettingsRepo = globalSettingsRepo;
         _playerSettingsRepo = playerSettingsRepo;
     }
 
     public void LoadSettings()
     {
-        _globalSettingsRepo.TryLoad();
         _playerSettingsRepo.TryLoad();
     }
 
     public void SaveSettings()
     {
-        _globalSettingsRepo.TrySave();
         _playerSettingsRepo.TrySave();
-    }
-
-    public GlobalSettings GetGlobalSettings()
-    {
-        return _globalSettingsRepo.GetOrCreateGlobalSettings();
-    }
-
-    public void SetGlobalSetting_KeyClanCooldownHours(float hours)
-    {
-        var globalSettings = _globalSettingsRepo.GetOrCreateGlobalSettings();
-        globalSettings.KeyClanCooldownHours = hours;
-        _globalSettingsRepo.SetGlobalSettings(globalSettings);
     }
 
     public PlayerSettings GetOrCreatePlayerSettings(ulong castleOwnerPlatformId)

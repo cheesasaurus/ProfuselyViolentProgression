@@ -377,12 +377,16 @@ public class CastlePrivsCommands
     [Command("settings", description: "Check global settings.")]
     public void CommandSettings(ChatCommandContext ctx)
     {
-        var globalSettings = Core.CastlePrivilegesService.GetGlobalSettings();
+        var globalSettings = Core.GlobalSettingsService.GetGlobalSettings();
         var keyClanCooldownHours = Math.Round(globalSettings.KeyClanCooldownHours, 2);
 
         var sb = new StringBuilder();
         sb.AppendLine($"Global settings:<color={ColorGold}>");
         sb.AppendLine($"  KeyClanCooldownHours: <color={CommandColor}>{keyClanCooldownHours}</color>");
+        if (ctx.IsAdmin)
+        {
+            sb.AppendLine($"  DebugLogRulings: <color={CommandColor}>{globalSettings.DebugLogRulings}</color>");
+        }
         sb.Append("</color>");
         ctx.Reply(sb.ToString());
     }
@@ -395,6 +399,11 @@ public class CastlePrivsCommands
             case "keyclancooldownhours":
             case "keyclancooldown":
                 SubCommand_SettingsSet_KeyClanCooldownHours(ctx, value);
+                break;
+
+            case "debuglogrulings":
+            case "logrulings":
+                SubCommand_SettingsSet_DebugLogRulings(ctx, value);
                 break;
 
             default:
@@ -411,8 +420,24 @@ public class CastlePrivsCommands
             ctx.Reply($"<color=red>\"{value}\" doesn't look like a number. Expected format like <color={CommandColor}>48.0</color>");
             return;
         }
-        Core.CastlePrivilegesService.SetGlobalSetting_KeyClanCooldownHours(hours);
-        ctx.Reply($"<color={ColorGold}>set global setting KeyClanCooldownHours to <color={CommandColor}>{Math.Round(hours, 2)}</color></color>");
+        Core.GlobalSettingsService.SetGlobalSetting_KeyClanCooldownHours(hours);
+        SendMessage_SettingsSet_Success(ctx, "KeyClanCooldownHours", Math.Round(hours, 2).ToString());
+    }
+
+    private void SubCommand_SettingsSet_DebugLogRulings(ChatCommandContext ctx, string value)
+    {
+        if (!bool.TryParse(value, out var enabled))
+        {
+            var sb = new StringBuilder();
+            sb.Append($"<color=red>");
+            sb.Append($"\"{value}\" invalid. <color={ColorGold}>DebugLogRulings</color> can be either ");
+            sb.Append($"<color={CommandColor}>True</color> or <color={CommandColor}>False</color>");
+            sb.Append($"</color>");
+            ctx.Reply(sb.ToString());
+            return;
+        }
+        Core.GlobalSettingsService.SetGlobalSetting_DebugLogRulings(enabled);
+        SendMessage_SettingsSet_Success(ctx, "DebugLogRulings", enabled.ToString());
     }
 
     private bool ParseAndSendValidationMessages(ChatCommandContext ctx, string privileges, out PrivilegeParser.ParseResult parseResult)
@@ -463,6 +488,11 @@ public class CastlePrivsCommands
             var chunkString = string.Join(PrivSeparator, privNamesChunks[i]);
             ctx.Reply($"<color={color}>{chunkString}</color>");
         }
+    }
+
+    private void SendMessage_SettingsSet_Success(ChatCommandContext ctx, string settingName, string value)
+    {
+        ctx.Reply($"Global setting <color={ColorGold}>{settingName}</color> set to <color={CommandColor}>{value}</color>");
     }
 
     private bool CheckNotReferringToSelf_SendValidationMessages(ChatCommandContext ctx, string userName)

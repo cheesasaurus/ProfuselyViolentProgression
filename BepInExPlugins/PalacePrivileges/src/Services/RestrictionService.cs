@@ -14,6 +14,7 @@ public class RestrictionService
     CastlePrivilegesService _castlePrivilegesService;
     UserService _userService;
     AntiCheatService _antiCheatService;
+    RulingLoggerService _rulingLoggerService;
     CastleDoorService _doorService;
     EntityManager _entityManager = WorldUtil.Server.EntityManager;
 
@@ -22,6 +23,7 @@ public class RestrictionService
         CastlePrivilegesService castlePrivilegesService,
         UserService userService,
         AntiCheatService antiCheatService,
+        RulingLoggerService rulingLoggerService,
         CastleDoorService doorService
     )
     {
@@ -29,10 +31,26 @@ public class RestrictionService
         _castlePrivilegesService = castlePrivilegesService;
         _userService = userService;
         _antiCheatService = antiCheatService;
+        _rulingLoggerService = rulingLoggerService;
         _doorService = doorService;
     }
 
     public CastleActionRuling ValidateAction_OpenDoor(Entity actingCharacter, Entity door)
+    {
+        var ruling = Internal_ValidateAction_OpenDoor(actingCharacter, door);
+        _rulingLoggerService.LogRuling(ruling);
+        return ruling;
+    }
+
+    public CastleActionRuling ValidateAction_CloseDoor(Entity actingCharacter, Entity door)
+    {
+        var ruling = Internal_ValidateAction_OpenDoor(actingCharacter, door);
+        ruling.Action = RestrictedCastleActions.CloseDoor;
+        _rulingLoggerService.LogRuling(ruling);
+        return ruling;
+    }
+
+    private CastleActionRuling Internal_ValidateAction_OpenDoor(Entity actingCharacter, Entity door)
     {
         var ruling = new CastleActionRuling();
         ruling.Action = RestrictedCastleActions.OpenDoor;
@@ -69,13 +87,6 @@ public class RestrictionService
         ruling.PermissiblePrivs = doorModel.AcceptablePrivilegesToOpen;
         var actingPlayerPrivileges = _castlePrivilegesService.OverallPrivilegesForActingPlayerInClan(doorModel.Castle.Owner.PlatformId, actingUser.PlatformId);
         ruling.IsAllowed = actingPlayerPrivileges.Intersects(doorModel.AcceptablePrivilegesToOpen);
-        return ruling;
-    }
-
-    public CastleActionRuling ShouldDisallowAction_CloseDoor(Entity actingCharacter, Entity door)
-    {
-        var ruling = ValidateAction_OpenDoor(actingCharacter, door);
-        ruling.Action = RestrictedCastleActions.CloseDoor;
         return ruling;
     }
 
