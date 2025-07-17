@@ -52,6 +52,9 @@ public class RestrictionService
         ruling.ActingUserPrivs = _castlePrivilegesService.OverallPrivilegesForActingPlayerInClan(castleModel.Owner.PlatformId, actingUser.PlatformId);
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    #region OpenOrCloseDoor
+
     public CastleActionRuling ValidateAction_OpenOrCloseDoor(Entity actingCharacter, Entity door)
     {
         var ruling = Internal_ValidateAction_OpenOrCloseDoor(actingCharacter, door);
@@ -96,6 +99,10 @@ public class RestrictionService
         ruling.IsAllowed = ruling.ActingUserPrivs.Intersects(doorModel.PermissiblePrivsToOpen);
         return ruling;
     }
+
+    #endregion
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    #region RenameCastleObject
 
     public CastleActionRuling ValidateAction_RenameCastleObject(
         Entity actingCharacter,
@@ -159,6 +166,10 @@ public class RestrictionService
         ruling.IsAllowed = ruling.ActingUserPrivs.Intersects(PermissiblePrivsTo_RenameObject);
         return ruling;
     }
+
+    #endregion
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    #region MiscActionsAtCoffin
 
     public CastleActionRuling ValidateAction_AtCoffin(Entity actingCharacter, Entity coffin, ServantCoffinActionEvent ev)
     {
@@ -229,7 +240,7 @@ public class RestrictionService
                 return RestrictedCastleActions.NotRestricted_SoDoNotCare;
         }
     }
-    
+
     private CastlePrivileges PermissiblePrivsTo_ServantConvert = new()
     {
         Servant = ServantPrivs.Convert,
@@ -254,5 +265,67 @@ public class RestrictionService
                 return CastlePrivileges.None;
         }
     }
+
+    #endregion
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    #region ServantRename
+
+    public CastleActionRuling ValidateAction_ServantRename(Entity actingCharacter, Entity coffin)
+    {
+        var ruling = Internal_ValidateAction_ServantRename(actingCharacter, coffin);
+        _rulingLoggerService.LogRuling(ruling);
+        return ruling;
+    }
+
+    private CastlePrivileges PermissiblePrivsTo_ServantRename = new()
+    {
+        Servant = ServantPrivs.Rename,
+    };
+
+    private CastleActionRuling Internal_ValidateAction_ServantRename(Entity actingCharacter, Entity coffin)
+    {
+        if (!_userService.TryGetUserModel_ForCharacter(actingCharacter, out var actingUser))
+        {
+            return CastleActionRuling.ExceptionMissingData;
+        }
+
+        if (!_castleService.TryGetCastleModel_ForConnectedEntity(coffin, out var castleModel))
+        {
+            return CastleActionRuling.ExceptionMissingData;
+        }
+
+        if (!_entityManager.TryGetComponentData<PrefabGUID>(coffin, out var coffinPrefabGUID))
+        {
+            return CastleActionRuling.ExceptionMissingData;
+        }
+
+        var ruling = new CastleActionRuling();
+        ruling.Action = RestrictedCastleActions.ServantRename;
+        ruling.TargetPrefabGUID = coffinPrefabGUID;
+        HydrateRuling(ref ruling, actingUser, castleModel);
+
+        if (ruling.IsCastleWithoutOwner)
+        {
+            return ruling.Allowed();
+        }
+
+        if (ruling.IsOwnerOfCastle)
+        {
+            return ruling.Allowed();
+        }
+
+        if (!ruling.IsSameClan)
+        {
+            _antiCheatService.Detected_NaughtyNamer(actingUser);
+            return ruling.Disallowed();
+        }
+
+        ruling.PermissiblePrivs = PermissiblePrivsTo_ServantRename;
+        ruling.IsAllowed = ruling.ActingUserPrivs.Intersects(ruling.PermissiblePrivs);
+        return ruling;
+    }
+
+    #endregion
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 }

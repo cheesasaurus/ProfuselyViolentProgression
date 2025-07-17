@@ -12,7 +12,7 @@ using Unity.Entities.UniversalDelegates;
 namespace ProfuselyViolentProgression.PalacePrivileges.Patches;
 
 [HarmonyPatch]
-public unsafe class ServantCoffinActionPatches
+public unsafe class ServantCoffinPatches
 {
     private static EntityManager _entityManager = WorldUtil.Game.EntityManager;
 
@@ -45,6 +45,42 @@ public unsafe class ServantCoffinActionPatches
             var actingCharacter = fromCharacters[i].Character;
 
             var ruling = Core.RestrictionService.ValidateAction_AtCoffin(actingCharacter, coffin, ev);
+            if (!ruling.IsAllowed)
+            {
+                Core.NotificationService.NotifyActionDenied(actingCharacter, ref ruling);
+                _entityManager.DestroyEntity(entities[i]);
+            }
+        }
+    }
+
+    [HarmonyPatch(typeof(ServantCoffinstationUpdateSystem), nameof(ServantCoffinstationUpdateSystem.OnUpdate))]
+    [HarmonyPrefix]
+    public static void ServantCoffinstationUpdateSystem_OnUpdate_Prefix(ServantCoffinstationUpdateSystem __instance)
+    {
+        if (!Core.IsInitialized)
+        {
+            return;
+        }
+
+        var query = __instance._ChangeServantNameEventQuery;
+        var entities = query.ToEntityArray(Allocator.Temp);
+        var fromCharacters = query.ToComponentDataArray<FromCharacter>(Allocator.Temp);
+        var changeServantNameEvents = query.ToComponentDataArray<ChangeServantNameEvent>(Allocator.Temp);
+
+        var networkIdToEntityMap = Core.NetworkIdService.NetworkIdToEntityMap();
+
+        for (var i = 0; i < entities.Length; i++)
+        {
+            var ev = changeServantNameEvents[i];
+
+            if (!networkIdToEntityMap.TryGetValue(ev.Workstation, out var coffin))
+            {
+                continue;
+            }
+
+            var actingCharacter = fromCharacters[i].Character;
+
+            var ruling = Core.RestrictionService.ValidateAction_ServantRename(actingCharacter, coffin);
             if (!ruling.IsAllowed)
             {
                 Core.NotificationService.NotifyActionDenied(actingCharacter, ref ruling);

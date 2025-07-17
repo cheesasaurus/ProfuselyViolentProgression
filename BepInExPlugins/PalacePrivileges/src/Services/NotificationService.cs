@@ -89,6 +89,9 @@ public class NotificationService
             case RestrictedCastleActions.ServantTerminate:
                 return $"{ownerName} has not given you permission to terminate servants.";
 
+            case RestrictedCastleActions.ServantRename:
+                return $"{ownerName} has not given you permission to rename servants.";
+
             default:
                 return $"{ownerName} has not given you permission to do that.";
         }

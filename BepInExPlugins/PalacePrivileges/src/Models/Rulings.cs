@@ -14,6 +14,7 @@ public enum RestrictedCastleActions
     RenameObject,
     ServantConvert,
     ServantTerminate,
+    ServantRename,
     
 }
 
