@@ -74,6 +74,7 @@ public class RestrictionService
 
         if (ruling.IsOwnerOfCastle)
         {
+            
             // todo: uncomment after testing clan privs
             // return ruling.Allowed();
         }
