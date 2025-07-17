@@ -69,8 +69,8 @@ public class RestrictionService
             return true;
         }
 
-        var actingPlayerPrivileges = _castlePrivilegesService.OverallPrivilegesForActingPlayerInClan(doorModel.Castle.Owner.PlatformId, actingUser.PlatformId);
-        return actingPlayerPrivileges.Intersects(doorModel.AcceptablePrivilegesToOpen);
+        var actingPlayerPrivileges = _castlePrivilegesService.OverallPrivilegesForActingPlayerInClan(doorModel.Castle.Owner.PlatformId, actingUser.PlatformId);        
+        return !actingPlayerPrivileges.Intersects(doorModel.AcceptablePrivilegesToOpen);
     }
 
     public bool ShouldDisallowAction_CloseDoor(Entity actingCharacter, Entity door)

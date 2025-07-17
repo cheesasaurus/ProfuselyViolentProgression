@@ -17,16 +17,16 @@ public struct CastlePrivileges
 
     public readonly bool Intersects(CastlePrivileges other)
     {
-        return MiscPrivs.None != (Misc | other.Misc)
-            || BuildPrivs.None != (Build | other.Build)
-            || CraftPrivs.None != (Craft | other.Craft)
-            || DoorPrivs.None != (Door | other.Door)
-            || PrisonerPrivs.None != (Prisoner | other.Prisoner)
-            || ServantPrivs.None != (Servant | other.Servant)
-            || TeleporterPrivs.None != (Teleporter | other.Teleporter)
-            || RedistributionPrivs.None != (Redistribution | other.Redistribution)
-            || ArenaPrivs.None != (Arena | other.Arena)
-            || ResearchPrivs.None != (Research | other.Research);
+        return MiscPrivs.None != (Misc & other.Misc)
+            || BuildPrivs.None != (Build & other.Build)
+            || CraftPrivs.None != (Craft & other.Craft)
+            || DoorPrivs.None != (Door & other.Door)
+            || PrisonerPrivs.None != (Prisoner & other.Prisoner)
+            || ServantPrivs.None != (Servant & other.Servant)
+            || TeleporterPrivs.None != (Teleporter & other.Teleporter)
+            || RedistributionPrivs.None != (Redistribution & other.Redistribution)
+            || ArenaPrivs.None != (Arena & other.Arena)
+            || ResearchPrivs.None != (Research & other.Research);
     }
 
     public readonly bool IsSupersetOf(CastlePrivileges other)
