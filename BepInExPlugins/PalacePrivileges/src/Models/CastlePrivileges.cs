@@ -247,7 +247,7 @@ public enum DoorPrivs : long
     WideBars = 1 << 27,
     WidePlanks = 1 << 28,
 
-    Thin = ThinFence | ThinPalisade | ThinBattlement | ThinCordial | ThinVerdant
+    Thin = ThinFence | ThinPalisade | ThinBasic | ThinBattlement | ThinCordial | ThinVerdant
         | ThinRoyal | ThinPlagueSanctum | ThinAncientSymphony1 | ThinAncientSymphony2
         | ThinNocturnalOpulence | ThinNocturnalOpulenceRed | ThinNocturnalOpulenceOrange
         | ThinNocturnalOpulenceYellow | ThinNocturnalOpulenceGreen | ThinNocturnalOpulenceGreenLight
