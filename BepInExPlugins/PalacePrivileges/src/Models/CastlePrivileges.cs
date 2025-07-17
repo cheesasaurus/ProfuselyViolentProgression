@@ -220,19 +220,16 @@ public enum DoorPrivs : long
     ServantLocked = 1, // !Door.CanBeOpenedByServant
     NotServantLocked = 1 << 1, // Door.CanBeOpenedByServant
     ThinFence = 1 << 2,
-    ThinPalisade = 1 << 3, // PalisadesBuildMenuGroup ? TM_Castle_Wall_Door_Palisade_Tier01 ?
-    ThinBasic = 1 << 4, // DoorTier02BuildMenuGroup ?
-
-    // TM_Castle_Wall_Door_Wood_Tier02_Standard01_Standard PrefabGUID(-1720487003)
-    // TM_Castle_Wall_Door_Wood_Tier02_Standard01_ServantLock PrefabGUID(661164434)
-    ThinBattlement = 1 << 5, // DoorTier02Standard01BuildMenuGroup ? 
-    ThinCordial = 1 << 6, // DoorTier02Standard02BuildMenuGroup ?
-    ThinVerdant = 1 << 7, // DoorTier02Standard03BuildMenuGroup ?
-    ThinRoyal = 1 << 8, // DoorTier02_DLC01_DraculasRelic_BuildMenuGroup ?
-    ThinPlagueSanctum = 1 << 9, // DoorTier02_DLC02_Gloomrot_BuildMenuGroup ?
-    ThinAncientSymphony1 = 1 << 10, // DoorTier02_DLC_ProjectK01_BuildMenuGroup ?
-    ThinAncientSymphony2 = 1 << 11, // DoorTier02_DLC_ProjectK02_BuildMenuGroup ?
-    ThinNocturnalOpulence = 1 << 12, // DoorTier02_DLC_StrongbladeDLC01_BuildMenuGroup ?
+    ThinPalisade = 1 << 3,
+    ThinBasic = 1 << 4,
+    ThinBattlement = 1 << 5,
+    ThinCordial = 1 << 6,
+    ThinVerdant = 1 << 7,
+    ThinRoyal = 1 << 8,
+    ThinPlagueSanctum = 1 << 9,
+    ThinAncientSymphony1 = 1 << 10,
+    ThinAncientSymphony2 = 1 << 11,
+    ThinNocturnalOpulence = 1 << 12,
     ThinNocturnalOpulenceRed = 1 << 13,
     ThinNocturnalOpulenceOrange = 1 << 14,
     ThinNocturnalOpulenceYellow = 1 << 15,
@@ -245,10 +242,10 @@ public enum DoorPrivs : long
     ThinNocturnalOpulenceWhite = 1 << 22,
     ThinNocturnalOpulenceGrey = 1 << 23,
     ThinNocturnalOpulenceBlack = 1 << 24,
-    ThinPrison = 1 << 25, // DoorTier02_PrisonStyle01_BuildMenuGroup ?
-    ThinBarrier = 1 << 26, // DoorTier02_PrisonStyle02_BuildMenuGroup ?
-    WideBars = 1 << 27, // DoorTier02_Wide_01_BuildMenuGroup ?
-    WidePlanks = 1 << 28, // DoorTier02_Wide_02_BuildMenuGroup ?
+    ThinPrison = 1 << 25,
+    ThinBarrier = 1 << 26,
+    WideBars = 1 << 27,
+    WidePlanks = 1 << 28,
 
     Thin = ThinFence | ThinPalisade | ThinBattlement | ThinCordial | ThinVerdant
         | ThinRoyal | ThinPlagueSanctum | ThinAncientSymphony1 | ThinAncientSymphony2
