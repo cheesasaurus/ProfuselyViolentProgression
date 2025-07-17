@@ -327,5 +327,72 @@ public class RestrictionService
 
     #endregion
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    #region servant gear changes
+
+    public CastleActionRuling ValidateAction_ServantGearChange(Entity actingCharacter, Entity servant)
+    {
+        var ruling = Internal_ValidateAction_ServantGearChange(actingCharacter, servant);
+        _rulingLoggerService.LogRuling(ruling);
+        return ruling;
+    }
+
+    private CastlePrivileges PermissiblePrivsTo_ServantGearChange = new()
+    {
+        Servant = ServantPrivs.Gear,
+    };
+
+    private CastleActionRuling Internal_ValidateAction_ServantGearChange(Entity actingCharacter, Entity servant)
+    {
+        if (!_userService.TryGetUserModel_ForCharacter(actingCharacter, out var actingUser))
+        {
+            return CastleActionRuling.ExceptionMissingData;
+        }
+
+        if (!_entityManager.TryGetComponentData<ServantConnectedCoffin>(servant, out var connectedCoffin))
+        {
+            return CastleActionRuling.ExceptionMissingData;
+        }
+        var coffin = connectedCoffin.CoffinEntity._Entity;
+
+        if (!_castleService.TryGetCastleModel_ForConnectedEntity(coffin, out var castleModel))
+        {
+            return CastleActionRuling.ExceptionMissingData;
+        }
+
+        if (!_entityManager.TryGetComponentData<PrefabGUID>(servant, out var servantPrefabGUID))
+        {
+            return CastleActionRuling.ExceptionMissingData;
+        }
+
+        var ruling = new CastleActionRuling();
+        ruling.Action = RestrictedCastleActions.ServantGearChange;
+        ruling.TargetPrefabGUID = servantPrefabGUID;
+        HydrateRuling(ref ruling, actingUser, castleModel);
+
+        if (ruling.IsCastleWithoutOwner)
+        {
+            return ruling.Allowed();
+        }
+
+        if (ruling.IsOwnerOfCastle)
+        {
+            // todo: uncomment after testing
+            // return ruling.Allowed();
+        }
+
+        if (!ruling.IsSameClan)
+        {
+            return ruling.Disallowed();
+        }
+
+        ruling.PermissiblePrivs = PermissiblePrivsTo_ServantGearChange;
+        ruling.IsAllowed = ruling.ActingUserPrivs.Intersects(ruling.PermissiblePrivs);
+        return ruling;
+    }
+
+    #endregion
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    
+
 
 }

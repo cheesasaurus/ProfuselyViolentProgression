@@ -24,13 +24,17 @@
 - [ ] Priv: `redist.edit`
 - [ ] Priv: `redist.toggleAutoSend`
 - [ ] Priv: `servants.throne`
+- [ ] Priv: `craft.toggleRecipes`
 
 
 ## Future features
 
 - [ ] Cooldown: Using key after leaving clan. will make clan history lib first.
 - [ ] Privs: opening / closing doors, by color
-- [ ] Priv: `craft.toggleRecipes`
+- [ ] webapp with UI to set up privileges, and spit out commands.
+  - check how arena does it.
+  - maybe a special export string, with a command like `.castlePrivs import asdfklkjasdfjkhasdflongassstringbutnotlongerthanthemessagesizelimit`
+  - same hosting strategy as CastleHeartPolice.
 - [ ] Priv: `craft.accessStations`
 - [ ] Priv: `musicbox`
 - [x] Priv: `servants.convert`

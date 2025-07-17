@@ -15,6 +15,7 @@ public enum RestrictedCastleActions
     ServantConvert,
     ServantTerminate,
     ServantRename,
+    ServantGearChange,
     
 }
 
