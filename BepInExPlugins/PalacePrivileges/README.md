@@ -92,6 +92,7 @@ Privileges can be granted / ungranted / forbidden.
 `all`
 `lockbox`
 `musicbox`
+`renameObjects`
 `plantSeeds`
 
 ### Build privileges

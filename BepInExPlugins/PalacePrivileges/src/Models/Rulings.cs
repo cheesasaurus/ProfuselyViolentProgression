@@ -1,5 +1,7 @@
 
 
+using Stunlock.Core;
+
 namespace ProfuselyViolentProgression.PalacePrivileges.Models;
 
 
@@ -8,6 +10,7 @@ public enum RestrictedCastleActions
     ExceptionMissingData,
     OpenDoor,
     CloseDoor,
+    RenameObject,
 }
 
 
@@ -15,6 +18,7 @@ public struct CastleActionRuling
 {
     public bool IsAllowed;
     public RestrictedCastleActions Action;
+    public PrefabGUID TargetPrefabGUID;
     public UserModel ActingUser;
     public UserModel CastleOwner;
     public bool IsOwnerOfCastle;

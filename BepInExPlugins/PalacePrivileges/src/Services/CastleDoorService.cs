@@ -65,8 +65,6 @@ public class CastleDoorService
 
     public DoorPrivs AssociatedPrivileges(Door door, PrefabGUID prefabGUID)
     {
-        LogUtil.LogDebug(DebugUtil.LookupPrefabName(prefabGUID));
-
         var privs = door.CanBeOpenedByServant ? DoorPrivs.NotServantLocked : DoorPrivs.ServantLocked;
 
         if (_privsByPrefabGuid.TryGetValue(prefabGUID, out var doorPrivs))

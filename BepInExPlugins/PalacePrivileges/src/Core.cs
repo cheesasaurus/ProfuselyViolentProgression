@@ -9,6 +9,7 @@ public static class Core
 {
     public static bool IsInitialized { get; private set; } = false;
     
+    public static NetworkIdService NetworkIdService { get; private set; }
     public static SCTService SCTService { get; private set; }
     public static UserService UserService { get; private set; }
     public static AntiCheatService AntiCheatService { get; private set; }
@@ -21,11 +22,11 @@ public static class Core
     public static RulingLoggerService RulingLoggerService { get; private set; }
     public static NotificationService NotificationService { get; private set; }
 
-
     public static void Initialize(ManualLogSource log)
     {
         IsInitialized = true;
 
+        NetworkIdService = new();
         SCTService = new();
         UserService = new();
 
@@ -57,6 +58,7 @@ public static class Core
             userService: UserService,
             antiCheatService: AntiCheatService,
             rulingLoggerService: RulingLoggerService,
+            castleService: CastleService,
             doorService: CastleDoorService
         );
 

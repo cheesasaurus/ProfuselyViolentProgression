@@ -25,8 +25,9 @@ public class RulingLoggerService
         if (!Enabled) return;
         var sb = new StringBuilder();
         sb.AppendLine("Ruling Made.");
+        sb.AppendLine($"  Target: {DebugUtil.LookupPrefabName(ruling.TargetPrefabGUID)}");
         sb.AppendLine($"  Action: {ruling.Action}");
-        sb.AppendLine($"  IsAllowed: {ruling.IsAllowed}");
+        sb.AppendLine($"  IsAllowed: {ruling.IsAllowed}");        
         sb.AppendLine($"  ActingUser: {ruling.ActingUser.CharacterName}");
         sb.AppendLine($"  CastleOwner: {ruling.CastleOwner.CharacterName}");
         sb.AppendLine($"  IsOwnerOfCastle: {ruling.IsOwnerOfCastle}");

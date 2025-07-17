@@ -17,4 +17,9 @@ public class AntiCheatService
         _log.LogWarning($"Lockpicker detected: steam:{actingUser.PlatformId} character:{actingUser.CharacterName}");
     }
 
+    public void Detected_NaughtyNamer(UserModel actingUser)
+    {
+        _log.LogWarning($"Naughty namer detected: steam:{actingUser.PlatformId} character:{actingUser.CharacterName}");
+    }
+
 }
