@@ -4,6 +4,7 @@ using System.IO;
 using System.Text.Json;
 using BepInEx;
 using BepInEx.Logging;
+using ProfuselyViolentProgression.PalacePrivileges.Models;
 
 namespace ProfuselyViolentProgression.PalacePrivileges.Services;
 

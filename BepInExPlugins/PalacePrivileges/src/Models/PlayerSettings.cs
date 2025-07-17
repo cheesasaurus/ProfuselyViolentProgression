@@ -1,7 +1,6 @@
 using System.Collections.Generic;
-using ProfuselyViolentProgression.PalacePrivileges.Models;
 
-namespace ProfuselyViolentProgression.PalacePrivileges.Services;
+namespace ProfuselyViolentProgression.PalacePrivileges.Models;
 
 
 public struct PlayerSettings()

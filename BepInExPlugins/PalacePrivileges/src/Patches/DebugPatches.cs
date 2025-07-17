@@ -33,7 +33,8 @@ public unsafe class DebugPatches
             var character = entityOwners[i].Owner;
             var door = spellTarget.Target._Entity;
 
-            if (Core.RestrictionService.ShouldDisallowAction_OpenDoor(character, door))
+            var ruling = Core.RestrictionService.ValidateAction_OpenDoor(character, door);
+            if (!ruling.IsAllowed)
             {
                 Core.SCTService.SendMessageNope(character);
 

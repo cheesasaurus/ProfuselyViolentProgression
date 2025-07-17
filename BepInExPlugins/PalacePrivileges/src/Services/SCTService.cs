@@ -16,6 +16,7 @@ public class SCTService
 
     public static AssetGuid SCTMessage_Nope = AssetGuid.FromString("7114de17-65b2-4e69-8723-79f8b33b2213");
     public static AssetGuid SCTMessage_Disabled = AssetGuid.FromString("3bf7e066-4e49-4ae4-b7a3-6703b7a15dc1");
+    public static AssetGuid SCTMessage_MissingOwnership = AssetGuid.FromString("3c901e55-974d-4aa2-862e-1f63da340dc7");
 
     public static float3 ColorRed = new float3(255, 0, 0);
 
@@ -42,6 +43,11 @@ public class SCTService
     public void SendMessageNope(Entity character)
     {
         CreateSCTMessage(character, SCTMessage_Nope, ColorRed);
+    }
+
+    public void SendMessageMissingOwnership(Entity character)
+    {
+        CreateSCTMessage(character, SCTMessage_MissingOwnership, ColorRed);
     }
     
 }

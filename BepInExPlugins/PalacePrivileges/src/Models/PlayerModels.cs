@@ -11,4 +11,6 @@ public struct UserModel
     public FixedString64Bytes CharacterName;
     public ulong PlatformId { get; set; }
     public Team Team { get; set; }
+
+    public static readonly UserModel Null = default;
 }

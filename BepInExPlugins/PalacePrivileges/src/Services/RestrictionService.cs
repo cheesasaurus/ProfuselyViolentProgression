@@ -32,50 +32,61 @@ public class RestrictionService
         _doorService = doorService;
     }
 
-    public bool ShouldDisallowAction_OpenDoor(Entity actingCharacter, Entity door)
+    public CastleActionRuling ValidateAction_OpenDoor(Entity actingCharacter, Entity door)
     {
+        var ruling = new CastleActionRuling();
+        ruling.Action = RestrictedCastleActions.OpenDoor;
+
         if (!_userService.TryGetUserModel_ForCharacter(actingCharacter, out var actingUser))
         {
-            return false;
+            return ruling.Allowed();
         }
 
         if (!_doorService.TryGetDoorModel(door, out var doorModel))
         {
-            return false;
+            return ruling.Allowed();
         }
 
-        // todo: toggle for permission debugging
-        LogUtil.LogDebug($"defense disabled? {doorModel.Castle.IsDefenseDisabled}");
-        LogUtil.LogDebug($"has no owner? {doorModel.Castle.HasNoOwner}");
+        HydrateRuling(ref ruling, actingUser, doorModel.Castle);
 
-        if (doorModel.Castle.IsDefenseDisabled || doorModel.Castle.IsAbandoned || doorModel.Castle.HasNoOwner)
+        if (ruling.IsDefenseDisabled || ruling.IsCastleWithoutOwner)
         {
-            return false;
+            return ruling.Allowed();
         }
 
-        var isOwner = doorModel.Castle.Owner.Equals(actingUser);
-        LogUtil.LogDebug($"is owner? {isOwner}");
-        if (isOwner)
+        if (ruling.IsOwnerOfCastle)
         {
             // todo: uncomment after testing clan privs
-            //return false;
+            // return ruling.Allowed();
         }
 
-        bool isClanMember = doorModel.Team.Equals(actingUser.Team);
-        LogUtil.LogDebug($"is clan member? {isClanMember}");
-        if (!isClanMember)
+        if (!ruling.IsSameClan)
         {
             _antiCheatService.Detected_DoorLockPicker(actingUser);
-            return true;
+            return ruling.Disallowed();
         }
 
-        var actingPlayerPrivileges = _castlePrivilegesService.OverallPrivilegesForActingPlayerInClan(doorModel.Castle.Owner.PlatformId, actingUser.PlatformId);        
-        return !actingPlayerPrivileges.Intersects(doorModel.AcceptablePrivilegesToOpen);
+        ruling.PermissiblePrivs = doorModel.AcceptablePrivilegesToOpen;
+        var actingPlayerPrivileges = _castlePrivilegesService.OverallPrivilegesForActingPlayerInClan(doorModel.Castle.Owner.PlatformId, actingUser.PlatformId);
+        ruling.IsAllowed = actingPlayerPrivileges.Intersects(doorModel.AcceptablePrivilegesToOpen);
+        return ruling;
     }
 
-    public bool ShouldDisallowAction_CloseDoor(Entity actingCharacter, Entity door)
+    public CastleActionRuling ShouldDisallowAction_CloseDoor(Entity actingCharacter, Entity door)
     {
-        return ShouldDisallowAction_OpenDoor(actingCharacter, door);
+        var ruling = ValidateAction_OpenDoor(actingCharacter, door);
+        ruling.Action = RestrictedCastleActions.CloseDoor;
+        return ruling;
+    }
+
+    private void HydrateRuling(ref CastleActionRuling ruling, UserModel actingUser, CastleModel castleModel)
+    {
+        ruling.ActingUser = actingUser;
+        ruling.CastleOwner = castleModel.Owner;
+        ruling.IsOwnerOfCastle = castleModel.Owner.Equals(actingUser);
+        ruling.IsCastleWithoutOwner = castleModel.Owner.Equals(UserModel.Null);
+        ruling.IsDefenseDisabled = castleModel.IsDefenseDisabled;
+        ruling.IsSameClan = castleModel.Team.Equals(actingUser.Team);
     }
 
 
