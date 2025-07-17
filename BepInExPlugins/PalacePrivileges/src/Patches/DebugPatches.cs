@@ -13,11 +13,11 @@ public unsafe class DebugPatches
 {
     private static EntityManager EntityManager = WorldUtil.Game.EntityManager;
 
-    //[HarmonyPatch(typeof(OpenDoorSystem), nameof(OpenDoorSystem.OnUpdate))]
-    //[HarmonyPrefix]
-    public static void SomePatchThing(OpenDoorSystem __instance)
+    [HarmonyPatch(typeof(NameableInteractableSystem), nameof(NameableInteractableSystem.OnUpdate))]
+    [HarmonyPrefix]
+    public static void SomePatchThing(NameableInteractableSystem __instance)
     {
-        
+        // todo: renaming servants
     }
 
     //[HarmonyPatch(typeof(DoorSystem_Server), nameof(DoorSystem_Server.OnUpdate))]

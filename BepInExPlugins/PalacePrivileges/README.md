@@ -20,7 +20,7 @@ This is a server-side mod. (No need to install anything if you're not the server
 
 ## Restricted actions
 
-Some actions may only be performed by the owner. Privileges cannot be granted to clan members.
+Some actions may only be performed by the owner. Clan members cannot be granted privileges for these restricted actions.
 - Abandoning the castle.
 - Exposing the castle heart.
 - Removing blood from the castle heart.
@@ -38,7 +38,7 @@ By default, clan members will have the following privileges:
     - Getting raided? Release the Kraken!
   - Using waygates to teleport in/out.
   - Using crafting stations / refineries.
-  - Using research tables.
+  - Using research tables and the stygian altar.
   - Converting new servants.
   - Starting arena contests.
 

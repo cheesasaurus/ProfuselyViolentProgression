@@ -23,10 +23,10 @@ public class CastlePrivilegesService
         Craft = CraftPrivs.AccessStations,
         Door = DoorPrivs.NotServantLocked | DoorPrivs.Wide,
         Prisoner = PrisonerPrivs.None,
-        Servant = ServantPrivs.None,
+        Servant = ServantPrivs.Convert,
         Teleporter = TeleporterPrivs.Waygate,
         Redistribution = RedistributionPrivs.None,
-        Arena = ArenaPrivs.None,
+        Arena = ArenaPrivs.StartContest | ArenaPrivs.EditRules,
         Research = ResearchPrivs.All,
     };
 
