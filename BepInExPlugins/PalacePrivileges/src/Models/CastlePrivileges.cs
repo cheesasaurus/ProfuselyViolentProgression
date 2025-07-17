@@ -168,7 +168,7 @@ public struct CastlePrivileges
             privNames.Add($"Research: {Research}");
         }
 
-        return string.Join(" ; ", privNames);
+        return string.Join(" | ", privNames);
     }
     
 }

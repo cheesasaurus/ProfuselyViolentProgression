@@ -58,7 +58,7 @@ public static class PrefabGuids
     public static PrefabGUID TM_Castle_Wall_Door_Wood_Tier02_Standard01_ServantLock = new PrefabGUID(661164434);
 
     // "Cordial Gate"
-    public static PrefabGUID TM_Castle_Wall_Door_Wood_Tier02_Standard02_Standard = new PrefabGUID(163814050);
+    public static PrefabGUID TM_Castle_Wall_Door_Wood_Tier02_Standard02 = new PrefabGUID(163814050);
     public static PrefabGUID TM_Castle_Wall_Door_Wood_Tier02_Standard02_ServantLock = new PrefabGUID(-324390719);
 
     // "Verdant Gate"

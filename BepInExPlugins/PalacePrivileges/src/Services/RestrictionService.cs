@@ -84,9 +84,8 @@ public class RestrictionService
             return ruling.Disallowed();
         }
 
-        ruling.PermissiblePrivs = doorModel.AcceptablePrivilegesToOpen;
-        var actingPlayerPrivileges = _castlePrivilegesService.OverallPrivilegesForActingPlayerInClan(doorModel.Castle.Owner.PlatformId, actingUser.PlatformId);
-        ruling.IsAllowed = actingPlayerPrivileges.Intersects(doorModel.AcceptablePrivilegesToOpen);
+        ruling.PermissiblePrivs = doorModel.PermissiblePrivsToOpen;        
+        ruling.IsAllowed = ruling.ActingUserPrivs.Intersects(doorModel.PermissiblePrivsToOpen);
         return ruling;
     }
 
@@ -98,6 +97,7 @@ public class RestrictionService
         ruling.IsCastleWithoutOwner = castleModel.Owner.Equals(UserModel.Null);
         ruling.IsDefenseDisabled = castleModel.IsDefenseDisabled;
         ruling.IsSameClan = castleModel.Team.Equals(actingUser.Team);
+        ruling.ActingUserPrivs = _castlePrivilegesService.OverallPrivilegesForActingPlayerInClan(castleModel.Owner.PlatformId, actingUser.PlatformId);
     }
 
 

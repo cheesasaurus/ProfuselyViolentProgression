@@ -21,6 +21,7 @@ public struct CastleActionRuling
     public bool IsDefenseDisabled;
     public bool IsSameClan;
     public CastlePrivileges PermissiblePrivs;
+    public CastlePrivileges ActingUserPrivs;
 
     public CastleActionRuling Allowed()
     {

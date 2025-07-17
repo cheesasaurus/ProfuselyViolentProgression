@@ -34,6 +34,7 @@ public class RulingLoggerService
         sb.AppendLine($"  IsDefenseDisabled: {ruling.IsDefenseDisabled}");
         sb.AppendLine($"  IsSameClan: {ruling.IsSameClan}");
         sb.AppendLine($"  PermissiblePrivs: {ruling.PermissiblePrivs}");
+        sb.AppendLine($"  ActingUserPrivs: {ruling.ActingUserPrivs}");
         LogUtil.LogDebug(sb.ToString());
     }
 }

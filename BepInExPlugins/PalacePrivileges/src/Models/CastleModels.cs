@@ -18,5 +18,5 @@ public struct CastleDoorModel
     public PrefabGUID PrefabGUID;
     public CastleModel Castle;
     public Team Team;
-    public CastlePrivileges AcceptablePrivilegesToOpen;
+    public CastlePrivileges PermissiblePrivsToOpen;
 }
