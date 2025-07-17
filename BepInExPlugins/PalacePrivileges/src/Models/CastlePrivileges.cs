@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Text;
 
 namespace ProfuselyViolentProgression.PalacePrivileges.Models;
 
@@ -119,6 +121,54 @@ public struct CastlePrivileges
         result.Arena = ~operand.Arena;
         result.Research = ~operand.Research;
         return result;
+    }
+
+    public override string ToString()
+    {
+        var privNames = new List<string>();
+
+        if (Misc != MiscPrivs.None)
+        {
+            privNames.Add($"Misc: {Misc}");
+        }
+        if (Build != BuildPrivs.None)
+        {
+            privNames.Add($"Build: {Build}");
+        }
+        if (Craft != CraftPrivs.None)
+        {
+            privNames.Add($"Craft: {Craft}");
+        }
+        if (Door != DoorPrivs.None)
+        {
+            privNames.Add($"Door: {Door}");
+        }
+        if (Prisoner != PrisonerPrivs.None)
+        {
+            privNames.Add($"Prisoner: {Prisoner}");
+        }
+        if (Servant != ServantPrivs.None)
+        {
+            privNames.Add($"Servant: {Servant}");
+        }
+        if (Teleporter != TeleporterPrivs.None)
+        {
+            privNames.Add($"Teleporter: {Teleporter}");
+        }
+        if (Redistribution != RedistributionPrivs.None)
+        {
+            privNames.Add($"Redistribution: {Redistribution}");
+        }
+        if (Arena != ArenaPrivs.None)
+        {
+            privNames.Add($"Arena: {Arena}");
+        }
+        if (Research != ResearchPrivs.None)
+        {
+            privNames.Add($"Research: {Research}");
+        }
+
+        return string.Join(" ; ", privNames);
     }
     
 }
