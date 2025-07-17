@@ -19,4 +19,5 @@ public struct CastleDoorModel
     public CastleModel Castle;
     public Team Team;
     public CastlePrivileges PermissiblePrivsToOpen;
+    public bool IsOpen;
 }

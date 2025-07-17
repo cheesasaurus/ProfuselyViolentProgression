@@ -32,7 +32,7 @@ public unsafe class DoorPatches
             var character = entityOwners[i].Owner;
             var door = spellTarget.Target._Entity;
 
-            var ruling = Core.RestrictionService.ValidateAction_OpenDoor(character, door);
+            var ruling = Core.RestrictionService.ValidateAction_OpenOrCloseDoor(character, door);
             if (!ruling.IsAllowed)
             {
                 Core.NotificationService.NotifyActionDenied(character, ref ruling);

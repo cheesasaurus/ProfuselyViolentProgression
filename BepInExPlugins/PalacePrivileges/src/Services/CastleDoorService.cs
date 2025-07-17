@@ -58,6 +58,7 @@ public class CastleDoorService
             {
                 Door = AssociatedPrivileges(door, prefabGUID),
             },
+            IsOpen = door.OpenState,
         };
         return true;
     }

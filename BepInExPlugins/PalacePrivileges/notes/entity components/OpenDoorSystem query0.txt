@@ -1,0 +1,26 @@
+PrefabGUID: AB_Interact_OpenDoor PrefabGUID(1395794834)
+-------------------------------------------
+ProjectM.Attach
+ProjectM.EntityOwner
+ProjectM.EntityCreator
+ProjectM.AbilityOwner
+ProjectM.Buff
+ProjectM.SpellTarget
+ProjectM.DestroyData
+ProjectM.DestroyState
+ProjectM.BuffCategory
+ProjectM.LastTranslation
+ProjectM.Team
+Unity.Transforms.Rotation
+Unity.Transforms.Translation
+Unity.Transforms.LocalToWorld
+Unity.Transforms.LocalTransform
+ProjectM.TeamReference
+Stunlock.Core.PrefabGUID
+ProjectM.Attached
+ProjectM.DestroyOnSpawn
+ProjectM.GetOwnerTeamOnSpawn
+ProjectM.OpenDoor
+ProjectM.InteractBuff
+Unity.Entities.Simulate
+ProjectM.AttachedDepth

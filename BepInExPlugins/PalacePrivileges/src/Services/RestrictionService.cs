@@ -35,36 +35,27 @@ public class RestrictionService
         _doorService = doorService;
     }
 
-    public CastleActionRuling ValidateAction_OpenDoor(Entity actingCharacter, Entity door)
+    public CastleActionRuling ValidateAction_OpenOrCloseDoor(Entity actingCharacter, Entity door)
     {
-        var ruling = Internal_ValidateAction_OpenDoor(actingCharacter, door);
+        var ruling = Internal_ValidateAction_OpenOrCloseDoor(actingCharacter, door);
         _rulingLoggerService.LogRuling(ruling);
         return ruling;
     }
 
-    public CastleActionRuling ValidateAction_CloseDoor(Entity actingCharacter, Entity door)
+    private CastleActionRuling Internal_ValidateAction_OpenOrCloseDoor(Entity actingCharacter, Entity door)
     {
-        var ruling = Internal_ValidateAction_OpenDoor(actingCharacter, door);
-        ruling.Action = RestrictedCastleActions.CloseDoor;
-        _rulingLoggerService.LogRuling(ruling);
-        return ruling;
-    }
-
-    private CastleActionRuling Internal_ValidateAction_OpenDoor(Entity actingCharacter, Entity door)
-    {
-        var ruling = new CastleActionRuling();
-        ruling.Action = RestrictedCastleActions.OpenDoor;
-
         if (!_userService.TryGetUserModel_ForCharacter(actingCharacter, out var actingUser))
         {
-            return ruling.Allowed();
+            return CastleActionRuling.ExceptionMissingData;
         }
 
         if (!_doorService.TryGetDoorModel(door, out var doorModel))
         {
-            return ruling.Allowed();
+            return CastleActionRuling.ExceptionMissingData;
         }
 
+        var ruling = new CastleActionRuling();
+        ruling.Action = doorModel.IsOpen ? RestrictedCastleActions.CloseDoor : RestrictedCastleActions.OpenDoor;
         HydrateRuling(ref ruling, actingUser, doorModel.Castle);
 
         if (ruling.IsDefenseDisabled || ruling.IsCastleWithoutOwner)
@@ -74,9 +65,7 @@ public class RestrictionService
 
         if (ruling.IsOwnerOfCastle)
         {
-            
-            // todo: uncomment after testing clan privs
-            // return ruling.Allowed();
+            return ruling.Allowed();
         }
 
         if (!ruling.IsSameClan)

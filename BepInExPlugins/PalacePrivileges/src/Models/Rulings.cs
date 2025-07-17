@@ -5,6 +5,7 @@ namespace ProfuselyViolentProgression.PalacePrivileges.Models;
 
 public enum RestrictedCastleActions
 {
+    ExceptionMissingData,
     OpenDoor,
     CloseDoor,
 }
@@ -34,5 +35,11 @@ public struct CastleActionRuling
         IsAllowed = false;
         return this;
     }
+
+    public static readonly CastleActionRuling ExceptionMissingData = new()
+    {
+        IsAllowed = true,
+        Action = RestrictedCastleActions.ExceptionMissingData,
+    };
     
 }
