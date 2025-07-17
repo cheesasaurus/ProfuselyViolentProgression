@@ -37,6 +37,7 @@ public class SCTService
         //player.UserEntity
         );
 
+        // todo: this is not ideal. the point of a buffer is to have it ran together with other structural changes
         ecb.Playback(_entityManager);
     }
 

@@ -19,6 +19,7 @@ public static class Core
     public static CastlePrivilegesService CastlePrivilegesService { get; private set; }
     public static RestrictionService RestrictionService { get; private set; }
     public static RulingLoggerService RulingLoggerService { get; private set; }
+    public static NotificationService NotificationService { get; private set; }
 
 
     public static void Initialize(ManualLogSource log)
@@ -57,7 +58,9 @@ public static class Core
             antiCheatService: AntiCheatService,
             rulingLoggerService: RulingLoggerService,
             doorService: CastleDoorService
-        );        
+        );
+
+        NotificationService = new(SCTService);
     }
 
     public static void Dispose()

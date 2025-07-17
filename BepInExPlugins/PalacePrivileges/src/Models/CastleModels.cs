@@ -9,7 +9,6 @@ public struct CastleModel
 {
     public bool HasNoOwner;
     public bool IsDefenseDisabled;
-    public bool IsAbandoned; // todo: might be redundnant with HasNoOwner?
     public UserModel Owner;
     public Team Team;
 }

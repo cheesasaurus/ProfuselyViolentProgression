@@ -49,7 +49,6 @@ public class CastleService
             return false;
         }
 
-        // castleModel.IsAbandoned = true; // todo: might be covered by HasNoOwner, needs testing
         castleModel.IsDefenseDisabled = castleHeart.IsRaided();
         castleModel.HasNoOwner = !_userService.TryGetUserModel_ForOwnedEntity(castleHeartEntity, out var owner);        
         castleModel.Owner = owner;

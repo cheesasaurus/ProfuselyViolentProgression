@@ -44,6 +44,7 @@ public class UserService
         userModel.CharacterName = user.CharacterName;
         userModel.PlatformId = user.PlatformId;
         userModel.Team = team;
+        userModel.User = user;
         return true;
     }
     
