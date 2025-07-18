@@ -13,7 +13,6 @@ using Unity.Entities.UniversalDelegates;
 
 namespace ProfuselyViolentProgression.PalacePrivileges.Patches;
 
-// todo: direct equipping from inventory (hot key / right click)
 // todo: dragging into servant slot from own equipment slot (not hotbar)
 // todo: dragging into own equipment slot (not hotbar) from servant slot
 
@@ -94,68 +93,6 @@ public unsafe class ServantGearPatches
             }
 
         }
-    }
-
-    /// <summary>
-    /// Prevent  auto-equipping item when added to servant inventory.
-    /// </summary>
-    [HarmonyPatch(typeof(InventoryUtilitiesServer), nameof(InventoryUtilitiesServer.TryAddItem), new Type[] { typeof(AddItemSettings), typeof(Entity), typeof(PrefabGUID), typeof(int) })]
-    [HarmonyPrefix]
-    public static void TryAddItem_Overload0_Prefix(ref AddItemSettings addItemSettings, Entity target, PrefabGUID itemType, int amount)
-    {
-        if (!addItemSettings.EquipIfPossible)
-        {
-            return;
-        }
-
-        if (!_entityManager.TryGetComponentData<InventoryConnection>(target, out var inventoryConnection))
-        {
-            return;
-        }
-
-        if (!_entityManager.TryGetComponentData<ServantConnectedCoffin>(inventoryConnection.InventoryOwner, out var servantConnectedCoffin))
-        {
-            return;
-        }
-
-        // todo: need more information about the item adding. (which character initiated it)
-        // var servant = inventoryConnection.InventoryOwner;
-        // var ruling = Core.RestrictionService.ValidateAction_ServantGearChange(character, servant);
-        // if (!ruling.IsAllowed)
-        // {
-        //     addItemSettings.EquipIfPossible = false;
-        // }
-    }
-
-    /// <summary>
-    /// Prevent  auto-equipping item when added to servant inventory.
-    /// </summary>
-    [HarmonyPatch(typeof(InventoryUtilitiesServer), nameof(InventoryUtilitiesServer.TryAddItem), new Type[] { typeof(AddItemSettings), typeof(Entity), typeof(InventoryBuffer) })]
-    [HarmonyPrefix]
-    public static void TryAddItem_Overload1_Prefix(ref AddItemSettings addItemSettings, Entity target, InventoryBuffer inventoryItem)
-    {
-        if (!addItemSettings.EquipIfPossible)
-        {
-            return;
-        }
-
-        if (!_entityManager.TryGetComponentData<InventoryConnection>(target, out var inventoryConnection))
-        {
-            return;
-        }
-
-        if (!_entityManager.TryGetComponentData<ServantConnectedCoffin>(inventoryConnection.InventoryOwner, out var servantConnectedCoffin))
-        {
-            return;
-        }
-
-        // todo: need more information about the item adding. (which character initiated it)
-        // var servant = inventoryConnection.InventoryOwner;
-        // var ruling = Core.RestrictionService.ValidateAction_ServantGearChange(character, servant);
-        // if (!ruling.IsAllowed)
-        // {
-        //     addItemSettings.EquipIfPossible = false;
-        // }
     }
 
     // todo: doesn't run?

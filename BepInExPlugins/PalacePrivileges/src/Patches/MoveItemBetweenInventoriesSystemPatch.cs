@@ -111,6 +111,10 @@ public unsafe class MoveItemBetweenInventoriesSystemPatch
         // LogUtil.LogDebug("moving FROM servant inventory.");
     }
 
+    /// <summary>
+    /// When an item is moved to a servant's inventory, it could end up getting auto-equipped.
+    /// We check for that and prevent the item move if appropriate.
+    /// </summary>
     private static void HandleMoveItem_ToServantInventory(
         Entity eventEntity,
         FromCharacter fromCharacter,
@@ -120,11 +124,39 @@ public unsafe class MoveItemBetweenInventoriesSystemPatch
         MoveItemBetweenInventoriesEvent moveItemEvent
     )
     {
-        // Currently no restrictions that need to be handled here.
-        // LogUtil.LogDebug("moving TO servant inventory.");
+        if (!_entityManager.TryGetComponentData<ServantEquipment>(toInventory, out var servantEquipment))
+        {
+            return;
+        }
 
-        // This covers moving items to a servant's inventory.
-        // The item could end up getting auto equipped, which we handle elsewhere, via other patches.
+        if (!InventoryUtilities.TryGetItemAtSlot(_entityManager, fromInventory, moveItemEvent.FromSlot, out InventoryBuffer ibElement))
+        {
+            return;
+        }
+
+        if (!_entityManager.TryGetComponentData<EquippableData>(ibElement.ItemEntity._Entity, out var equippableData))
+        {
+            return;
+        }
+
+        bool isNoSlotSpecified = moveItemEvent.ToSlot == -1;
+        bool doesServantNeedGear = !servantEquipment.IsEquipped(equippableData.EquipmentType);
+        bool wouldBeAutoEquipped = isNoSlotSpecified && doesServantNeedGear;
+
+        if (!wouldBeAutoEquipped)
+        {
+            return;
+        }
+
+        var character = fromCharacter.Character;
+        var servant = toInventory;
+        var ruling = Core.RestrictionService.ValidateAction_ServantGearChange(character, servant);
+        
+        if (!ruling.IsAllowed)
+        {
+            Core.NotificationService.NotifyActionDenied(character, ref ruling);
+            _entityManager.DestroyEntity(eventEntity);
+        }
     }
 
     private static void HandleMoveItem_FromCastleHeartInventory(
