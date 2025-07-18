@@ -4,7 +4,7 @@
     <TargetFramework>net6.0</TargetFramework>
     <AssemblyName>WallopWarpers</AssemblyName>
     <Description>Prevent waygate use during PvP combat. Better protection after teleporting. Configurable.</Description>
-    <Version>1.0.0</Version>
+    <Version>1.0.1</Version>
     <Authors>Nicholas Toby</Authors>
     <Copyright>Copyright (c) Nicholas Toby 2025</Copyright>
     <WebsiteURL>https://github.com/cheesasaurus/ProfuselyViolentProgression</WebsiteURL>

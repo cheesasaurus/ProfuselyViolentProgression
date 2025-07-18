@@ -92,8 +92,8 @@ public static class NotAllAbilitiesDestroyPhasingPatch
         var entityOwners = queryDestroy.ToComponentDataArray<EntityOwner>(Allocator.Temp);
         for (var i = 0; i < entitiesDestroy.Length; i++)
         {
-            var entity = entitiesDestroy[0];
-            var owner = entityOwners[0].Owner;
+            var entity = entitiesDestroy[i];
+            var owner = entityOwners[i].Owner;
             if (prefabGuidsDestroy[i].Equals(PrefabGuids.Buff_General_Phasing))
             {
                 if (!_tpSafetyBalance.ContainsKey(owner) || _tpSafetyBalance[owner] < 1)
