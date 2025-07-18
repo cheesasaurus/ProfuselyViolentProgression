@@ -1,6 +1,7 @@
 using HarmonyLib;
 using HookDOTS.API.Attributes;
 using ProfuselyViolentProgression.Core.Utilities;
+using ProfuselyViolentProgression.PalacePrivileges.Models;
 using ProjectM;
 using ProjectM.CastleBuilding;
 using ProjectM.Gameplay.Systems;
@@ -60,34 +61,29 @@ public unsafe class CastleHeartEventSystemPatch
 
     }
 
-    // todo: code cleaning for castle heart stuff
-
-    public static void HandleAbandon(Entity eventEntity, FromCharacter fromCharacter, Entity castleHeart)
+    private static void HandleAbandon(Entity eventEntity, FromCharacter fromCharacter, Entity castleHeart)
     {
         var character = fromCharacter.Character;
         var ruling = Core.RestrictionService.ValidateAction_CastleHeartAbandon(character, castleHeart);
-        if (!ruling.IsAllowed)
-        {
-            Core.NotificationService.NotifyActionDenied(character, ref ruling);
-            _entityManager.DestroyEntity(eventEntity);
-        }
+        EnforceRuling(eventEntity, character, ruling);
     }
 
-    public static void HandleExpose(Entity eventEntity, FromCharacter fromCharacter, Entity castleHeart)
+    private static void HandleExpose(Entity eventEntity, FromCharacter fromCharacter, Entity castleHeart)
     {
         var character = fromCharacter.Character;
         var ruling = Core.RestrictionService.ValidateAction_CastleHeartExpose(character, castleHeart);
-        if (!ruling.IsAllowed)
-        {
-            Core.NotificationService.NotifyActionDenied(character, ref ruling);
-            _entityManager.DestroyEntity(eventEntity);
-        }
+        EnforceRuling(eventEntity, character, ruling);
     }
 
-    public static void HandleRaid(Entity eventEntity, FromCharacter fromCharacter, Entity castleHeart)
+    private static void HandleRaid(Entity eventEntity, FromCharacter fromCharacter, Entity castleHeart)
     {
         var character = fromCharacter.Character;
         var ruling = Core.RestrictionService.ValidateAction_CastleHeartDisableDefense(character, castleHeart);
+        EnforceRuling(eventEntity, character, ruling);
+    }
+
+    private static void EnforceRuling(Entity eventEntity, Entity character, CastleActionRuling ruling)
+    {
         if (!ruling.IsAllowed)
         {
             Core.NotificationService.NotifyActionDenied(character, ref ruling);
