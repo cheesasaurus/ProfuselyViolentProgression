@@ -258,18 +258,18 @@ public class PrivilegeParser
         RegisterPrivs("doors.ancientSymphony1", DoorPrivs.ThinAncientSymphony1);
         RegisterPrivs("doors.ancientSymphony2", DoorPrivs.ThinAncientSymphony2);
         RegisterPrivs("doors.noctOp", DoorPrivs.ThinNocturnalOpulence);
-        RegisterPrivs("doors.noctOpRed", DoorPrivs.ThinNocturnalOpulenceRed); // planned feature
-        RegisterPrivs("doors.noctOpOrange", DoorPrivs.ThinNocturnalOpulenceOrange); // planned feature
-        RegisterPrivs("doors.noctOpYellow", DoorPrivs.ThinNocturnalOpulenceYellow); // planned feature
-        RegisterPrivs("doors.noctOpGreen", DoorPrivs.ThinNocturnalOpulenceGreen); // planned feature
-        RegisterPrivs("doors.noctOpGreenLight", DoorPrivs.ThinNocturnalOpulenceGreenLight); // planned feature
-        RegisterPrivs("doors.noctOpBlueLight", DoorPrivs.ThinNocturnalOpulenceBlueLight); // planned feature
-        RegisterPrivs("doors.noctOpBlue", DoorPrivs.ThinNocturnalOpulenceBlue); // planned feature
-        RegisterPrivs("doors.noctOpPurple", DoorPrivs.ThinNocturnalOpulencePurple); // planned feature
-        RegisterPrivs("doors.noctOpPink", DoorPrivs.ThinNocturnalOpulencePink); // planned feature
-        RegisterPrivs("doors.noctOpWhite", DoorPrivs.ThinNocturnalOpulenceWhite); // planned feature
-        RegisterPrivs("doors.noctOpGrey", DoorPrivs.ThinNocturnalOpulenceGrey); // planned feature
-        RegisterPrivs("doors.noctOpBlack", DoorPrivs.ThinNocturnalOpulenceBlack); // planned feature
+        RegisterPrivs("doors.noctOpRed", DoorPrivs.ThinNocturnalOpulenceRed);
+        RegisterPrivs("doors.noctOpOrange", DoorPrivs.ThinNocturnalOpulenceOrange);
+        RegisterPrivs("doors.noctOpYellow", DoorPrivs.ThinNocturnalOpulenceYellow);
+        RegisterPrivs("doors.noctOpGreen", DoorPrivs.ThinNocturnalOpulenceGreen);
+        RegisterPrivs("doors.noctOpMintGreen", DoorPrivs.ThinNocturnalOpulenceMintGreen);
+        RegisterPrivs("doors.noctOpCyan", DoorPrivs.ThinNocturnalOpulenceCyan);
+        RegisterPrivs("doors.noctOpBlue", DoorPrivs.ThinNocturnalOpulenceBlue);
+        RegisterPrivs("doors.noctOpPurple", DoorPrivs.ThinNocturnalOpulencePurple);
+        RegisterPrivs("doors.noctOpPink", DoorPrivs.ThinNocturnalOpulencePink);
+        RegisterPrivs("doors.noctOpWhite", DoorPrivs.ThinNocturnalOpulenceWhite);
+        RegisterPrivs("doors.noctOpGrey", DoorPrivs.ThinNocturnalOpulenceGrey);
+        RegisterPrivs("doors.noctOpBlack", DoorPrivs.ThinNocturnalOpulenceBlack);
         RegisterPrivs("doors.prison", DoorPrivs.ThinPrison);
         RegisterPrivs("doors.barrier", DoorPrivs.ThinBarrier);
         RegisterPrivs("doors.wideBars", DoorPrivs.WideBars);

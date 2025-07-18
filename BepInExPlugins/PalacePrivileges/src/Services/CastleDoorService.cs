@@ -2,8 +2,10 @@ using System.Collections.Generic;
 using ProfuselyViolentProgression.Core.Utilities;
 using ProfuselyViolentProgression.PalacePrivileges.Models;
 using ProjectM;
+using ProjectM.CastleBuilding;
 using Stunlock.Core;
 using Unity.Entities;
+using UnityEngine;
 
 namespace ProfuselyViolentProgression.PalacePrivileges.Services;
 
@@ -14,11 +16,13 @@ public class CastleDoorService
     private EntityManager _entityManager = WorldUtil.Server.EntityManager;
     private CastleService _castleService;
     private Dictionary<PrefabGUID, DoorPrivs> _privsByPrefabGuid = [];
+    private Dictionary<byte, DoorPrivs> _oakveilPrivsByColorIndex = [];
 
     public CastleDoorService(CastleService castleService)
     {
         _castleService = castleService;
         InitPrivsByPrefabGUID();
+        InitOakveilColorPrivsByColorIndex();
     }
 
     public bool TryGetDoorModel(Entity doorEntity, out CastleDoorModel doorModel)
@@ -56,14 +60,14 @@ public class CastleDoorService
             Team = team,
             PermissiblePrivsToOpen = new CastlePrivileges
             {
-                Door = AssociatedPrivileges(door, prefabGUID),
+                Door = AssociatedPrivileges(doorEntity, door, prefabGUID),
             },
             IsOpen = door.OpenState,
         };
         return true;
     }
 
-    public DoorPrivs AssociatedPrivileges(Door door, PrefabGUID prefabGUID)
+    public DoorPrivs AssociatedPrivileges(Entity doorEntity, Door door, PrefabGUID prefabGUID)
     {
         var privs = door.CanBeOpenedByServant ? DoorPrivs.NotServantLocked : DoorPrivs.ServantLocked;
 
@@ -72,9 +76,28 @@ public class CastleDoorService
             privs |= doorPrivs;
         }
 
-        // todo: check color of oakveil doors
+        if ((DoorPrivs.ThinNocturnalOpulence & privs) != DoorPrivs.None)
+        {
+            privs |= OakveilColorPrivs(doorEntity);
+        }
 
         return privs;
+    }
+
+    private DoorPrivs OakveilColorPrivs(Entity doorEntity)
+    {
+        if (!_entityManager.TryGetComponentData<DyeableCastleObject>(doorEntity, out var dyeableCastleObject))
+        {
+            return DoorPrivs.None;
+        }
+
+        LogUtil.LogDebug(dyeableCastleObject.ActiveColorIndex);
+
+        if (!_oakveilPrivsByColorIndex.TryGetValue(dyeableCastleObject.ActiveColorIndex, out var doorPrivs))
+        {
+            return DoorPrivs.None;    
+        }
+        return doorPrivs;
     }
 
     private void InitPrivsByPrefabGUID()
@@ -272,6 +295,25 @@ public class CastleDoorService
             },
 
         };
+    }
+
+    private void InitOakveilColorPrivsByColorIndex()
+    {
+        _oakveilPrivsByColorIndex = new()
+        {
+            { Dyeable12ColorIndex.Red, DoorPrivs.ThinNocturnalOpulenceRed },
+            { Dyeable12ColorIndex.Orange, DoorPrivs.ThinNocturnalOpulenceOrange },
+            { Dyeable12ColorIndex.Yellow, DoorPrivs.ThinNocturnalOpulenceYellow },
+            { Dyeable12ColorIndex.Green, DoorPrivs.ThinNocturnalOpulenceGreen },
+            { Dyeable12ColorIndex.MintGreen, DoorPrivs.ThinNocturnalOpulenceMintGreen },
+            { Dyeable12ColorIndex.Cyan, DoorPrivs.ThinNocturnalOpulenceCyan },
+            { Dyeable12ColorIndex.Blue, DoorPrivs.ThinNocturnalOpulenceBlue },
+            { Dyeable12ColorIndex.Purple, DoorPrivs.ThinNocturnalOpulencePurple },
+            { Dyeable12ColorIndex.Pink, DoorPrivs.ThinNocturnalOpulencePink },
+            { Dyeable12ColorIndex.White, DoorPrivs.ThinNocturnalOpulenceWhite },
+            { Dyeable12ColorIndex.Grey, DoorPrivs.ThinNocturnalOpulenceGrey },
+            { Dyeable12ColorIndex.Black, DoorPrivs.ThinNocturnalOpulenceBlack },
+        };        
     }
 
 

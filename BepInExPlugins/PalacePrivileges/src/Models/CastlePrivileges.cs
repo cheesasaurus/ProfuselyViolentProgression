@@ -238,8 +238,8 @@ public enum DoorPrivs : long
     ThinNocturnalOpulenceOrange = 1 << 14,
     ThinNocturnalOpulenceYellow = 1 << 15,
     ThinNocturnalOpulenceGreen = 1 << 16,
-    ThinNocturnalOpulenceGreenLight = 1 << 17, // todo: actual color name. light green
-    ThinNocturnalOpulenceBlueLight = 1 << 18, // todo: actual color name. light blue
+    ThinNocturnalOpulenceMintGreen = 1 << 17, // todo: actual color name. light green
+    ThinNocturnalOpulenceCyan = 1 << 18, // todo: actual color name. light blue
     ThinNocturnalOpulenceBlue = 1 << 19,
     ThinNocturnalOpulencePurple = 1 << 20,
     ThinNocturnalOpulencePink = 1 << 21,
@@ -254,8 +254,8 @@ public enum DoorPrivs : long
     Thin = ThinFence | ThinPalisade | ThinBasic | ThinBattlement | ThinCordial | ThinVerdant
         | ThinRoyal | ThinPlagueSanctum | ThinAncientSymphony1 | ThinAncientSymphony2
         | ThinNocturnalOpulence | ThinNocturnalOpulenceRed | ThinNocturnalOpulenceOrange
-        | ThinNocturnalOpulenceYellow | ThinNocturnalOpulenceGreen | ThinNocturnalOpulenceGreenLight
-        | ThinNocturnalOpulenceBlueLight | ThinNocturnalOpulenceBlue | ThinNocturnalOpulencePurple
+        | ThinNocturnalOpulenceYellow | ThinNocturnalOpulenceGreen | ThinNocturnalOpulenceMintGreen
+        | ThinNocturnalOpulenceCyan | ThinNocturnalOpulenceBlue | ThinNocturnalOpulencePurple
         | ThinNocturnalOpulencePink | ThinNocturnalOpulenceWhite | ThinNocturnalOpulenceGrey
         | ThinNocturnalOpulenceBlack
         | ThinPrison | ThinBarrier,

@@ -57,7 +57,9 @@ public unsafe class PlaceTileModelSystemPatch
             var ev = tmEvents[i];
             LogUtil.LogDebug(DebugUtil.LookupPrefabName(ev.PrefabGuid));
 
-
+            // todo: maybe something with the static GetPlacementResult class.
+            // Entity `buildingInCastleTerritory`
+            // Entity `castleHeartForArea`
             
 
         }

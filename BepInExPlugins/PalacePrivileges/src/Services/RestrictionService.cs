@@ -114,6 +114,7 @@ public class RestrictionService
         var ruling = new CastleActionRuling();
         ruling.TargetPrefabGUID = targetPrefabGUID;
         ruling.Action = action;
+        ruling.PermissiblePrivs = permissiblePrivs;
         HydrateRuling(ref ruling, actingUser, castleModel);
 
         if (ruling.IsCastleWithoutOwner)
@@ -130,8 +131,7 @@ public class RestrictionService
         {
             return ruling.Disallowed();
         }
-
-        ruling.PermissiblePrivs = permissiblePrivs;
+        
         ruling.IsAllowed = ruling.ActingUserPrivs.Intersects(ruling.PermissiblePrivs);
         return ruling;
     }
@@ -192,8 +192,8 @@ public class RestrictionService
         var ruling = new CastleActionRuling();
         ruling.TargetPrefabGUID = targetPrefabGUID;
         ruling.Action = RestrictedCastleActions.CastleHeartDisableDefense;
-        HydrateRuling(ref ruling, actingUser, castleModel);
         ruling.PermissiblePrivs = CastlePrivileges.None;
+        HydrateRuling(ref ruling, actingUser, castleModel);        
         ruling.IsAllowed = ruling.IsCastleWithoutOwner || !IsFormerClanMemberOnKeyCooldown(ruling);
         return ruling;
     }
@@ -311,6 +311,7 @@ public class RestrictionService
         var ruling = new CastleActionRuling();
         ruling.TargetPrefabGUID = objectPrefabGUID;
         ruling.Action = RestrictedCastleActions.Build;
+        ruling.PermissiblePrivs = PermissiblePrivsTo_Build;
         HydrateRuling(ref ruling, actingUser, castleModel);
 
         if (ruling.IsOwnerOfCastle)
@@ -323,8 +324,7 @@ public class RestrictionService
             _antiCheatService.Detected_BadBuilder(actingUser);
             return ruling.Disallowed();
         }
-
-        ruling.PermissiblePrivs = PermissiblePrivsTo_Build;
+        
         ruling.IsAllowed = ruling.ActingUserPrivs.Intersects(ruling.PermissiblePrivs);
         return ruling;
     }
@@ -355,6 +355,7 @@ public class RestrictionService
         var ruling = new CastleActionRuling();
         ruling.Action = doorModel.IsOpen ? RestrictedCastleActions.CloseDoor : RestrictedCastleActions.OpenDoor;
         ruling.TargetPrefabGUID = doorModel.PrefabGUID;
+        ruling.PermissiblePrivs = doorModel.PermissiblePrivsToOpen;
         HydrateRuling(ref ruling, actingUser, doorModel.Castle);
 
         if (ruling.IsDefenseDisabled || ruling.IsCastleWithoutOwner)
@@ -372,8 +373,7 @@ public class RestrictionService
             _antiCheatService.Detected_DoorLockPicker(actingUser);
             return ruling.Disallowed();
         }
-
-        ruling.PermissiblePrivs = doorModel.PermissiblePrivsToOpen;
+        
         ruling.IsAllowed = ruling.ActingUserPrivs.Intersects(ruling.PermissiblePrivs);
         return ruling;
     }
@@ -422,6 +422,7 @@ public class RestrictionService
         var ruling = new CastleActionRuling();
         ruling.TargetPrefabGUID = objectPrefabGUID;
         ruling.Action = RestrictedCastleActions.RenameObject;
+        ruling.PermissiblePrivs = PermissiblePrivsTo_RenameObject;
         HydrateRuling(ref ruling, actingUser, castleModel);
 
         if (ruling.IsCastleWithoutOwner)
@@ -439,8 +440,7 @@ public class RestrictionService
             _antiCheatService.Detected_NaughtyNamer(actingUser);
             return ruling.Disallowed();
         }
-
-        ruling.PermissiblePrivs = PermissiblePrivsTo_RenameObject;
+        
         ruling.IsAllowed = ruling.ActingUserPrivs.Intersects(ruling.PermissiblePrivs);
         return ruling;
     }
@@ -482,6 +482,7 @@ public class RestrictionService
         var ruling = new CastleActionRuling();
         ruling.Action = action;
         ruling.TargetPrefabGUID = coffinPrefabGUID;
+        ruling.PermissiblePrivs = PermissiblePrivs_ForServantAction(action);
         HydrateRuling(ref ruling, actingUser, castleModel);
 
         if (ruling.IsCastleWithoutOwner)
@@ -498,8 +499,7 @@ public class RestrictionService
         {
             return ruling.Disallowed();
         }
-
-        ruling.PermissiblePrivs = PermissiblePrivs_ForServantAction(action);
+        
         ruling.IsAllowed = ruling.ActingUserPrivs.Intersects(ruling.PermissiblePrivs);
         return ruling;
     }
@@ -580,6 +580,7 @@ public class RestrictionService
         var ruling = new CastleActionRuling();
         ruling.Action = RestrictedCastleActions.ServantRename;
         ruling.TargetPrefabGUID = coffinPrefabGUID;
+        ruling.PermissiblePrivs = PermissiblePrivsTo_ServantRename;
         HydrateRuling(ref ruling, actingUser, castleModel);
 
         if (ruling.IsCastleWithoutOwner)
@@ -597,8 +598,7 @@ public class RestrictionService
             _antiCheatService.Detected_NaughtyNamer(actingUser);
             return ruling.Disallowed();
         }
-
-        ruling.PermissiblePrivs = PermissiblePrivsTo_ServantRename;
+        
         ruling.IsAllowed = ruling.ActingUserPrivs.Intersects(ruling.PermissiblePrivs);
         return ruling;
     }
@@ -645,6 +645,7 @@ public class RestrictionService
         var ruling = new CastleActionRuling();
         ruling.Action = RestrictedCastleActions.ServantGearChange;
         ruling.TargetPrefabGUID = servantPrefabGUID;
+        ruling.PermissiblePrivs = PermissiblePrivsTo_ServantGearChange;
         HydrateRuling(ref ruling, actingUser, castleModel);
 
         if (ruling.IsCastleWithoutOwner)
@@ -662,7 +663,6 @@ public class RestrictionService
             return ruling.Disallowed();
         }
 
-        ruling.PermissiblePrivs = PermissiblePrivsTo_ServantGearChange;
         ruling.IsAllowed = ruling.ActingUserPrivs.Intersects(ruling.PermissiblePrivs);
         return ruling;
     }
