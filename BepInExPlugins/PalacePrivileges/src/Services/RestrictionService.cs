@@ -224,6 +224,102 @@ public class RestrictionService
 
     #endregion
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    #region Build
+
+    private CastlePrivileges PermissiblePrivsTo_Build = new()
+    {
+        Build = BuildPrivs.UnlistedTBD,
+    };
+
+    public CastleActionRuling ValidateAction_BuildStartEdit(
+        Entity actingCharacter,
+        Entity objectToEdit,
+        CastleHeartConnection castleHeartConnection
+    )
+    {
+        var ruling = Internal_ValidateAction_Build(actingCharacter, objectToEdit, castleHeartConnection);
+        _rulingLoggerService.LogRuling(ruling);
+        return ruling;
+    }
+
+    public CastleActionRuling ValidateAction_BuildDismantle(
+        Entity actingCharacter,
+        Entity objectToEdit,
+        CastleHeartConnection castleHeartConnection
+    )
+    {
+        var ruling = Internal_ValidateAction_Build(actingCharacter, objectToEdit, castleHeartConnection);
+        _rulingLoggerService.LogRuling(ruling);
+        return ruling;
+    }
+
+    public CastleActionRuling ValidateAction_BuildWallpaper(
+        Entity actingCharacter,
+        Entity objectToEdit,
+        CastleHeartConnection castleHeartConnection
+    )
+    {
+        var ruling = Internal_ValidateAction_Build(actingCharacter, objectToEdit, castleHeartConnection);
+        _rulingLoggerService.LogRuling(ruling);
+        return ruling;
+    }
+
+    public CastleActionRuling ValidateAction_BuildSetVariation(
+        Entity actingCharacter,
+        Entity objectToEdit,
+        CastleHeartConnection castleHeartConnection
+    )
+    {
+        var ruling = Internal_ValidateAction_Build(actingCharacter, objectToEdit, castleHeartConnection);
+        _rulingLoggerService.LogRuling(ruling);
+        return ruling;
+    }
+
+
+    private CastleActionRuling Internal_ValidateAction_Build(
+        Entity actingCharacter,
+        Entity objectToEdit,
+        CastleHeartConnection castleHeartConnection
+    )
+    {
+        if (!_userService.TryGetUserModel_ForCharacter(actingCharacter, out var actingUser))
+        {
+            return CastleActionRuling.ExceptionMissingData;
+        }
+
+        if (!_castleService.TryGetCastleModel(castleHeartConnection.CastleHeartEntity._Entity, out var castleModel))
+        {
+            return CastleActionRuling.ExceptionMissingData;
+        }
+
+        if (!_entityManager.TryGetComponentData<PrefabGUID>(objectToEdit, out var objectPrefabGUID))
+        {
+            return CastleActionRuling.ExceptionMissingData;
+        }
+
+        var ruling = new CastleActionRuling();
+        ruling.TargetPrefabGUID = objectPrefabGUID;
+        ruling.Action = RestrictedCastleActions.Build;
+        HydrateRuling(ref ruling, actingUser, castleModel);
+
+        if (ruling.IsOwnerOfCastle)
+        {
+            return ruling.Allowed();
+        }
+
+        if (!ruling.IsSameClan)
+        {
+            _antiCheatService.Detected_BadBuilder(actingUser);
+            return ruling.Disallowed();
+        }
+
+        ruling.PermissiblePrivs = PermissiblePrivsTo_Build;
+        ruling.IsAllowed = ruling.ActingUserPrivs.Intersects(ruling.PermissiblePrivs);
+        return ruling;
+    }
+
+    #endregion
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     #region OpenOrCloseDoor
 
     public CastleActionRuling ValidateAction_OpenOrCloseDoor(Entity actingCharacter, Entity door)

@@ -190,7 +190,7 @@ public enum BuildPrivs : long
     None = 0,
     All = -1,
     UnlistedTBD = 1,
-    UseTreasury = 1 << 1,
+    UseTreasury = 1 << 1, // BuildResourceConsumeType ?
     
 }
 
@@ -273,6 +273,7 @@ public enum PrisonerPrivs : long
     ExtractBlood = 1 << 2,
     FeedSafeFood = 1 << 3,
     FeedUnSafeFood = 1 << 4,
+    UseTreasury = 1 << 5,
 }
 
 [Flags]

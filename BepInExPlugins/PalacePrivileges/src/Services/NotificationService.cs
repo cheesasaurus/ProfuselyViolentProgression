@@ -87,6 +87,9 @@ public class NotificationService
             case RestrictedCastleActions.CastleHeartDisableDefense:
                 var hoursRemaining = 48; // todo: actual
                 return $"Cannot key the castle of recent clanmates. {hoursRemaining} hours remaining.";
+
+            case RestrictedCastleActions.Build:
+                return $"{ownerName} has not given you permission to build.";
             
             case RestrictedCastleActions.OpenDoor:
             case RestrictedCastleActions.CloseDoor:

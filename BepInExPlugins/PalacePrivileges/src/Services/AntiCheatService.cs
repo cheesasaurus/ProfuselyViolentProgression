@@ -17,6 +17,11 @@ public class AntiCheatService
         _log.LogWarning($"DoorLockPicker detected: steam:{actingUser.PlatformId} character:{actingUser.CharacterName}");
     }
 
+    public void Detected_BadBuilder(UserModel actingUser)
+    {
+        _log.LogWarning($"BadBuilder detected: steam:{actingUser.PlatformId} character:{actingUser.CharacterName}");
+    }
+
     public void Detected_NaughtyNamer(UserModel actingUser)
     {
         _log.LogWarning($"NaughtyNamer detected: steam:{actingUser.PlatformId} character:{actingUser.CharacterName}");

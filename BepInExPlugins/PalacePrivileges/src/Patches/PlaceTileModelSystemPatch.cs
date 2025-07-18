@@ -1,6 +1,8 @@
 using HarmonyLib;
 using ProfuselyViolentProgression.Core.Utilities;
+using ProfuselyViolentProgression.PalacePrivileges.Models;
 using ProjectM;
+using ProjectM.CastleBuilding;
 using ProjectM.Network;
 using Unity.Collections;
 using Unity.Entities;
@@ -46,7 +48,11 @@ public unsafe class PlaceTileModelSystemPatch
 
         for (var i = 0; i < entities.Length; i++)
         {
+            LogUtil.LogDebug("BuildTile");
             // todo: implement
+            // need to relate to the castle somehow
+
+            // need to be sure we're not blocking explosives, golems, etc
         }
     }
 
@@ -58,32 +64,47 @@ public unsafe class PlaceTileModelSystemPatch
 
         for (var i = 0; i < entities.Length; i++)
         {
-            // todo: implement
+            if (!TryGetDataForExistingTileModel(tmEvents[i].Target, ref networkIdToEntityMap, out var tileModel, out var castleHeartConnection))
+            {
+                continue;
+            }
+
+            var character = fromCharacters[i].Character;
+            var ruling = Core.RestrictionService.ValidateAction_BuildStartEdit(character, tileModel, castleHeartConnection);
+            EnforceRuling(entities[i], character, ruling);
         }
     }
 
     private static void ProcessEvents_CancelEdit(EntityQuery query, ref NetworkIdLookupMap networkIdToEntityMap)
     {
+        // no restrictions on canceling editing
+
+        /*
         var entities = query.ToEntityArray(Allocator.Temp);
         var fromCharacters = query.ToComponentDataArray<FromCharacter>(Allocator.Temp);
         var tmEvents = query.ToComponentDataArray<CancelEditTileModelEvent>(Allocator.Temp);
 
         for (var i = 0; i < entities.Length; i++)
         {
-            // todo: implement
+            LogUtil.LogDebug("CancelEdit");
         }
+        */
     }
 
     private static void ProcessEvents_MoveTile(EntityQuery query, ref NetworkIdLookupMap networkIdToEntityMap)
     {
+        // Restrictions for this are covered by StartEdit and BuildTile.
+
+        /*
         var entities = query.ToEntityArray(Allocator.Temp);
         var fromCharacters = query.ToComponentDataArray<FromCharacter>(Allocator.Temp);
         var tmEvents = query.ToComponentDataArray<MoveTileModelEvent>(Allocator.Temp);
 
         for (var i = 0; i < entities.Length; i++)
         {
-            // todo: implement
+            LogUtil.LogDebug("MoveTile");
         }
+        */
     }
 
     private static void ProcessEvents_DismantleTile(EntityQuery query, ref NetworkIdLookupMap networkIdToEntityMap)
@@ -94,20 +115,31 @@ public unsafe class PlaceTileModelSystemPatch
 
         for (var i = 0; i < entities.Length; i++)
         {
-            // todo: implement
+            if (!TryGetDataForExistingTileModel(tmEvents[i].Target, ref networkIdToEntityMap, out var tileModel, out var castleHeartConnection))
+            {
+                continue;
+            }
+
+            var character = fromCharacters[i].Character;
+            var ruling = Core.RestrictionService.ValidateAction_BuildDismantle(character, tileModel, castleHeartConnection);
+            EnforceRuling(entities[i], character, ruling);
         }
     }
 
     private static void ProcessEvents_RepairTile(EntityQuery query, ref NetworkIdLookupMap networkIdToEntityMap)
     {
+        // no restrictions on repairing
+
+        /*
         var entities = query.ToEntityArray(Allocator.Temp);
         var fromCharacters = query.ToComponentDataArray<FromCharacter>(Allocator.Temp);
         var tmEvents = query.ToComponentDataArray<RepairTileModelEvent>(Allocator.Temp);
 
         for (var i = 0; i < entities.Length; i++)
         {
-            // todo: implement
+            LogUtil.LogDebug("RepairTile");
         }
+        */
     }
 
     private static void ProcessEvents_BuildWallpaper(EntityQuery query, ref NetworkIdLookupMap networkIdToEntityMap)
@@ -118,7 +150,14 @@ public unsafe class PlaceTileModelSystemPatch
 
         for (var i = 0; i < entities.Length; i++)
         {
-            // todo: implement
+            if (!TryGetDataForExistingTileModel(tmEvents[i].Target, ref networkIdToEntityMap, out var tileModel, out var castleHeartConnection))
+            {
+                continue;
+            }
+
+            var character = fromCharacters[i].Character;
+            var ruling = Core.RestrictionService.ValidateAction_BuildWallpaper(character, tileModel, castleHeartConnection);
+            EnforceRuling(entities[i], character, ruling);
         }
     }
 
@@ -130,29 +169,76 @@ public unsafe class PlaceTileModelSystemPatch
 
         for (var i = 0; i < entities.Length; i++)
         {
-            // todo: implement
+            LogUtil.LogDebug("SetVariation");
+            if (!TryGetDataForExistingTileModel(tmEvents[i].Target, ref networkIdToEntityMap, out var tileModel, out var castleHeartConnection))
+            {
+                continue;
+            }
+
+            var character = fromCharacters[i].Character;
+            var ruling = Core.RestrictionService.ValidateAction_BuildSetVariation(character, tileModel, castleHeartConnection);
+            EnforceRuling(entities[i], character, ruling);
         }
     }
-    
+
     private static void ProcessEvents_ConnectionChanged(EntityQuery query, ref NetworkIdLookupMap networkIdToEntityMap)
     {
+        // nothing to do... yet
+
+        /*
         var entities = query.ToEntityArray(Allocator.Temp);
         var tmEvents = query.ToComponentDataArray<UserConnectionChangedEvent>(Allocator.Temp);
 
         for (var i = 0; i < entities.Length; i++)
         {
-            // todo: implement
+            
         }
+        */
     }
 
     private static void ProcessEvents_AbilityCastFinished(EntityQuery query, ref NetworkIdLookupMap networkIdToEntityMap)
     {
+        // nothing to do... yet
+
+        /*
         var entities = query.ToEntityArray(Allocator.Temp);
         var abilityEvents = query.ToComponentDataArray<AbilityPreCastFinishedEvent>(Allocator.Temp);
 
         for (var i = 0; i < entities.Length; i++)
         {
-            // todo: implement
+            DebugUtil.LogPrefabGuid(abilityEvents[i].Ability);
+        }
+        */
+    }
+
+    private static bool TryGetDataForExistingTileModel(
+        NetworkId tileModelNetworkId,
+        ref NetworkIdLookupMap networkIdToEntityMap,
+        out Entity tileModelEntity,
+        out CastleHeartConnection castleHeartConnection
+    )
+    {
+        castleHeartConnection = default;
+
+        if (!networkIdToEntityMap.TryGetValue(tileModelNetworkId, out tileModelEntity))
+        {
+            return false;
+        }
+
+        if (!_entityManager.TryGetComponentData<CastleHeartConnection>(tileModelEntity, out castleHeartConnection))
+        {
+            return false;
+        }
+
+        return true;
+    }
+    
+    private static void EnforceRuling(Entity eventEntity, Entity character, CastleActionRuling ruling)
+    {
+        if (!ruling.IsAllowed)
+        {
+            Core.NotificationService.NotifyActionDenied(character, ref ruling);
+            _entityManager.DestroyEntity(eventEntity);
         }
     }
 

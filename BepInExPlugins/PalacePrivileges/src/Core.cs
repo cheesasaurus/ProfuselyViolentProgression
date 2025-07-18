@@ -15,6 +15,7 @@ public static class Core
     public static AntiCheatService AntiCheatService { get; private set; }
     public static CastleService CastleService { get; private set; }
     public static CastleDoorService CastleDoorService { get; private set; }
+    public static BuildingService BuildingService { get; private set; }
     public static PrivilegeParser PrivilegeParser { get; private set; }
     public static GlobalSettingsService GlobalSettingsService { get; private set; }
     public static CastlePrivilegesService CastlePrivilegesService { get; private set; }
@@ -33,6 +34,7 @@ public static class Core
         AntiCheatService = new(log);
         CastleService = new(UserService);
         CastleDoorService = new(CastleService);
+        BuildingService = new();
         PrivilegeParser = new();
 
         GlobalSettingsService = new(

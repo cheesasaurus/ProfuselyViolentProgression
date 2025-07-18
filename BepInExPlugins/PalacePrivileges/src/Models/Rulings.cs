@@ -13,14 +13,14 @@ public enum RestrictedCastleActions
     CastleHeartExpose,
     CastleHeartRemoveFuel,
     CastleHeartDisableDefense,
+    Build,
     OpenDoor,
     CloseDoor,
     RenameObject,
     ServantConvert,
     ServantTerminate,
     ServantRename,
-    ServantGearChange,
-    
+    ServantGearChange,        
 }
 
 

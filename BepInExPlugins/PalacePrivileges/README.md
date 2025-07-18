@@ -24,6 +24,7 @@ Some actions may only be performed by the owner. Clan members cannot be granted 
 - Abandoning the castle.
 - Exposing the castle heart.
 - Removing blood from the castle heart.
+- Relocating the castle.
 
 Recently-separated clan members cannot use keys on your castle heart.\
 (The exact timeframe can be configured by an admin. Default 48 hours.)
@@ -111,6 +112,7 @@ Privileges can be granted / ungranted / forbidden.
 `prisoners.extractBlood`
 `prisoners.feedSafeFood`
 `prisoners.feedUnsafeFood`
+`prisoners.useTreasury`
 
 ### Servant privileges
 `servants.all`
@@ -143,6 +145,7 @@ Privileges can be granted / ungranted / forbidden.
 `research.t2`
 `research.t3`
 `research.stygian`
+`research.useTreasury`
 
 ### Arena privileges
 `arena.all`

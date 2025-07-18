@@ -206,6 +206,7 @@ public class PrivilegeParser
         RegisterPrivs("prisoners.extractBlood", PrisonerPrivs.ExtractBlood);
         RegisterPrivs("prisoners.feedSafeFood", PrisonerPrivs.FeedSafeFood);
         RegisterPrivs("prisoners.feedUnSafeFood", PrisonerPrivs.FeedUnSafeFood);
+        RegisterPrivs("prisoners.useTreasury", PrisonerPrivs.FeedUnSafeFood);
 
         RegisterPrivs("servants.all", ServantPrivs.All);
         RegisterPrivs("servants.convert", ServantPrivs.Convert);
