@@ -75,6 +75,18 @@ public class NotificationService
 
         switch (ruling.Action)
         {
+            case RestrictedCastleActions.CastleHeartAbandon:
+                return $"Only the owner ({ownerName}) may abandon their castle.";
+
+            case RestrictedCastleActions.CastleHeartExpose:
+                return $"Only the owner ({ownerName}) may expose their castle.";
+
+            case RestrictedCastleActions.CastleHeartRemoveFuel:
+                return $"Only the owner ({ownerName}) may remove essence from their castle heart.";
+
+            case RestrictedCastleActions.CastleHeartDisableDefense:
+                var hoursRemaining = 48; // todo: actual
+                return $"Cannot key the castle of recent clanmates. {hoursRemaining} hours remaining.";
             
             case RestrictedCastleActions.OpenDoor:
             case RestrictedCastleActions.CloseDoor:

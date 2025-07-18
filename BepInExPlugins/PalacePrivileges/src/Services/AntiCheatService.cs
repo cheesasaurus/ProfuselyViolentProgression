@@ -14,12 +14,17 @@ public class AntiCheatService
 
     public void Detected_DoorLockPicker(UserModel actingUser)
     {
-        _log.LogWarning($"Lockpicker detected: steam:{actingUser.PlatformId} character:{actingUser.CharacterName}");
+        _log.LogWarning($"DoorLockPicker detected: steam:{actingUser.PlatformId} character:{actingUser.CharacterName}");
     }
 
     public void Detected_NaughtyNamer(UserModel actingUser)
     {
-        _log.LogWarning($"Naughty namer detected: steam:{actingUser.PlatformId} character:{actingUser.CharacterName}");
+        _log.LogWarning($"NaughtyNamer detected: steam:{actingUser.PlatformId} character:{actingUser.CharacterName}");
+    }
+
+    public void Detected_HeartFuelSiphoner(UserModel actingUser)
+    {
+        _log.LogWarning($"HeartFuelSiphoner detected: steam:{actingUser.PlatformId} character:{actingUser.CharacterName}");
     }
 
 }

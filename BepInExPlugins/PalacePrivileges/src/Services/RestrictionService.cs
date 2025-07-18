@@ -53,6 +53,68 @@ public class RestrictionService
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    #region CastleHeartRemoveFuel
+
+    public CastleActionRuling ValidateAction_CastleHeartRemoveFuel(
+        Entity actingCharacter,
+        Entity castleHeartEntity
+    )
+    {
+        var ruling = Internal_ValidateAction_CastleHeartRemoveFuel(actingCharacter, castleHeartEntity);
+        _rulingLoggerService.LogRuling(ruling);
+        return ruling;
+    }
+
+    private CastlePrivileges PermissiblePrivsTo_CastleHeartRemoveFuel = CastlePrivileges.None; // only owner; no privileges can be granted for this.
+
+    private CastleActionRuling Internal_ValidateAction_CastleHeartRemoveFuel(
+        Entity actingCharacter,
+        Entity castleHeartEntity
+    )
+    {
+        if (!_userService.TryGetUserModel_ForCharacter(actingCharacter, out var actingUser))
+        {
+            return CastleActionRuling.ExceptionMissingData;
+        }
+
+        if (!_castleService.TryGetCastleModel(castleHeartEntity, out var castleModel))
+        {
+            return CastleActionRuling.ExceptionMissingData;
+        }
+
+        if (!_entityManager.TryGetComponentData<PrefabGUID>(castleHeartEntity, out var castleHeartPrefabGUID))
+        {
+            return CastleActionRuling.ExceptionMissingData;
+        }
+
+        var ruling = new CastleActionRuling();
+        ruling.TargetPrefabGUID = castleHeartPrefabGUID;
+        ruling.Action = RestrictedCastleActions.CastleHeartRemoveFuel;
+        HydrateRuling(ref ruling, actingUser, castleModel);
+
+        if (ruling.IsCastleWithoutOwner)
+        {
+            return ruling.Allowed();
+        }
+
+        if (ruling.IsOwnerOfCastle)
+        {
+            return ruling.Allowed();
+        }
+
+        if (!ruling.IsSameClan)
+        {
+            _antiCheatService.Detected_HeartFuelSiphoner(actingUser);
+            return ruling.Disallowed();
+        }
+
+        ruling.PermissiblePrivs = PermissiblePrivsTo_CastleHeartRemoveFuel;
+        ruling.IsAllowed = ruling.ActingUserPrivs.Intersects(PermissiblePrivsTo_RenameObject);
+        return ruling;
+    }
+
+    #endregion
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     #region OpenOrCloseDoor
 
     public CastleActionRuling ValidateAction_OpenOrCloseDoor(Entity actingCharacter, Entity door)

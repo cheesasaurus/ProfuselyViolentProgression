@@ -6,7 +6,7 @@
 - [ ] Priv: `build.all` (allow/disallow everything)
 - [ ] Restrict: Abandoning the castle.
 - [ ] Restrict: Exposing the castle heart.
-- [ ] Restrict: Removing blood from the castle heart.
+- [x] Restrict: Removing blood from the castle heart.
 - [ ] Priv: `arena.zonePainting`
 - [ ] Priv: `lockbox`
 - [x] Priv: `servants.terminate`

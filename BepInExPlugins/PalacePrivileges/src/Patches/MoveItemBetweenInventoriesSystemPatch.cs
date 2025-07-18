@@ -136,8 +136,13 @@ public unsafe class MoveItemBetweenInventoriesSystemPatch
         MoveItemBetweenInventoriesEvent moveItemEvent
     )
     {
-        // todo: implement
-        LogUtil.LogDebug("moving item FROM castle heart.");
+        var character = fromCharacter.Character;
+        var ruling = Core.RestrictionService.ValidateAction_CastleHeartRemoveFuel(character, castleHeartEntity);
+        if (!ruling.IsAllowed)
+        {
+            Core.NotificationService.NotifyActionDenied(character, ref ruling);
+            _entityManager.DestroyEntity(eventEntity);
+        }
     }
 
 }

@@ -9,6 +9,10 @@ public enum RestrictedCastleActions
 {
     ExceptionMissingData,
     NotRestricted_SoDoNotCare,
+    CastleHeartAbandon,
+    CastleHeartExpose,
+    CastleHeartRemoveFuel,
+    CastleHeartDisableDefense,
     OpenDoor,
     CloseDoor,
     RenameObject,
