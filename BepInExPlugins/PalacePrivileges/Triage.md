@@ -10,7 +10,7 @@
 - [ ] Priv: `arena.zonePainting`
 - [ ] Priv: `lockbox`
 - [x] Priv: `servants.terminate`
-- [ ] Priv: `servants.gear`
+- [x] Priv: `servants.gear`
 - [ ] Priv: `prisoners.subdue` (moved to mvp for anticheat)
 - [ ] Priv: `prisoners.kill` (moved to mvp for anticheat)
 - [ ] Priv: `prisoners.extractBlood` (moved to mvp for anticheat)

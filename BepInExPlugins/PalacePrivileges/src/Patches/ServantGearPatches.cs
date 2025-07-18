@@ -1,24 +1,18 @@
-using System;
 using HarmonyLib;
-using HookDOTS.API.Attributes;
 using ProfuselyViolentProgression.Core.Utilities;
 using ProjectM;
-using ProjectM.CastleBuilding;
-using ProjectM.Gameplay.Systems;
 using ProjectM.Network;
-using Stunlock.Core;
 using Unity.Collections;
 using Unity.Entities;
-using Unity.Entities.UniversalDelegates;
 
 namespace ProfuselyViolentProgression.PalacePrivileges.Patches;
-
-// todo: dragging into servant slot from own equipment slot (not hotbar)
-// todo: dragging into own equipment slot (not hotbar) from servant slot
 
 [HarmonyPatch]
 public unsafe class ServantGearPatches
 {
+    private const bool SKIP_ORIGINAL_METHOD = false;
+    private const bool EXECUTE_ORIGINAL_METHOD = true;
+
     private static EntityManager _entityManager = WorldUtil.Game.EntityManager;
 
 
@@ -88,41 +82,44 @@ public unsafe class ServantGearPatches
             if (!ruling.IsAllowed)
             {
                 Core.NotificationService.NotifyActionDenied(character, ref ruling);
-                // todo: uncomment
-                //_entityManager.DestroyEntity(entities[i]);
+                _entityManager.DestroyEntity(entities[i]);
             }
 
         }
     }
 
-    // todo: doesn't run?
-    /*
-    [HarmonyPatch(typeof(EquipServantItemSystem), nameof(EquipServantItemSystem.OnUpdate))]
+    /// <summary>
+    /// EquipmentTransferSystem handles EquipmentToEquipmentTransferEvent.
+    /// For example, swapping equipped chest pieces between a player and a servant.
+    /// (even if one of the equip slots is empty)
+    /// </summary>
+    [HarmonyPatch(typeof(EquipmentTransferSystem), nameof(EquipmentTransferSystem.OnUpdate))]
     [HarmonyPrefix]
-    [EcsSystemUpdatePrefix(typeof(EquipServantItemSystem))]
-    public static void EquipServantItemSystem_OnUpdate_Prefix(EquipServantItemSystem __instance)
+    public static void EquipmentTransferSystem_OnUpdate_Prefix(EquipmentTransferSystem __instance)
     {
         if (!Core.IsInitialized)
         {
             return;
         }
 
-        var query = __instance._EventQuery;
+        var query = __instance._Query;
         var entities = query.ToEntityArray(Allocator.Temp);
         var fromCharacters = query.ToComponentDataArray<FromCharacter>(Allocator.Temp);
-        var equipEvents = query.ToComponentDataArray<EquipServantItemEvent>(Allocator.Temp);
+        var equipEvents = query.ToComponentDataArray<EquipmentToEquipmentTransferEvent>(Allocator.Temp);
 
         var networkIdToEntityMap = Core.NetworkIdService.NetworkIdToEntityMap();
 
         for (var i = 0; i < entities.Length; i++)
         {
-            LogUtil.LogDebug("Doing the thing");
             var ev = equipEvents[i];
 
+            // dragging from player slot to servant slot: toEntity is the servant.
+            // dragging from servant slot to player slot: toEntity is the servant.
+            // (yes, in both cases it is the servant.)
             if (!networkIdToEntityMap.TryGetValue(ev.ToEntity, out var servant))
             {
                 continue;
-            }
+            }            
 
             var character = fromCharacters[i].Character;
             var ruling = Core.RestrictionService.ValidateAction_ServantGearChange(character, servant);
@@ -131,65 +128,8 @@ public unsafe class ServantGearPatches
                 Core.NotificationService.NotifyActionDenied(character, ref ruling);
                 _entityManager.DestroyEntity(entities[i]);
             }
-
-        }
-    }
-    */
-
-    // this does not fire for servants.
-    // EquipItemSystem covers the case of directly trying to equip an item from a player's inventory.
-    // "directly" meaning via a hotkey / right clicking the item.
-    // It does not cover the case of dragging an item into a designated equip slot.
-    //[HarmonyPatch(typeof(EquipItemSystem), nameof(EquipItemSystem.OnUpdate))]
-    //[HarmonyPrefix]
-    public static void EquipItemSystem_OnUpdate_Prefix(EquipItemSystem __instance)
-    {
-        if (!Core.IsInitialized)
-        {
-            return;
         }
 
-        var query = __instance.__query_1850505309_0;
-        var entities = query.ToEntityArray(Allocator.Temp);
-        var equipItemEvents = query.ToComponentDataArray<EquipItemEvent>(Allocator.Temp);
-        var fromCharacters = query.ToComponentDataArray<FromCharacter>(Allocator.Temp);
-
-        for (var i = 0; i < entities.Length; i++)
-        {
-            var character = fromCharacters[i].Character;
-            var fromSlotIndex = equipItemEvents[i].SlotIndex;
-
-            //DebugUtil.LogComponentTypes(entities[0]);
-        }
-    }
-
-    // this does not fire for servants
-    //[HarmonyPatch(typeof(EquipItemFromInventorySystem), nameof(EquipItemFromInventorySystem.OnUpdate))]
-    //[HarmonyPrefix]
-    public static void EquipItemFromInventorySystem_OnUpdate_Prefix(EquipItemFromInventorySystem __instance)
-    {
-        if (!Core.IsInitialized)
-        {
-            return;
-        }
-
-        var entities = __instance._Query.ToEntityArray(Allocator.Temp);
-        var equipItemFromInventoryEvents = __instance._Query.ToComponentDataArray<EquipItemFromInventoryEvent>(Allocator.Temp);
-        var fromCharacters = __instance._Query.ToComponentDataArray<FromCharacter>(Allocator.Temp);
-
-        // this variable probably seems weird at first glance.
-        // its used to cache some hidden lookups.
-        // TODO: handle the caching better. extract things to a service
-        //var networkIdToEntityMap = NetworkIdLookupMap._NetworkIdToEntityMap;
-
-        for (var i = 0; i < entities.Length; i++)
-        {
-            var character = fromCharacters[i].Character;
-            var fromSlotIndex = equipItemFromInventoryEvents[i].SlotIndex;
-            var inventoryNetworkId = equipItemFromInventoryEvents[i].FromInventory;
-
-            DebugUtil.LogComponentTypes(entities[i]);
-        }
     }
 
 }

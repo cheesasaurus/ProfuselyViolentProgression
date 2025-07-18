@@ -438,8 +438,7 @@ public class RestrictionService
 
         if (ruling.IsOwnerOfCastle)
         {
-            // todo: uncomment after testing
-            // return ruling.Allowed();
+            return ruling.Allowed();
         }
 
         if (!ruling.IsSameClan)
