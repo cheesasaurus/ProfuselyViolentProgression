@@ -1,14 +1,10 @@
 using HarmonyLib;
-using HookDOTS.API.Attributes;
 using ProfuselyViolentProgression.Core.Utilities;
 using ProfuselyViolentProgression.PalacePrivileges.Models;
-using ProjectM;
-using ProjectM.CastleBuilding;
 using ProjectM.Gameplay.Systems;
 using ProjectM.Network;
 using Unity.Collections;
 using Unity.Entities;
-using Unity.Entities.UniversalDelegates;
 
 namespace ProfuselyViolentProgression.PalacePrivileges.Patches;
 
