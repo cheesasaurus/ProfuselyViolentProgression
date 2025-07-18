@@ -57,10 +57,48 @@ public unsafe class ServantGearPatches
         }
     }
 
+    [HarmonyPatch(typeof(UnEquipServantItemSystem), nameof(UnEquipServantItemSystem.OnUpdate))]
+    [HarmonyPrefix]
+    public static void UnEquipServantItemSystem_OnUpdate_Prefix(UnEquipServantItemSystem __instance)
+    {
+        if (!Core.IsInitialized)
+        {
+            return;
+        }
+
+        var query = __instance._Query;
+        var entities = query.ToEntityArray(Allocator.Temp);
+        var fromCharacters = query.ToComponentDataArray<FromCharacter>(Allocator.Temp);
+        var equipEvents = query.ToComponentDataArray<UnequipServantItemEvent>(Allocator.Temp);
+
+        var networkIdToEntityMap = Core.NetworkIdService.NetworkIdToEntityMap();
+
+        for (var i = 0; i < entities.Length; i++)
+        {
+            var ev = equipEvents[i];
+
+            if (!networkIdToEntityMap.TryGetValue(ev.FromEntity, out var servant))
+            {
+                continue;
+            }
+
+            var character = fromCharacters[i].Character;
+            var ruling = Core.RestrictionService.ValidateAction_ServantGearChange(character, servant);
+            if (!ruling.IsAllowed)
+            {
+                Core.NotificationService.NotifyActionDenied(character, ref ruling);
+                // todo: uncomment
+                //_entityManager.DestroyEntity(entities[i]);
+            }
+
+        }
+    }
+
     // todo: doesn't run?
     /*
     [HarmonyPatch(typeof(EquipServantItemSystem), nameof(EquipServantItemSystem.OnUpdate))]
     [HarmonyPrefix]
+    [EcsSystemUpdatePrefix(typeof(EquipServantItemSystem))]
     public static void EquipServantItemSystem_OnUpdate_Prefix(EquipServantItemSystem __instance)
     {
         if (!Core.IsInitialized)
@@ -96,41 +134,60 @@ public unsafe class ServantGearPatches
         }
     }
     */
-    
-    [HarmonyPatch(typeof(UnEquipServantItemSystem), nameof(UnEquipServantItemSystem.OnUpdate))]
-    [HarmonyPrefix]
-    public static void UnEquipServantItemSystem_OnUpdate_Prefix(UnEquipServantItemSystem __instance)
+
+    // this does not fire for servants.
+    // EquipItemSystem covers the case of directly trying to equip an item from a player's inventory.
+    // "directly" meaning via a hotkey / right clicking the item.
+    // It does not cover the case of dragging an item into a designated equip slot.
+    //[HarmonyPatch(typeof(EquipItemSystem), nameof(EquipItemSystem.OnUpdate))]
+    //[HarmonyPrefix]
+    public static void EquipItemSystem_OnUpdate_Prefix(EquipItemSystem __instance)
     {
         if (!Core.IsInitialized)
         {
             return;
         }
 
-        var query = __instance._Query;
+        var query = __instance.__query_1850505309_0;
         var entities = query.ToEntityArray(Allocator.Temp);
+        var equipItemEvents = query.ToComponentDataArray<EquipItemEvent>(Allocator.Temp);
         var fromCharacters = query.ToComponentDataArray<FromCharacter>(Allocator.Temp);
-        var equipEvents = query.ToComponentDataArray<UnequipServantItemEvent>(Allocator.Temp);
-
-        var networkIdToEntityMap = Core.NetworkIdService.NetworkIdToEntityMap();
 
         for (var i = 0; i < entities.Length; i++)
         {
-            var ev = equipEvents[i];
-
-            if (!networkIdToEntityMap.TryGetValue(ev.FromEntity, out var servant))
-            {
-                continue;
-            }
-
             var character = fromCharacters[i].Character;
-            var ruling = Core.RestrictionService.ValidateAction_ServantGearChange(character, servant);
-            if (!ruling.IsAllowed)
-            {
-                Core.NotificationService.NotifyActionDenied(character, ref ruling);
-                // todo: uncomment
-                //_entityManager.DestroyEntity(entities[i]);
-            }
+            var fromSlotIndex = equipItemEvents[i].SlotIndex;
 
+            //DebugUtil.LogComponentTypes(entities[0]);
+        }
+    }
+
+    // this does not fire servants
+    //[HarmonyPatch(typeof(EquipItemFromInventorySystem), nameof(EquipItemFromInventorySystem.OnUpdate))]
+    //[HarmonyPrefix]
+    public static void EquipItemFromInventorySystem_OnUpdate_Prefix(EquipItemFromInventorySystem __instance)
+    {
+        if (!Core.IsInitialized)
+        {
+            return;
+        }
+
+        var entities = __instance._Query.ToEntityArray(Allocator.Temp);
+        var equipItemFromInventoryEvents = __instance._Query.ToComponentDataArray<EquipItemFromInventoryEvent>(Allocator.Temp);
+        var fromCharacters = __instance._Query.ToComponentDataArray<FromCharacter>(Allocator.Temp);
+
+        // this variable probably seems weird at first glance.
+        // its used to cache some hidden lookups.
+        // TODO: handle the caching better. extract things to a service
+        //var networkIdToEntityMap = NetworkIdLookupMap._NetworkIdToEntityMap;
+
+        for (var i = 0; i < entities.Length; i++)
+        {
+            var character = fromCharacters[i].Character;
+            var fromSlotIndex = equipItemFromInventoryEvents[i].SlotIndex;
+            var inventoryNetworkId = equipItemFromInventoryEvents[i].FromInventory;
+
+            DebugUtil.LogComponentTypes(entities[i]);
         }
     }
 

@@ -35,6 +35,7 @@
   - check how arena does it.
   - maybe a special export string, with a command like `.castlePrivs import asdfklkjasdfjkhasdflongassstringbutnotlongerthanthemessagesizelimit`
   - same hosting strategy as CastleHeartPolice.
+  - a chat command to export from the game wouldn't be usable, because the client doesn't have a way to copy/paste from messages.
 - [ ] Priv: `craft.accessStations`
 - [ ] Priv: `musicbox`
 - [x] Priv: `servants.convert`

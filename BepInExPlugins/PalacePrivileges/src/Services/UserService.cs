@@ -8,7 +8,7 @@ namespace ProfuselyViolentProgression.PalacePrivileges.Services;
 
 public class UserService
 {
-    private EntityManager _entityManager = WorldUtil.Server.EntityManager;
+    private EntityManager _entityManager = WorldUtil.Server.EntityManager;    
 
     public bool TryGetUserModel_ForCharacter(Entity characterEntity, out UserModel userModel)
     {
@@ -18,6 +18,11 @@ public class UserService
             return false;
         }
         return TryGetUserModel(playerCharacter.UserEntity, out userModel);
+    }
+
+    public bool TryGetUserModel_ForFromCharacter(FromCharacter fromCharacter, out UserModel userModel)
+    {
+        return TryGetUserModel(fromCharacter.User, out userModel);
     }
 
     public bool TryGetUserModel_ForOwnedEntity(Entity ownedEntity, out UserModel userModel)
