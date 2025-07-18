@@ -211,6 +211,7 @@ public enum ResearchPrivs : long
     DeskTier2 = 1 << 1,
     DeskTier3 = 1 << 2,
     AltarStygian = 1 << 3,
+    UseTreasury = 1 << 4,
 }
 
 [Flags]

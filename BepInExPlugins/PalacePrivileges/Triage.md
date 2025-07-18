@@ -18,7 +18,7 @@
 - [ ] Priv: `prisoners.feedSafeFood` (anticipating to implement alongside feedUnsafeFood)
 - [ ] Privs: `tp.red` `tp.yellow` `tp.purple` `tp.blue` `tp.allSmall`
 - [ ] Privs: `tp.waygate` `tp.waygateIn` `tp.waygateOut`
-- [ ] Priv: `craft.useTreasury` (crafting station AND from inventory. should apply to horse station for elixers. and maybe research.)
+- [ ] Priv: `craft.useTreasury` (crafting station AND from inventory. should apply to horse station for elixers.)
 - [x] Priv: `servants.rename`
 - [x] Priv: `renameObjects`
 - [ ] Priv: `redist.edit`
@@ -41,6 +41,7 @@
 - [x] Priv: `servants.convert`
 - [ ] Priv: `research.t1` `research.t2` `research.t3`
 - [ ] Priv: `research.stygian`
+- [ ] Priv: `research.useTreasury`
 - [ ] Priv: `arena.editRules` (not sure if this is server or clientside)
 - [ ] Priv: `arena.startContest`
 - [ ] Priv: `redist.quickSend`

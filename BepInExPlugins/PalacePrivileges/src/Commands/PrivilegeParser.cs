@@ -200,29 +200,29 @@ public class PrivilegeParser
         RegisterPrivs("craft.accessStations", CraftPrivs.AccessStations); // planned feature
         RegisterPrivs("craft.toggleRecipes", CraftPrivs.ToggleRecipes); // planned feature
 
-        RegisterPrivs("prisoners.all", PrisonerPrivs.All);  // planned feature
-        RegisterPrivs("prisoners.subdue", PrisonerPrivs.Subdue);  // planned feature
-        RegisterPrivs("prisoners.kill", PrisonerPrivs.Kill);  // planned feature
-        RegisterPrivs("prisoners.extractBlood", PrisonerPrivs.ExtractBlood); // planned feature
-        RegisterPrivs("prisoners.feedSafeFood", PrisonerPrivs.FeedSafeFood); // planned feature
-        RegisterPrivs("prisoners.feedUnSafeFood", PrisonerPrivs.FeedUnSafeFood); // planned feature
+        RegisterPrivs("prisoners.all", PrisonerPrivs.All);
+        RegisterPrivs("prisoners.subdue", PrisonerPrivs.Subdue);
+        RegisterPrivs("prisoners.kill", PrisonerPrivs.Kill);
+        RegisterPrivs("prisoners.extractBlood", PrisonerPrivs.ExtractBlood);
+        RegisterPrivs("prisoners.feedSafeFood", PrisonerPrivs.FeedSafeFood);
+        RegisterPrivs("prisoners.feedUnSafeFood", PrisonerPrivs.FeedUnSafeFood);
 
-        RegisterPrivs("servants.all", ServantPrivs.All); // planned feature
-        RegisterPrivs("servants.convert", ServantPrivs.Convert); // planned feature
-        RegisterPrivs("servants.terminate", ServantPrivs.Terminate); // planned feature
-        RegisterPrivs("servants.gear", ServantPrivs.Gear); // planned feature
-        RegisterPrivs("servants.rename", ServantPrivs.Rename); // planned feature
+        RegisterPrivs("servants.all", ServantPrivs.All);
+        RegisterPrivs("servants.convert", ServantPrivs.Convert);
+        RegisterPrivs("servants.terminate", ServantPrivs.Terminate);
+        RegisterPrivs("servants.gear", ServantPrivs.Gear);
+        RegisterPrivs("servants.rename", ServantPrivs.Rename);
         RegisterPrivs("servants.throne", ServantPrivs.Throne); // planned feature
 
-        RegisterPrivs("tp.all", TeleporterPrivs.All); // planned feature
-        RegisterPrivs("tp.waygate", TeleporterPrivs.Waygate); // planned feature
-        RegisterPrivs("tp.waygateOut", TeleporterPrivs.WaygateOut); // planned feature
-        RegisterPrivs("tp.waygateIn", TeleporterPrivs.WaygateIn); // planned feature
-        RegisterPrivs("tp.red", TeleporterPrivs.Red); // planned feature
-        RegisterPrivs("tp.yellow", TeleporterPrivs.Yellow); // planned feature
-        RegisterPrivs("tp.purple", TeleporterPrivs.Purple); // planned feature
-        RegisterPrivs("tp.blue", TeleporterPrivs.Blue); // planned feature
-        RegisterPrivs("tp.allSmall", TeleporterPrivs.AllSmall); // planned feature
+        RegisterPrivs("tp.all", TeleporterPrivs.All);
+        RegisterPrivs("tp.waygate", TeleporterPrivs.Waygate);
+        RegisterPrivs("tp.waygateOut", TeleporterPrivs.WaygateOut);
+        RegisterPrivs("tp.waygateIn", TeleporterPrivs.WaygateIn);
+        RegisterPrivs("tp.red", TeleporterPrivs.Red);
+        RegisterPrivs("tp.yellow", TeleporterPrivs.Yellow);
+        RegisterPrivs("tp.purple", TeleporterPrivs.Purple);
+        RegisterPrivs("tp.blue", TeleporterPrivs.Blue);
+        RegisterPrivs("tp.allSmall", TeleporterPrivs.AllSmall);
 
         RegisterPrivs("redist.all", RedistributionPrivs.All); // planned feature
         RegisterPrivs("redist.quickSend", RedistributionPrivs.QuickSend); // planned feature
@@ -239,6 +239,7 @@ public class PrivilegeParser
         RegisterPrivs("research.t2", ResearchPrivs.DeskTier2); // planned feature
         RegisterPrivs("research.t3", ResearchPrivs.DeskTier3); // planned feature
         RegisterPrivs("research.stygian", ResearchPrivs.AltarStygian); // planned feature
+        RegisterPrivs("research.useTreasury", ResearchPrivs.UseTreasury); // planned feature
 
         RegisterPrivs("doors.all", DoorPrivs.All);
         RegisterPrivs("doors.servantLocked", DoorPrivs.ServantLocked);
