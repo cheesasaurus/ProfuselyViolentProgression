@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using BepInEx.Logging;
@@ -14,6 +15,7 @@ namespace ProfuselyViolentProgression.PalacePrivileges.Services;
 public class RestrictionService
 {
     ManualLogSource _log;
+    GlobalSettingsService _globalSettingsService;
     CastlePrivilegesService _castlePrivilegesService;
     UserService _userService;
     AntiCheatService _antiCheatService;
@@ -24,6 +26,7 @@ public class RestrictionService
 
     public RestrictionService(
         ManualLogSource log,
+        GlobalSettingsService globalSettingsService,
         CastlePrivilegesService castlePrivilegesService,
         UserService userService,
         AntiCheatService antiCheatService,
@@ -33,6 +36,7 @@ public class RestrictionService
     )
     {
         _log = log;
+        _globalSettingsService = globalSettingsService;
         _castlePrivilegesService = castlePrivilegesService;
         _userService = userService;
         _antiCheatService = antiCheatService;
@@ -52,6 +56,128 @@ public class RestrictionService
         ruling.ActingUserPrivs = _castlePrivilegesService.OverallPrivilegesForActingPlayerInClan(castleModel.Owner.PlatformId, actingUser.PlatformId);
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    #region CastleHeartAbandon
+
+    public CastleActionRuling ValidateAction_CastleHeartAbandon(
+        Entity actingCharacter,
+        Entity castleHeartEntity
+    )
+    {
+        var ruling = Internal_ValidateAction_CastleHeartAbandon(actingCharacter, castleHeartEntity);
+        _rulingLoggerService.LogRuling(ruling);
+        return ruling;
+    }
+
+    private CastlePrivileges PermissiblePrivsTo_CastleHeartAbandon = CastlePrivileges.None; // only owner; no privileges can be granted for this.
+
+    private CastleActionRuling Internal_ValidateAction_CastleHeartAbandon(
+        Entity actingCharacter,
+        Entity castleHeartEntity
+    )
+    {
+        if (!_userService.TryGetUserModel_ForCharacter(actingCharacter, out var actingUser))
+        {
+            return CastleActionRuling.ExceptionMissingData;
+        }
+
+        if (!_castleService.TryGetCastleModel(castleHeartEntity, out var castleModel))
+        {
+            return CastleActionRuling.ExceptionMissingData;
+        }
+
+        if (!_entityManager.TryGetComponentData<PrefabGUID>(castleHeartEntity, out var castleHeartPrefabGUID))
+        {
+            return CastleActionRuling.ExceptionMissingData;
+        }
+
+        var ruling = new CastleActionRuling();
+        ruling.TargetPrefabGUID = castleHeartPrefabGUID;
+        ruling.Action = RestrictedCastleActions.CastleHeartAbandon;
+        HydrateRuling(ref ruling, actingUser, castleModel);
+
+        if (ruling.IsCastleWithoutOwner)
+        {
+            return ruling.Allowed();
+        }
+
+        if (ruling.IsOwnerOfCastle)
+        {
+            return ruling.Allowed();
+        }
+
+        if (!ruling.IsSameClan)
+        {
+            return ruling.Disallowed();
+        }
+
+        ruling.PermissiblePrivs = PermissiblePrivsTo_CastleHeartAbandon;
+        ruling.IsAllowed = ruling.ActingUserPrivs.Intersects(ruling.PermissiblePrivs);
+        return ruling;
+    }
+
+    #endregion
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    #region CastleHeartExpose
+
+    public CastleActionRuling ValidateAction_CastleHeartExpose(
+        Entity actingCharacter,
+        Entity castleHeartEntity
+    )
+    {
+        var ruling = Internal_ValidateAction_CastleHeartExpose(actingCharacter, castleHeartEntity);
+        _rulingLoggerService.LogRuling(ruling);
+        return ruling;
+    }
+
+    private CastlePrivileges PermissiblePrivsTo_CastleHeartExpose = CastlePrivileges.None; // only owner; no privileges can be granted for this.
+
+    private CastleActionRuling Internal_ValidateAction_CastleHeartExpose(
+        Entity actingCharacter,
+        Entity castleHeartEntity
+    )
+    {
+        if (!_userService.TryGetUserModel_ForCharacter(actingCharacter, out var actingUser))
+        {
+            return CastleActionRuling.ExceptionMissingData;
+        }
+
+        if (!_castleService.TryGetCastleModel(castleHeartEntity, out var castleModel))
+        {
+            return CastleActionRuling.ExceptionMissingData;
+        }
+
+        if (!_entityManager.TryGetComponentData<PrefabGUID>(castleHeartEntity, out var castleHeartPrefabGUID))
+        {
+            return CastleActionRuling.ExceptionMissingData;
+        }
+
+        var ruling = new CastleActionRuling();
+        ruling.TargetPrefabGUID = castleHeartPrefabGUID;
+        ruling.Action = RestrictedCastleActions.CastleHeartExpose;
+        HydrateRuling(ref ruling, actingUser, castleModel);
+
+        if (ruling.IsCastleWithoutOwner)
+        {
+            return ruling.Allowed();
+        }
+
+        if (ruling.IsOwnerOfCastle)
+        {
+            return ruling.Allowed();
+        }
+
+        if (!ruling.IsSameClan)
+        {
+            return ruling.Disallowed();
+        }
+
+        ruling.PermissiblePrivs = PermissiblePrivsTo_CastleHeartExpose;
+        ruling.IsAllowed = ruling.ActingUserPrivs.Intersects(ruling.PermissiblePrivs);
+        return ruling;
+    }
+
+    #endregion
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     #region CastleHeartRemoveFuel
 
@@ -109,8 +235,75 @@ public class RestrictionService
         }
 
         ruling.PermissiblePrivs = PermissiblePrivsTo_CastleHeartRemoveFuel;
-        ruling.IsAllowed = ruling.ActingUserPrivs.Intersects(PermissiblePrivsTo_RenameObject);
+        ruling.IsAllowed = ruling.ActingUserPrivs.Intersects(ruling.PermissiblePrivs);
         return ruling;
+    }
+
+    #endregion
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    #region CastleHeartDisableDefense
+
+    public CastleActionRuling ValidateAction_CastleHeartDisableDefense(
+        Entity actingCharacter,
+        Entity castleHeartEntity
+    )
+    {
+        var ruling = Internal_ValidateAction_CastleHeartDisableDefense(actingCharacter, castleHeartEntity);
+        _rulingLoggerService.LogRuling(ruling);
+        return ruling;
+    }
+
+    private CastleActionRuling Internal_ValidateAction_CastleHeartDisableDefense(
+        Entity actingCharacter,
+        Entity castleHeartEntity
+    )
+    {
+        if (!_userService.TryGetUserModel_ForCharacter(actingCharacter, out var actingUser))
+        {
+            return CastleActionRuling.ExceptionMissingData;
+        }
+
+        if (!_castleService.TryGetCastleModel(castleHeartEntity, out var castleModel))
+        {
+            return CastleActionRuling.ExceptionMissingData;
+        }
+
+        if (!_entityManager.TryGetComponentData<PrefabGUID>(castleHeartEntity, out var castleHeartPrefabGUID))
+        {
+            return CastleActionRuling.ExceptionMissingData;
+        }
+
+        var ruling = new CastleActionRuling();
+        ruling.TargetPrefabGUID = castleHeartPrefabGUID;
+        ruling.Action = RestrictedCastleActions.CastleHeartDisableDefense;
+        HydrateRuling(ref ruling, actingUser, castleModel);
+        ruling.PermissiblePrivs = CastlePrivileges.None;
+        ruling.IsAllowed = ruling.IsCastleWithoutOwner || !IsFormerClanMemberOnKeyCooldown(ruling);
+        return ruling;
+    }
+
+    private bool IsFormerClanMemberOnKeyCooldown(CastleActionRuling ruling)
+    {
+        if (ruling.IsCastleWithoutOwner)
+        {
+            return false;
+        }
+
+        // todo: actual implementation. will make player history library first.
+
+        bool wereClanmates = false; // todo: actual
+        if (!wereClanmates)
+        {
+            return false;
+        }
+
+        var cooldownHours = _globalSettingsService.GetGlobalSettings().KeyClanCooldownHours;
+        var cooldown = TimeSpan.FromHours(cooldownHours);
+
+        var timeSeparated = new TimeSpan(hours: 0, minutes: 0, seconds: 0); // todo: actual
+
+        var timeRemaining = cooldown - timeSeparated;
+        return timeRemaining > TimeSpan.Zero;
     }
 
     #endregion
@@ -158,7 +351,7 @@ public class RestrictionService
         }
 
         ruling.PermissiblePrivs = doorModel.PermissiblePrivsToOpen;
-        ruling.IsAllowed = ruling.ActingUserPrivs.Intersects(doorModel.PermissiblePrivsToOpen);
+        ruling.IsAllowed = ruling.ActingUserPrivs.Intersects(ruling.PermissiblePrivs);
         return ruling;
     }
 
@@ -225,7 +418,7 @@ public class RestrictionService
         }
 
         ruling.PermissiblePrivs = PermissiblePrivsTo_RenameObject;
-        ruling.IsAllowed = ruling.ActingUserPrivs.Intersects(PermissiblePrivsTo_RenameObject);
+        ruling.IsAllowed = ruling.ActingUserPrivs.Intersects(ruling.PermissiblePrivs);
         return ruling;
     }
 

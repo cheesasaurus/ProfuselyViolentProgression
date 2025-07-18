@@ -54,6 +54,7 @@ public static class Core
 
         RestrictionService = new(
             log: log,
+            globalSettingsService: GlobalSettingsService,
             castlePrivilegesService: CastlePrivilegesService,
             userService: UserService,
             antiCheatService: AntiCheatService,

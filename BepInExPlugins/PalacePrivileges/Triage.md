@@ -4,8 +4,8 @@
 
 - [x] Privs: opening / closing doors. (no door coloring)
 - [ ] Priv: `build.all` (allow/disallow everything)
-- [ ] Restrict: Abandoning the castle.
-- [ ] Restrict: Exposing the castle heart.
+- [x] Restrict: Abandoning the castle.
+- [x] Restrict: Exposing the castle heart.
 - [x] Restrict: Removing blood from the castle heart.
 - [ ] Priv: `arena.zonePainting`
 - [ ] Priv: `lockbox`
