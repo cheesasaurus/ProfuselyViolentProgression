@@ -1,3 +1,4 @@
+using System;
 using HarmonyLib;
 using HookDOTS.API.Attributes;
 using ProfuselyViolentProgression.Core.Utilities;
@@ -5,6 +6,7 @@ using ProjectM;
 using ProjectM.CastleBuilding;
 using ProjectM.Gameplay.Systems;
 using ProjectM.Network;
+using Stunlock.Core;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Entities.UniversalDelegates;
@@ -94,6 +96,68 @@ public unsafe class ServantGearPatches
         }
     }
 
+    /// <summary>
+    /// Prevent  auto-equipping item when added to servant inventory.
+    /// </summary>
+    [HarmonyPatch(typeof(InventoryUtilitiesServer), nameof(InventoryUtilitiesServer.TryAddItem), new Type[] { typeof(AddItemSettings), typeof(Entity), typeof(PrefabGUID), typeof(int) })]
+    [HarmonyPrefix]
+    public static void TryAddItem_Overload0_Prefix(ref AddItemSettings addItemSettings, Entity target, PrefabGUID itemType, int amount)
+    {
+        if (!addItemSettings.EquipIfPossible)
+        {
+            return;
+        }
+
+        if (!_entityManager.TryGetComponentData<InventoryConnection>(target, out var inventoryConnection))
+        {
+            return;
+        }
+
+        if (!_entityManager.TryGetComponentData<ServantConnectedCoffin>(inventoryConnection.InventoryOwner, out var servantConnectedCoffin))
+        {
+            return;
+        }
+
+        // todo: need more information about the item adding. (which character initiated it)
+        // var servant = inventoryConnection.InventoryOwner;
+        // var ruling = Core.RestrictionService.ValidateAction_ServantGearChange(character, servant);
+        // if (!ruling.IsAllowed)
+        // {
+        //     addItemSettings.EquipIfPossible = false;
+        // }
+    }
+
+    /// <summary>
+    /// Prevent  auto-equipping item when added to servant inventory.
+    /// </summary>
+    [HarmonyPatch(typeof(InventoryUtilitiesServer), nameof(InventoryUtilitiesServer.TryAddItem), new Type[] { typeof(AddItemSettings), typeof(Entity), typeof(InventoryBuffer) })]
+    [HarmonyPrefix]
+    public static void TryAddItem_Overload1_Prefix(ref AddItemSettings addItemSettings, Entity target, InventoryBuffer inventoryItem)
+    {
+        if (!addItemSettings.EquipIfPossible)
+        {
+            return;
+        }
+
+        if (!_entityManager.TryGetComponentData<InventoryConnection>(target, out var inventoryConnection))
+        {
+            return;
+        }
+
+        if (!_entityManager.TryGetComponentData<ServantConnectedCoffin>(inventoryConnection.InventoryOwner, out var servantConnectedCoffin))
+        {
+            return;
+        }
+
+        // todo: need more information about the item adding. (which character initiated it)
+        // var servant = inventoryConnection.InventoryOwner;
+        // var ruling = Core.RestrictionService.ValidateAction_ServantGearChange(character, servant);
+        // if (!ruling.IsAllowed)
+        // {
+        //     addItemSettings.EquipIfPossible = false;
+        // }
+    }
+
     // todo: doesn't run?
     /*
     [HarmonyPatch(typeof(EquipServantItemSystem), nameof(EquipServantItemSystem.OnUpdate))]
@@ -162,7 +226,7 @@ public unsafe class ServantGearPatches
         }
     }
 
-    // this does not fire servants
+    // this does not fire for servants
     //[HarmonyPatch(typeof(EquipItemFromInventorySystem), nameof(EquipItemFromInventorySystem.OnUpdate))]
     //[HarmonyPrefix]
     public static void EquipItemFromInventorySystem_OnUpdate_Prefix(EquipItemFromInventorySystem __instance)

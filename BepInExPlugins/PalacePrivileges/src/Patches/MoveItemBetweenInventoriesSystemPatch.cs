@@ -108,7 +108,7 @@ public unsafe class MoveItemBetweenInventoriesSystemPatch
     )
     {
         // Currently no restrictions that need to be handled here.
-        //LogUtil.LogDebug("moving FROM servant inventory.");
+        // LogUtil.LogDebug("moving FROM servant inventory.");
     }
 
     private static void HandleMoveItem_ToServantInventory(
@@ -120,10 +120,11 @@ public unsafe class MoveItemBetweenInventoriesSystemPatch
         MoveItemBetweenInventoriesEvent moveItemEvent
     )
     {
-        // This covers moving items to a servant's inventory,
-        // as well as directly equipping an item to the servant by right clicking on it from the player's own inventory.
-        // todo: implement
-        LogUtil.LogDebug("moving TO servant inventory.");
+        // Currently no restrictions that need to be handled here.
+        // LogUtil.LogDebug("moving TO servant inventory.");
+
+        // This covers moving items to a servant's inventory.
+        // The item could end up getting auto equipped, which we handle elsewhere, via other patches.
     }
 
     private static void HandleMoveItem_FromCastleHeartInventory(
