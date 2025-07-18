@@ -231,6 +231,17 @@ public class RestrictionService
         Build = BuildPrivs.UnlistedTBD,
     };
 
+    public CastleActionRuling ValidateAction_BuildPlace(
+        Entity actingCharacter,
+        Entity objectToEdit,
+        CastleHeartConnection castleHeartConnection
+    )
+    {
+        var ruling = Internal_ValidateAction_Build(actingCharacter, objectToEdit, castleHeartConnection);
+        _rulingLoggerService.LogRuling(ruling);
+        return ruling;
+    }
+
     public CastleActionRuling ValidateAction_BuildStartEdit(
         Entity actingCharacter,
         Entity objectToEdit,

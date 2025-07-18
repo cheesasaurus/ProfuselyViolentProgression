@@ -53,6 +53,13 @@ public unsafe class PlaceTileModelSystemPatch
             // need to relate to the castle somehow
 
             // need to be sure we're not blocking explosives, golems, etc
+
+            var ev = tmEvents[i];
+            LogUtil.LogDebug(DebugUtil.LookupPrefabName(ev.PrefabGuid));
+
+
+            
+
         }
     }
 
