@@ -21,7 +21,7 @@ public class CastlePrivilegesService
         Misc = MiscPrivs.None,
         Build = BuildPrivs.None,
         Craft = CraftPrivs.AccessStations,
-        Door = DoorPrivs.NotServantLocked | DoorPrivs.Wide,
+        Door = DoorPrivs.NotServantLocked | DoorPrivs.Wide | DoorPrivs.ThinFence,
         Prisoner = PrisonerPrivs.None,
         Servant = ServantPrivs.Convert,
         Teleporter = TeleporterPrivs.Waygate,

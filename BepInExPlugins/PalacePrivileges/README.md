@@ -5,7 +5,7 @@
 
 Safely clan up for PvP!
 
-Restricts what clan members can do in your castles. Grant more privileges via chat commands.
+Restricts what clan members can do in your castle. Grant more privileges via chat commands.
 
 
 ## Installation
@@ -20,7 +20,7 @@ This is a server-side mod. (No need to install anything if you're not the server
 
 ## Restricted actions
 
-Some actions may only be performed by the owner. Clan members cannot be granted privileges for these restricted actions.
+Some actions may only be performed by the castle owner. Clan members cannot be granted privileges for these restricted actions.
 - Abandoning the castle.
 - Exposing the castle heart.
 - Removing blood from the castle heart.
@@ -28,6 +28,11 @@ Some actions may only be performed by the owner. Clan members cannot be granted 
 
 Recently-separated clan members cannot use keys on your castle heart.\
 (The exact timeframe can be configured by an admin. Default 48 hours.)
+
+## Unrestricted actions
+
+If an enemy could do it, your clan can do it too. Looting boxes, harvesting the garden, etc.\
+Put some thought into how you build your castle!
 
 
 ## Clan privileges
@@ -65,26 +70,47 @@ Privileges can be granted / ungranted / forbidden.
 - `Ungrant` - Revoke privileges granted to your clan, or to a specific player.
 - `Forbid` - Overrule clan privileges for a specific player.
 
+Player privileges only apply while you're in the same clan. But they can be set in advance.
+
+This is all done via chat commands...
+
 ### Examples
+
+
+
 - You fully trust Bobby.
-  - Grant Bobby the `all` privilege.
-- You want to let all clan members use the small teleporters.
-  - Grant your clan the `tp.allSmall` privilege.
-- You want to let your clan members waygate out, but not in.
-  - Ungrant your clan the `tp.waygateIn` privilege.
-- Timmy keeps putting lame servants in your coffins.
-  - Forbid Timmy the `servants.convert` privilege.
-  - Other clan members will still be able to convert servants.
-- Suzy wants to milk the prisoners.
-  - Grant Suzy the `prisoners.extractBlood` and `prisoners.feedSafeFood` privileges.
-  - Suzy will not be able to feed them gruel or corrupted fish.
-- Billy is a total sleazebag but you have a common enemy.
-  - Forbid Billy the `all` privilege and join his clan.
+  - `.castlePrivs grant player Bobby "all"`
+- Let clan members use the small teleporters.
+  - `.castlePrivs grant clan "tp.allSmall"`
+- Let clan members waygate out, but not in.
+  - `.castlePrivs ungrant clan "tp.waygateIn"`
+- Put some servant-locked doors at the entrance for clan members to also use.
+  - `.castlePrivs grant clan "doors.battlement"`
+  - Clan members will now be able to use all "Battlement Gate" doors. Even with servant locks.  
+- Billy is a known scoundrel, but you want to team up for a bit of mayhem.
+  - `.castlePrivs forbid player Billy "all"`
+  - Join his clan.
   - Billy will have no privileges in your castle, despite being a clan member.
+- Suzy wants to use the prison.
+  - `.castlePrivs grant player Suzy "prison.extractBlood prison.feedSafeFood"`.
+  - Suzy will not be able to feed prisoners gruel or corrupted fish.
+
+### Color-coded doors example
 - Johnny's favorite color is yellow and you made a special room just for him.
-  - Block off his room with the yellow-colored door from the Oakveil DLC.
+  - Block off his room with the door from the Oakveil DLC.
   - Put a servant lock on his door.
-  - Grant Johnny the `doors.noctOpYellow` privilege.
+  - Grant Johnny the `doors.dyedYellow` privilege.
+  - Dye the door yellow.
+  - Now, only you and Johnny will have access to this room!
+
+#### How to dye doors
+- Can only be done with the Oakveil DLC door.
+- Can be done when placing the door using the color swatch.
+- Can also be done after placing the door:
+  1. Open the build menu
+  2. Mouse over the placed door and hold `Ctrl`
+  3. Choose the desired color from the color wheel.
+  
 
 
 
@@ -105,14 +131,14 @@ Privileges can be granted / ungranted / forbidden.
 `craft.accessStations`
 `craft.toggleRecipes`
 
-### Prisoner privileges
-`prisoners.all`
-`prisoners.subdue`
-`prisoners.kill`
-`prisoners.extractBlood`
-`prisoners.feedSafeFood`
-`prisoners.feedUnsafeFood`
-`prisoners.useTreasury`
+### Prison privileges
+`prison.all`
+`prison.subdue`
+`prison.kill`
+`prison.extractBlood`
+`prison.feedSafeFood`
+`prison.feedUnsafeFood`
+`prison.useTreasury`
 
 ### Servant privileges
 `servants.all`
@@ -169,28 +195,26 @@ Privileges can be granted / ungranted / forbidden.
 `doors.plagueSanctum`
 `doors.ancientSymphony1`
 `doors.ancientSymphony2`
-`doors.noctOp`
-`doors.noctOpRed`
-`doors.noctOpOrange`
-`doors.noctOpYellow`
-`doors.noctOpGreen`
-`doors.noctOpGreenLight`
-`doors.noctOpBlueLight`
-`doors.noctOpBlue`
-`doors.noctOpPurple`
-`doors.noctOpPink`
-`doors.noctOpWhite`
-`doors.noctOpGrey`
-`doors.noctOpBlack`
+`doors.nocturnalOpulence`
 `doors.prison`
 `doors.barrier`
 `doors.wideBars`
 `doors.widePlanks`
+`doors.dyedRed`
+`doors.dyedOrange`
+`doors.dyedYellow`
+`doors.dyedGreen`
+`doors.dyedMintGreen`
+`doors.dyedCyan`
+`doors.dyedBlue`
+`doors.dyedPurple`
+`doors.dyedPink`
+`doors.dyedWhite`
+`doors.dyedGrey`
+`doors.dyedBlack`
 
 
 ## Chat commands
-
-Players can customize access to their castles via chat commands.
 
 - `.castlePrivs list`
   - List all privilege categories, and some misc castle privileges.
@@ -223,10 +247,10 @@ Players can customize access to their castles via chat commands.
   - Check global settings.
 
 ## Admin chat commands
-- `.castlePrivs set keyClanCooldownHours 48.0`
-  - When clan members separate, they have to wait `48` hours before using keys on each other's castles.
-  - Could be set to e.g. `0.5` to make the waiting time 30 minutes.
-  - Can be set to `0` to remove the waiting time.
+- `.castlePrivs set KeyClanCooldownHours 48.0`
+  - When clan members separate, they must wait `48` hours before using keys on each other's castles.
+  - Could be set to `0.5` to make the waiting time 30 minutes.
+  - Could be set to `0` to remove the waiting time.
 - `.castlePrivs set DebugLogRulings true`
   - When enabled, logs details about every ruling made. For debugging purposes.
   - Disabled by default.

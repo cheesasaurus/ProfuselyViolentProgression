@@ -16,13 +16,13 @@ public class CastleDoorService
     private EntityManager _entityManager = WorldUtil.Server.EntityManager;
     private CastleService _castleService;
     private Dictionary<PrefabGUID, DoorPrivs> _privsByPrefabGuid = [];
-    private Dictionary<byte, DoorPrivs> _oakveilPrivsByColorIndex = [];
+    private Dictionary<byte, DoorPrivs> _dyedPrivsByColorIndex = [];
 
     public CastleDoorService(CastleService castleService)
     {
         _castleService = castleService;
         InitPrivsByPrefabGUID();
-        InitOakveilColorPrivsByColorIndex();
+        InitDyedPrivsByColorIndex();
     }
 
     public bool TryGetDoorModel(Entity doorEntity, out CastleDoorModel doorModel)
@@ -76,28 +76,15 @@ public class CastleDoorService
             privs |= doorPrivs;
         }
 
-        if ((DoorPrivs.ThinNocturnalOpulence & privs) != DoorPrivs.None)
+        if (_entityManager.TryGetComponentData<DyeableCastleObject>(doorEntity, out var dyeableCastleObject))
         {
-            privs |= OakveilColorPrivs(doorEntity);
+            if (_dyedPrivsByColorIndex.TryGetValue(dyeableCastleObject.ActiveColorIndex, out var dyePrivs))
+            {
+                privs |= dyePrivs;  
+            }
         }
 
         return privs;
-    }
-
-    private DoorPrivs OakveilColorPrivs(Entity doorEntity)
-    {
-        if (!_entityManager.TryGetComponentData<DyeableCastleObject>(doorEntity, out var dyeableCastleObject))
-        {
-            return DoorPrivs.None;
-        }
-
-        LogUtil.LogDebug(dyeableCastleObject.ActiveColorIndex);
-
-        if (!_oakveilPrivsByColorIndex.TryGetValue(dyeableCastleObject.ActiveColorIndex, out var doorPrivs))
-        {
-            return DoorPrivs.None;    
-        }
-        return doorPrivs;
     }
 
     private void InitPrivsByPrefabGUID()
@@ -297,22 +284,22 @@ public class CastleDoorService
         };
     }
 
-    private void InitOakveilColorPrivsByColorIndex()
+    private void InitDyedPrivsByColorIndex()
     {
-        _oakveilPrivsByColorIndex = new()
+        _dyedPrivsByColorIndex = new()
         {
-            { Dyeable12ColorIndex.Red, DoorPrivs.ThinNocturnalOpulenceRed },
-            { Dyeable12ColorIndex.Orange, DoorPrivs.ThinNocturnalOpulenceOrange },
-            { Dyeable12ColorIndex.Yellow, DoorPrivs.ThinNocturnalOpulenceYellow },
-            { Dyeable12ColorIndex.Green, DoorPrivs.ThinNocturnalOpulenceGreen },
-            { Dyeable12ColorIndex.MintGreen, DoorPrivs.ThinNocturnalOpulenceMintGreen },
-            { Dyeable12ColorIndex.Cyan, DoorPrivs.ThinNocturnalOpulenceCyan },
-            { Dyeable12ColorIndex.Blue, DoorPrivs.ThinNocturnalOpulenceBlue },
-            { Dyeable12ColorIndex.Purple, DoorPrivs.ThinNocturnalOpulencePurple },
-            { Dyeable12ColorIndex.Pink, DoorPrivs.ThinNocturnalOpulencePink },
-            { Dyeable12ColorIndex.White, DoorPrivs.ThinNocturnalOpulenceWhite },
-            { Dyeable12ColorIndex.Grey, DoorPrivs.ThinNocturnalOpulenceGrey },
-            { Dyeable12ColorIndex.Black, DoorPrivs.ThinNocturnalOpulenceBlack },
+            { Dyeable12ColorIndex.Red, DoorPrivs.DyedRed },
+            { Dyeable12ColorIndex.Orange, DoorPrivs.DyedOrange },
+            { Dyeable12ColorIndex.Yellow, DoorPrivs.DyedYellow },
+            { Dyeable12ColorIndex.Green, DoorPrivs.DyedGreen },
+            { Dyeable12ColorIndex.MintGreen, DoorPrivs.DyedMintGreen },
+            { Dyeable12ColorIndex.Cyan, DoorPrivs.DyedCyan },
+            { Dyeable12ColorIndex.Blue, DoorPrivs.DyedBlue },
+            { Dyeable12ColorIndex.Purple, DoorPrivs.DyedPurple },
+            { Dyeable12ColorIndex.Pink, DoorPrivs.DyedPink },
+            { Dyeable12ColorIndex.White, DoorPrivs.DyedWhite },
+            { Dyeable12ColorIndex.Grey, DoorPrivs.DyedGrey },
+            { Dyeable12ColorIndex.Black, DoorPrivs.DyedBlack },
         };        
     }
 

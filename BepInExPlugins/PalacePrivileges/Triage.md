@@ -31,7 +31,7 @@
 ## Future features
 
 - [ ] Cooldown: Using key after leaving clan. will make clan history lib first.
-- [ ] Privs: opening / closing doors, by color
+- [x] Privs: opening / closing doors, by color
 - [ ] webapp with UI to set up privileges, and spit out commands.
   - check how arena does it.
   - maybe a special export string, with a command like `.castlePrivs import asdfklkjasdfjkhasdflongassstringbutnotlongerthanthemessagesizelimit`

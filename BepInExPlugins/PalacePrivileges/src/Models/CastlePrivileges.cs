@@ -234,18 +234,18 @@ public enum DoorPrivs : long
     ThinAncientSymphony1 = 1 << 10,
     ThinAncientSymphony2 = 1 << 11,
     ThinNocturnalOpulence = 1 << 12,
-    ThinNocturnalOpulenceRed = 1 << 13,
-    ThinNocturnalOpulenceOrange = 1 << 14,
-    ThinNocturnalOpulenceYellow = 1 << 15,
-    ThinNocturnalOpulenceGreen = 1 << 16,
-    ThinNocturnalOpulenceMintGreen = 1 << 17, // todo: actual color name. light green
-    ThinNocturnalOpulenceCyan = 1 << 18, // todo: actual color name. light blue
-    ThinNocturnalOpulenceBlue = 1 << 19,
-    ThinNocturnalOpulencePurple = 1 << 20,
-    ThinNocturnalOpulencePink = 1 << 21,
-    ThinNocturnalOpulenceWhite = 1 << 22,
-    ThinNocturnalOpulenceGrey = 1 << 23,
-    ThinNocturnalOpulenceBlack = 1 << 24,
+    DyedRed = 1 << 13,
+    DyedOrange = 1 << 14,
+    DyedYellow = 1 << 15,
+    DyedGreen = 1 << 16,
+    DyedMintGreen = 1 << 17,
+    DyedCyan = 1 << 18,
+    DyedBlue = 1 << 19,
+    DyedPurple = 1 << 20,
+    DyedPink = 1 << 21,
+    DyedWhite = 1 << 22,
+    DyedGrey = 1 << 23,
+    DyedBlack = 1 << 24,
     ThinPrison = 1 << 25,
     ThinBarrier = 1 << 26,
     WideBars = 1 << 27,
@@ -253,11 +253,11 @@ public enum DoorPrivs : long
 
     Thin = ThinFence | ThinPalisade | ThinBasic | ThinBattlement | ThinCordial | ThinVerdant
         | ThinRoyal | ThinPlagueSanctum | ThinAncientSymphony1 | ThinAncientSymphony2
-        | ThinNocturnalOpulence | ThinNocturnalOpulenceRed | ThinNocturnalOpulenceOrange
-        | ThinNocturnalOpulenceYellow | ThinNocturnalOpulenceGreen | ThinNocturnalOpulenceMintGreen
-        | ThinNocturnalOpulenceCyan | ThinNocturnalOpulenceBlue | ThinNocturnalOpulencePurple
-        | ThinNocturnalOpulencePink | ThinNocturnalOpulenceWhite | ThinNocturnalOpulenceGrey
-        | ThinNocturnalOpulenceBlack
+        | ThinNocturnalOpulence | DyedRed | DyedOrange
+        | DyedYellow | DyedGreen | DyedMintGreen
+        | DyedCyan | DyedBlue | DyedPurple
+        | DyedPink | DyedWhite | DyedGrey
+        | DyedBlack
         | ThinPrison | ThinBarrier,
 
     Wide = WideBars | WidePlanks,
