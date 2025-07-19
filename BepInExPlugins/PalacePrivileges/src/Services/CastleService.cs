@@ -29,7 +29,6 @@ public class CastleService
         castleModel = default;
         if (!_entityManager.TryGetComponentData<CastleHeartConnection>(connectedEntity, out var castleHeartConnection))
         {
-            _log.LogWarning("connectedEntity: no CastleHeartConnection");
             return false;
         }
 
@@ -42,13 +41,11 @@ public class CastleService
 
         if (!_entityManager.TryGetComponentData<CastleHeart>(castleHeartEntity, out var castleHeart))
         {
-            _log.LogWarning("castle: no CastleHeart");
             return false;
         }
 
         if (!_entityManager.TryGetComponentData<Team>(castleHeartEntity, out var team))
         {
-            _log.LogWarning("castle: no Team");
             return false;
         }
 
@@ -63,7 +60,11 @@ public class CastleService
     public bool TryGetCastleHeartOfTerritory_WhereCharacterIs(Entity character, out Entity castleHeart)
     {
         castleHeart = Entity.Null;
-        _log.LogWarning("Could not find castle of territory where character is");
+
+        if (!_entityManager.TryGetComponentData<Residency>(character, out var residency))
+        {
+            return false;
+        }
         // todo: implement
         return false;
     }

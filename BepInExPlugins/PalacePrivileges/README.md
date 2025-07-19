@@ -29,6 +29,7 @@ Some actions may only be performed by the castle owner. Clan members cannot be g
 Recently-separated clan members cannot use keys on your castle heart.\
 (The exact timeframe can be configured by an admin. Default 48 hours.)
 
+
 ## Unrestricted actions
 
 If an enemy could do it, your clan can do it too. Looting boxes, harvesting the garden, etc.\
@@ -74,9 +75,8 @@ Player privileges only apply while you're in the same clan. But they can be set 
 
 This is all done via chat commands...
 
+
 ### Examples
-
-
 
 - You fully trust Bobby.
   - `.castlePrivs grant player Bobby "all"`
@@ -110,8 +110,6 @@ This is all done via chat commands...
   1. Open the build menu
   2. Mouse over the placed door and hold `Ctrl`
   3. Choose the desired color from the color wheel.
-  
-
 
 
 ### Miscellaneous privileges
@@ -246,7 +244,9 @@ This is all done via chat commands...
 - `.castlePrivs settings`
   - Check global settings.
 
+
 ## Admin chat commands
+
 - `.castlePrivs set KeyClanCooldownHours 48.0`
   - When clan members separate, they must wait `48` hours before using keys on each other's castles.
   - Could be set to `0.5` to make the waiting time 30 minutes.
@@ -254,6 +254,11 @@ This is all done via chat commands...
 - `.castlePrivs set DebugLogRulings true`
   - When enabled, logs details about every ruling made. For debugging purposes.
   - Disabled by default.
+
+
+## Anticheat
+
+All privilege checks include validation for clan membership. Lockpickers begone!
 
 
 ## Support

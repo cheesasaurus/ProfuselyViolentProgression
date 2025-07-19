@@ -108,7 +108,7 @@ public class RestrictionService
     {
         if (!TryGetDataForHeartAction(actingCharacter, castleHeartEntity, out var actingUser, out var castleModel, out var targetPrefabGUID))
         {
-            return CastleActionRuling.ExceptionMissingData;
+            return CastleActionRuling.NewRuling_NotEnoughDataToDecide(action);
         }
 
         var ruling = new CastleActionRuling();
@@ -186,7 +186,7 @@ public class RestrictionService
     {
         if (!TryGetDataForHeartAction(actingCharacter, castleHeartEntity, out var actingUser, out var castleModel, out var targetPrefabGUID))
         {
-            return CastleActionRuling.ExceptionMissingData;
+            return CastleActionRuling.NewRuling_NotEnoughDataToDecide(RestrictedCastleActions.CastleHeartDisableDefense);
         }
 
         var ruling = new CastleActionRuling();
@@ -295,17 +295,17 @@ public class RestrictionService
     {
         if (!_userService.TryGetUserModel_ForCharacter(actingCharacter, out var actingUser))
         {
-            return CastleActionRuling.ExceptionMissingData;
+            return CastleActionRuling.NewRuling_NotEnoughDataToDecide(RestrictedCastleActions.Build, "Failed to get User model for acting character");
         }
 
         if (!_castleService.TryGetCastleModel(castleHeartConnection.CastleHeartEntity._Entity, out var castleModel))
         {
-            return CastleActionRuling.ExceptionMissingData;
+            return CastleActionRuling.NewRuling_NotEnoughDataToDecide(RestrictedCastleActions.Build, "Failed to get Castle model");
         }
 
         if (!_entityManager.TryGetComponentData<PrefabGUID>(objectToEdit, out var objectPrefabGUID))
         {
-            return CastleActionRuling.ExceptionMissingData;
+            return CastleActionRuling.NewRuling_NotEnoughDataToDecide(RestrictedCastleActions.Build, "Failed to get PrefabGUID of objectToEdit");
         }
 
         var ruling = new CastleActionRuling();
@@ -331,7 +331,7 @@ public class RestrictionService
 
     #endregion
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    #region Build - use treasury
+    #region BuildUseTreasury
 
     public CastleActionRuling ValidateAction_BuildUseTreasury(Entity actingCharacter)
     {
@@ -349,17 +349,17 @@ public class RestrictionService
     {
         if (!_castleService.TryGetCastleHeartOfTerritory_WhereCharacterIs(actingCharacter, out var castleHeartEntity))
         {
-            return CastleActionRuling.ExceptionMissingData;
+            return CastleActionRuling.NewRuling_NotEnoughDataToDecide(RestrictedCastleActions.BuildUseTreasury, "Failed to get castle heart of territory where acting character is");
         }
 
         if (!_userService.TryGetUserModel_ForCharacter(actingCharacter, out var actingUser))
         {
-            return CastleActionRuling.ExceptionMissingData;
+            return CastleActionRuling.NewRuling_NotEnoughDataToDecide(RestrictedCastleActions.BuildUseTreasury, "Failed to get User model for acting character");
         }        
 
         if (!_castleService.TryGetCastleModel(castleHeartEntity, out var castleModel))
         {
-            return CastleActionRuling.ExceptionMissingData;
+            return CastleActionRuling.NewRuling_NotEnoughDataToDecide(RestrictedCastleActions.BuildUseTreasury, "Failed to get Castle model");
         }
 
         var ruling = new CastleActionRuling();
@@ -397,12 +397,12 @@ public class RestrictionService
     {
         if (!_userService.TryGetUserModel_ForCharacter(actingCharacter, out var actingUser))
         {
-            return CastleActionRuling.ExceptionMissingData;
+            return CastleActionRuling.NewRuling_NotEnoughDataToDecide(RestrictedCastleActions.UnknownDoorAction, "Failed to get User model for acting character");
         }
 
         if (!_doorService.TryGetDoorModel(door, out var doorModel))
         {
-            return CastleActionRuling.ExceptionMissingData;
+            return CastleActionRuling.NewRuling_NotEnoughDataToDecide(RestrictedCastleActions.UnknownDoorAction, "Failed to get Door model");
         }
 
         var ruling = new CastleActionRuling();
@@ -459,17 +459,17 @@ public class RestrictionService
     {
         if (!_userService.TryGetUserModel_ForCharacter(actingCharacter, out var actingUser))
         {
-            return CastleActionRuling.ExceptionMissingData;
+            return CastleActionRuling.NewRuling_NotEnoughDataToDecide(RestrictedCastleActions.RenameObject, "Failed to get User model for acting character");
         }
 
         if (!_castleService.TryGetCastleModel(castleHeartConnection.CastleHeartEntity._Entity, out var castleModel))
         {
-            return CastleActionRuling.ExceptionMissingData;
+            return CastleActionRuling.NewRuling_NotEnoughDataToDecide(RestrictedCastleActions.RenameObject, "Failed to get Castle model");
         }
 
         if (!_entityManager.TryGetComponentData<PrefabGUID>(objectToRename, out var objectPrefabGUID))
         {
-            return CastleActionRuling.ExceptionMissingData;
+            return CastleActionRuling.NewRuling_NotEnoughDataToDecide(RestrictedCastleActions.RenameObject, "Failed to prefabGUID of objectToRename");
         }
 
         var ruling = new CastleActionRuling();
@@ -512,24 +512,24 @@ public class RestrictionService
     private CastleActionRuling Internal_ValidateAction_AtCoffin(Entity actingCharacter, Entity coffin, ServantCoffinActionEvent ev)
     {
         var action = RestrictedCastleAction_FromCoffinAction(ev.Action);
-        if (action == RestrictedCastleActions.NotRestricted_SoDoNotCare)
+        if (action == RestrictedCastleActions.Irrelevant_SoNotRestricted)
         {
-            return CastleActionRuling.NotRestricted;
+            return CastleActionRuling.IrrelevantAction;
         }
 
         if (!_userService.TryGetUserModel_ForCharacter(actingCharacter, out var actingUser))
         {
-            return CastleActionRuling.ExceptionMissingData;
+            return CastleActionRuling.NewRuling_NotEnoughDataToDecide(action, "Failed to get User model for acting character");
         }
 
         if (!_castleService.TryGetCastleModel_ForConnectedEntity(coffin, out var castleModel))
         {
-            return CastleActionRuling.ExceptionMissingData;
+            return CastleActionRuling.NewRuling_NotEnoughDataToDecide(action, "Failed to get Castle model");
         }
 
         if (!_entityManager.TryGetComponentData<PrefabGUID>(coffin, out var coffinPrefabGUID))
         {
-            return CastleActionRuling.ExceptionMissingData;
+            return CastleActionRuling.NewRuling_NotEnoughDataToDecide(action, "Failed to get prefabGUID for coffin");
         }
 
         var ruling = new CastleActionRuling();
@@ -568,7 +568,7 @@ public class RestrictionService
                 return RestrictedCastleActions.ServantTerminate;
 
             default:
-                return RestrictedCastleActions.NotRestricted_SoDoNotCare;
+                return RestrictedCastleActions.Irrelevant_SoNotRestricted;
         }
     }
 
@@ -617,17 +617,17 @@ public class RestrictionService
     {
         if (!_userService.TryGetUserModel_ForCharacter(actingCharacter, out var actingUser))
         {
-            return CastleActionRuling.ExceptionMissingData;
+            return CastleActionRuling.NewRuling_NotEnoughDataToDecide(RestrictedCastleActions.ServantRename, "Failed to get User model for acting character");
         }
 
         if (!_castleService.TryGetCastleModel_ForConnectedEntity(coffin, out var castleModel))
         {
-            return CastleActionRuling.ExceptionMissingData;
+            return CastleActionRuling.NewRuling_NotEnoughDataToDecide(RestrictedCastleActions.ServantRename, "Failed to Castle model");
         }
 
         if (!_entityManager.TryGetComponentData<PrefabGUID>(coffin, out var coffinPrefabGUID))
         {
-            return CastleActionRuling.ExceptionMissingData;
+            return CastleActionRuling.NewRuling_NotEnoughDataToDecide(RestrictedCastleActions.ServantRename, "Failed to get prefabGUID for coffin");
         }
 
         var ruling = new CastleActionRuling();
@@ -676,23 +676,23 @@ public class RestrictionService
     {
         if (!_userService.TryGetUserModel_ForCharacter(actingCharacter, out var actingUser))
         {
-            return CastleActionRuling.ExceptionMissingData;
+            return CastleActionRuling.NewRuling_NotEnoughDataToDecide(RestrictedCastleActions.ServantGearChange, "Failed to get User model for acting character");
         }
 
         if (!_entityManager.TryGetComponentData<ServantConnectedCoffin>(servant, out var connectedCoffin))
         {
-            return CastleActionRuling.ExceptionMissingData;
+            return CastleActionRuling.NewRuling_NotEnoughDataToDecide(RestrictedCastleActions.ServantGearChange, "Failed to get ServantConnectedCoffin");
         }
         var coffin = connectedCoffin.CoffinEntity._Entity;
 
         if (!_castleService.TryGetCastleModel_ForConnectedEntity(coffin, out var castleModel))
         {
-            return CastleActionRuling.ExceptionMissingData;
+            return CastleActionRuling.NewRuling_NotEnoughDataToDecide(RestrictedCastleActions.ServantGearChange, "Failed to get Castle model");
         }
 
         if (!_entityManager.TryGetComponentData<PrefabGUID>(servant, out var servantPrefabGUID))
         {
-            return CastleActionRuling.ExceptionMissingData;
+            return CastleActionRuling.NewRuling_NotEnoughDataToDecide(RestrictedCastleActions.ServantGearChange, "Failed to get prefabGUID for servant");
         }
 
         var ruling = new CastleActionRuling();

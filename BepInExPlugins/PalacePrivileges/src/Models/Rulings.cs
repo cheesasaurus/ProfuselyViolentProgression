@@ -1,14 +1,16 @@
 
 
 using Stunlock.Core;
+using Unity.Collections;
 
 namespace ProfuselyViolentProgression.PalacePrivileges.Models;
 
 
 public enum RestrictedCastleActions
 {
-    ExceptionMissingData,
-    NotRestricted_SoDoNotCare,
+    UnknownAction,
+    UnknownDoorAction,
+    Irrelevant_SoNotRestricted,
     CastleHeartAbandon,
     CastleHeartExpose,
     CastleHeartRemoveFuel,
@@ -27,6 +29,8 @@ public enum RestrictedCastleActions
 
 public struct CastleActionRuling
 {
+    public bool NotEnoughDataToDecide;
+    public string NotEnoughDataReason;
     public bool IsAllowed;
     public RestrictedCastleActions Action;
     public PrefabGUID TargetPrefabGUID;
@@ -51,16 +55,24 @@ public struct CastleActionRuling
         return this;
     }
 
-    public static readonly CastleActionRuling ExceptionMissingData = new()
+    public static readonly CastleActionRuling IrrelevantAction = new()
     {
         IsAllowed = true,
-        Action = RestrictedCastleActions.ExceptionMissingData,
+        Action = RestrictedCastleActions.Irrelevant_SoNotRestricted,
     };
 
-    public static readonly CastleActionRuling NotRestricted = new()
+    public static CastleActionRuling NewRuling_NotEnoughDataToDecide(
+        RestrictedCastleActions action = RestrictedCastleActions.UnknownAction,
+        string reason = null
+    )
     {
-        IsAllowed = true,
-        Action = RestrictedCastleActions.NotRestricted_SoDoNotCare,
-    };
+        return new()
+        {
+            NotEnoughDataToDecide = true,
+            NotEnoughDataReason = reason,
+            IsAllowed = true,
+            Action = action,
+        };        
+    }
     
 }
