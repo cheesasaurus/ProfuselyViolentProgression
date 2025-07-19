@@ -194,6 +194,7 @@ public class PrivilegeParser
         RegisterPrivs("plantSeeds", MiscPrivs.PlantSeeds); // planned feature
 
         RegisterPrivs("build.all", BuildPrivs.All);
+        RegisterPrivs("build.useTreasury", BuildPrivs.All);
 
         RegisterPrivs("craft.all", CraftPrivs.All);
         RegisterPrivs("craft.useTreasury", CraftPrivs.UseTreasury);

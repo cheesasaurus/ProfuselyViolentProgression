@@ -25,12 +25,6 @@ public class NotificationService
         SendChatNotification(character, ref ruling);
     }
 
-    private void SendSCTMessage(Entity character, ref CastleActionRuling ruling)
-    {
-        // todo: other things depending on the situation
-        _SCTService.SendMessageNope(character);
-    }
-
     private void SendChatNotification(Entity character, ref CastleActionRuling ruling)
     {
         if (ruling.IsCastleWithoutOwner)
@@ -68,6 +62,20 @@ public class NotificationService
         public ulong CastleOwnerPlatformId = ruling.CastleOwner.PlatformId;
         public RestrictedCastleActions Action = ruling.Action;
     }
+    
+    private void SendSCTMessage(Entity character, ref CastleActionRuling ruling)
+    {
+        switch (ruling.Action)
+        {
+            case RestrictedCastleActions.BuildUseTreasury:
+                _SCTService.SendMessageMissingResources(character);
+                break;
+
+            default:
+                _SCTService.SendMessageNope(character);
+                return;
+        }        
+    }
 
     private string ChatMessageForActingUser(ref CastleActionRuling ruling)
     {
@@ -90,7 +98,10 @@ public class NotificationService
 
             case RestrictedCastleActions.Build:
                 return $"{ownerName} has not given you permission to build.";
-            
+
+            case RestrictedCastleActions.BuildUseTreasury:
+                return $"{ownerName} has not given you permission to use the treasury for building.";
+
             case RestrictedCastleActions.OpenDoor:
             case RestrictedCastleActions.CloseDoor:
                 return $"{ownerName} has not given you permission to use that kind of door.";

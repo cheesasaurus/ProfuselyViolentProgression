@@ -1,12 +1,24 @@
-{
-    "Guid": "3c901e55-974d-4aa2-862e-1f63da340dc7",
-    "Text": "Missing ownership"
-},
-{
-    "Guid": "194d1b88-9cb8-41cc-9812-d05538cf6f84",
-    "Text": "No Owner"
-},
-{
-    "Guid": "ead3526f-30a3-46d2-956f-fc7bdc4b01f8",
-    "Text": "Owner: {value}"
-},
+    {
+        "Guid": "3c901e55-974d-4aa2-862e-1f63da340dc7",
+        "Text": "Missing ownership"
+    },
+    {
+        "Guid": "194d1b88-9cb8-41cc-9812-d05538cf6f84",
+        "Text": "No Owner"
+    },
+    {
+        "Guid": "ead3526f-30a3-46d2-956f-fc7bdc4b01f8",
+        "Text": "Owner: {value}"
+    },
+    {
+        "Guid": "8cccca3d-97da-412e-a527-a6e9ebef54fb",
+        "Text": "Missing resources"
+    },
+    {
+      "Guid": "e62f0a11-1e2b-4f90-98e2-e4db59a8fc5e",
+      "Text": "Invalid Location"
+    },
+    {
+      "Guid": "7a919d06-eacc-4a2f-bfca-4252d4f46459",
+      "Text": "Cannot transform"
+    },

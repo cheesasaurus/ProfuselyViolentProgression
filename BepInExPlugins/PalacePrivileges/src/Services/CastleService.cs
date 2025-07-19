@@ -1,3 +1,4 @@
+using BepInEx.Logging;
 using ProfuselyViolentProgression.Core.Utilities;
 using ProfuselyViolentProgression.PalacePrivileges.Models;
 using ProjectM;
@@ -14,10 +15,12 @@ namespace ProfuselyViolentProgression.PalacePrivileges.Services;
 public class CastleService
 {
     private EntityManager _entityManager = WorldUtil.Server.EntityManager;
+    private ManualLogSource _log;
     private UserService _userService;
 
-    public CastleService(UserService userService)
+    public CastleService(ManualLogSource log, UserService userService)
     {
+        _log = log;
         _userService = userService;
     }
 
@@ -26,7 +29,7 @@ public class CastleService
         castleModel = default;
         if (!_entityManager.TryGetComponentData<CastleHeartConnection>(connectedEntity, out var castleHeartConnection))
         {
-            LogUtil.LogWarning("connectedEntity: no CastleHeartConnection");
+            _log.LogWarning("connectedEntity: no CastleHeartConnection");
             return false;
         }
 
@@ -39,22 +42,30 @@ public class CastleService
 
         if (!_entityManager.TryGetComponentData<CastleHeart>(castleHeartEntity, out var castleHeart))
         {
-            LogUtil.LogWarning("castle: no CastleHeart");
+            _log.LogWarning("castle: no CastleHeart");
             return false;
         }
 
         if (!_entityManager.TryGetComponentData<Team>(castleHeartEntity, out var team))
         {
-            LogUtil.LogWarning("castle: no Team");
+            _log.LogWarning("castle: no Team");
             return false;
         }
 
         castleModel.IsDefenseDisabled = castleHeart.IsRaided();
-        castleModel.HasNoOwner = !_userService.TryGetUserModel_ForOwnedEntity(castleHeartEntity, out var owner);        
+        castleModel.HasNoOwner = !_userService.TryGetUserModel_ForOwnedEntity(castleHeartEntity, out var owner);
         castleModel.Owner = owner;
         castleModel.Team = team;
 
         return true;
+    }
+    
+    public bool TryGetCastleHeartOfTerritory_WhereCharacterIs(Entity character, out Entity castleHeart)
+    {
+        castleHeart = Entity.Null;
+        _log.LogWarning("Could not find castle of territory where character is");
+        // todo: implement
+        return false;
     }
 
 }

@@ -115,7 +115,6 @@ This is all done via chat commands...
 
 
 ### Miscellaneous privileges
-
 `all`
 `lockbox`
 `musicbox`
@@ -124,6 +123,7 @@ This is all done via chat commands...
 
 ### Build privileges
 `build.all`
+`build.useTreasury`
 
 ### Craft privileges
 `craft.all`

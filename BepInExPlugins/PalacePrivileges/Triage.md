@@ -46,5 +46,6 @@
 - [ ] Priv: `arena.editRules` (not sure if this is server or clientside)
 - [ ] Priv: `arena.startContest`
 - [ ] Priv: `redist.quickSend`
+- [ ] Priv: `build.useTreasury`
 - [ ] Priv: `plantSeeds`
 - specific privs for building

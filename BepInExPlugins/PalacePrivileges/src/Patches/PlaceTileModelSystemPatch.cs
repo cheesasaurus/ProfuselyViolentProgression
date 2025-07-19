@@ -60,6 +60,10 @@ public unsafe class PlaceTileModelSystemPatch
             // todo: maybe something with the static GetPlacementResult class.
             // Entity `buildingInCastleTerritory`
             // Entity `castleHeartForArea`
+            // `TerrainChunk`
+            // `TerrainChunkLookup.TryGetChunk`
+            // `TerrainChunkLookup.TryGetChunkMetadataEntity`
+            // `TerrainConstants`
             
 
         }

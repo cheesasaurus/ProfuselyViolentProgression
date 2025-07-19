@@ -331,6 +331,59 @@ public class RestrictionService
 
     #endregion
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    #region Build - use treasury
+
+    public CastleActionRuling ValidateAction_BuildUseTreasury(Entity actingCharacter)
+    {
+        var ruling = Internal_ValidateAction_BuildUseTreasury(actingCharacter);
+        _rulingLoggerService.LogRuling(ruling);
+        return ruling;
+    }
+    
+    private CastlePrivileges PermissiblePrivsTo_BuildUseTreasury = new()
+    {
+        Build = BuildPrivs.UseTreasury,
+    };
+
+    private CastleActionRuling Internal_ValidateAction_BuildUseTreasury(Entity actingCharacter)
+    {
+        if (!_castleService.TryGetCastleHeartOfTerritory_WhereCharacterIs(actingCharacter, out var castleHeartEntity))
+        {
+            return CastleActionRuling.ExceptionMissingData;
+        }
+
+        if (!_userService.TryGetUserModel_ForCharacter(actingCharacter, out var actingUser))
+        {
+            return CastleActionRuling.ExceptionMissingData;
+        }        
+
+        if (!_castleService.TryGetCastleModel(castleHeartEntity, out var castleModel))
+        {
+            return CastleActionRuling.ExceptionMissingData;
+        }
+
+        var ruling = new CastleActionRuling();
+        ruling.Action = RestrictedCastleActions.BuildUseTreasury;
+        ruling.TargetPrefabGUID = default;
+        ruling.PermissiblePrivs = PermissiblePrivsTo_BuildUseTreasury;
+        HydrateRuling(ref ruling, actingUser, castleModel);
+
+        if (ruling.IsOwnerOfCastle)
+        {
+            return ruling.Allowed();
+        }
+
+        if (!ruling.IsSameClan)
+        {
+            return ruling.Disallowed();
+        }
+
+        ruling.IsAllowed = ruling.ActingUserPrivs.Intersects(ruling.PermissiblePrivs);
+        return ruling;
+    }
+
+    #endregion
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     #region OpenOrCloseDoor
 
     public CastleActionRuling ValidateAction_OpenOrCloseDoor(Entity actingCharacter, Entity door)

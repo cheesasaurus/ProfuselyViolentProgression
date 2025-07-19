@@ -13,6 +13,7 @@ public static class Core
     public static SCTService SCTService { get; private set; }
     public static UserService UserService { get; private set; }
     public static AntiCheatService AntiCheatService { get; private set; }
+    public static CastleTerritoryService CastleTerritoryService { get; private set; }
     public static CastleService CastleService { get; private set; }
     public static CastleDoorService CastleDoorService { get; private set; }
     public static BuildingService BuildingService { get; private set; }
@@ -32,7 +33,8 @@ public static class Core
         UserService = new();
 
         AntiCheatService = new(log);
-        CastleService = new(UserService);
+        CastleTerritoryService = new();
+        CastleService = new(log, UserService);
         CastleDoorService = new(CastleService);
         BuildingService = new();
         PrivilegeParser = new();

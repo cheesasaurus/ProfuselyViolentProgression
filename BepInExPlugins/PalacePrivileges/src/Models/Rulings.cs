@@ -14,6 +14,7 @@ public enum RestrictedCastleActions
     CastleHeartRemoveFuel,
     CastleHeartDisableDefense,
     Build,
+    BuildUseTreasury,
     OpenDoor,
     CloseDoor,
     RenameObject,
