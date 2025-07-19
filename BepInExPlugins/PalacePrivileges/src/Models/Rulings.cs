@@ -19,7 +19,7 @@ public enum RestrictedCastleActions
     BuildUseTreasury,
     OpenDoor,
     CloseDoor,
-    RenameObject,
+    RenameStructure,
     ServantConvert,
     ServantTerminate,
     ServantRename,

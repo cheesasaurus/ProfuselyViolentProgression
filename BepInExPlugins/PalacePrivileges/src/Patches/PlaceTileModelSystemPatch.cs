@@ -48,14 +48,17 @@ public unsafe class PlaceTileModelSystemPatch
 
         for (var i = 0; i < entities.Length; i++)
         {
-            LogUtil.LogDebug("BuildTile");
+            var ev = tmEvents[i];
+            LogUtil.LogDebug($"BuildTile: {DebugUtil.LookupPrefabName(ev.PrefabGuid)}");
+
+            if (!Core.BuildingService.IsStructureRestrictedToOwnedArea(ev.PrefabGuid))
+            {
+                continue;
+            }
+
             // todo: implement
             // need to relate to the castle somehow
-
-            // need to be sure we're not blocking explosives, golems, etc
-
-            var ev = tmEvents[i];
-            LogUtil.LogDebug(DebugUtil.LookupPrefabName(ev.PrefabGuid));
+            
 
             // todo: maybe something with the static GetPlacementResult class.
             // Entity `buildingInCastleTerritory`
@@ -64,7 +67,7 @@ public unsafe class PlaceTileModelSystemPatch
             // `TerrainChunkLookup.TryGetChunk`
             // `TerrainChunkLookup.TryGetChunkMetadataEntity`
             // `TerrainConstants`
-            
+
 
         }
     }

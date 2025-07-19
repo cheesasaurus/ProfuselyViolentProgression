@@ -106,8 +106,8 @@ public class NotificationService
             case RestrictedCastleActions.CloseDoor:
                 return $"{ownerName} has not given you permission to use that kind of door.";
 
-            case RestrictedCastleActions.RenameObject:
-                return $"{ownerName} has not given you permission to rename castle objects.";
+            case RestrictedCastleActions.RenameStructure:
+                return $"{ownerName} has not given you permission to rename castle structures.";
 
             case RestrictedCastleActions.ServantConvert:
                 return $"{ownerName} has not given you permission to convert servants.";

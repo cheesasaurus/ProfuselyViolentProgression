@@ -116,7 +116,7 @@ This is all done via chat commands...
 `all`
 `lockbox`
 `musicbox`
-`renameObjects`
+`renameStructures`
 `plantSeeds`
 
 ### Build privileges

@@ -181,7 +181,7 @@ public enum MiscPrivs : long
     Lockbox = 1 << 1,
     Musicbox = 1 << 2,
     PlantSeeds = 1 << 3,
-    RenameObjects = 1 << 4,
+    RenameStructures = 1 << 4,
 }
 
 [Flags]

@@ -21,7 +21,7 @@
 - [ ] Privs: `tp.waygate` `tp.waygateIn` `tp.waygateOut`
 - [ ] Priv: `craft.useTreasury` (crafting station AND from inventory. should apply to horse station for elixers.)
 - [x] Priv: `servants.rename`
-- [x] Priv: `renameObjects`
+- [x] Priv: `renameStructures`
 - [ ] Priv: `redist.edit`
 - [ ] Priv: `redist.toggleAutoSend`
 - [ ] Priv: `servants.throne`

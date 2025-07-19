@@ -47,9 +47,9 @@ public unsafe class RenamingPatches
 
             var character = fromCharacters[i].Character;
 
-            var ruling = Core.RestrictionService.ValidateAction_RenameCastleObject(
+            var ruling = Core.RestrictionService.ValidateAction_RenameCastleStructure(
                 actingCharacter: character,
-                objectToRename: renameTarget,
+                structureToRename: renameTarget,
                 castleHeartConnection: castleHeartConnection
             );
 

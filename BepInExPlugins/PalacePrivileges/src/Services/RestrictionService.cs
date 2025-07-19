@@ -433,49 +433,49 @@ public class RestrictionService
 
     #endregion
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    #region RenameCastleObject
+    #region RenameCastleStructure
 
-    public CastleActionRuling ValidateAction_RenameCastleObject(
+    public CastleActionRuling ValidateAction_RenameCastleStructure(
         Entity actingCharacter,
-        Entity objectToRename,
+        Entity structureToRename,
         CastleHeartConnection castleHeartConnection
     )
     {
-        var ruling = Internal_ValidateAction_RenameCastleObject(actingCharacter, objectToRename, castleHeartConnection);
+        var ruling = Internal_ValidateAction_RenameCastleStructure(actingCharacter, structureToRename, castleHeartConnection);
         _rulingLoggerService.LogRuling(ruling);
         return ruling;
     }
 
-    private CastlePrivileges PermissiblePrivsTo_RenameObject = new()
+    private CastlePrivileges PermissiblePrivsTo_RenameStructure = new()
     {
-        Misc = MiscPrivs.RenameObjects,
+        Misc = MiscPrivs.RenameStructures,
     };
 
-    private CastleActionRuling Internal_ValidateAction_RenameCastleObject(
+    private CastleActionRuling Internal_ValidateAction_RenameCastleStructure(
         Entity actingCharacter,
-        Entity objectToRename,
+        Entity structureToRename,
         CastleHeartConnection castleHeartConnection
     )
     {
         if (!_userService.TryGetUserModel_ForCharacter(actingCharacter, out var actingUser))
         {
-            return CastleActionRuling.NewRuling_NotEnoughDataToDecide(RestrictedCastleActions.RenameObject, "Failed to get User model for acting character");
+            return CastleActionRuling.NewRuling_NotEnoughDataToDecide(RestrictedCastleActions.RenameStructure, "Failed to get User model for acting character");
         }
 
         if (!_castleService.TryGetCastleModel(castleHeartConnection.CastleHeartEntity._Entity, out var castleModel))
         {
-            return CastleActionRuling.NewRuling_NotEnoughDataToDecide(RestrictedCastleActions.RenameObject, "Failed to get Castle model");
+            return CastleActionRuling.NewRuling_NotEnoughDataToDecide(RestrictedCastleActions.RenameStructure, "Failed to get Castle model");
         }
 
-        if (!_entityManager.TryGetComponentData<PrefabGUID>(objectToRename, out var objectPrefabGUID))
+        if (!_entityManager.TryGetComponentData<PrefabGUID>(structureToRename, out var objectPrefabGUID))
         {
-            return CastleActionRuling.NewRuling_NotEnoughDataToDecide(RestrictedCastleActions.RenameObject, "Failed to prefabGUID of objectToRename");
+            return CastleActionRuling.NewRuling_NotEnoughDataToDecide(RestrictedCastleActions.RenameStructure, "Failed to prefabGUID of structureToRename");
         }
 
         var ruling = new CastleActionRuling();
         ruling.TargetPrefabGUID = objectPrefabGUID;
-        ruling.Action = RestrictedCastleActions.RenameObject;
-        ruling.PermissiblePrivs = PermissiblePrivsTo_RenameObject;
+        ruling.Action = RestrictedCastleActions.RenameStructure;
+        ruling.PermissiblePrivs = PermissiblePrivsTo_RenameStructure;
         HydrateRuling(ref ruling, actingUser, castleModel);
 
         if (ruling.IsCastleWithoutOwner)

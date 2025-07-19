@@ -1,0 +1,73 @@
+TM_EH_Mines_ExplosiveBarrel_Placeable_T01 PrefabGUID(-1401715476)
+-------------------------------------------
+ProjectM.DismantleDestroyData
+ProjectM.BlueprintData
+ProjectM.EntityOwner
+ProjectM.EntityCreator
+ProjectM.BuffResistances
+ProjectM.EditableTileModel
+ProjectM.CastleAreaRequirement
+ProjectM.LastEditedBy
+ProjectM.FactionReference
+ProjectM.PlacementDestroyData
+ProjectM.DestroyData
+ProjectM.DestroyState
+ProjectM.Buffable
+ProjectM.Health
+ProjectM.HealthConstants
+ProjectM.CollisionRadius
+ProjectM.Team
+ProjectM.TileBounds
+ProjectM.TileModelSpatialData
+ProjectM.TileData
+ProjectM.BuffableFlagState
+ProjectM.EntityCategory
+ProjectM.UnitLevel
+ProjectM.UnitLevelServerData
+ProjectM.StaticTransformCompatible
+ProjectM.UnitStats
+ProjectM.Sequencer.ImpactMaterial
+ProjectM.Network.Networked
+ProjectM.Network.UpToDateUserBitMask
+ProjectM.Network.FrameChanged
+ProjectM.Network.NetworkSnapshot
+ProjectM.Tiles.TileModel
+ProjectM.CastleBuilding.CastleBuildingMaxRange
+Unity.Transforms.Rotation
+Unity.Transforms.Translation
+Unity.Physics.PhysicsCollider
+Unity.Physics.Systems.StaticPhysicsWorldBodyIndex
+Unity.Transforms.LocalToWorld
+Unity.Transforms.LocalTransform
+ProjectM.TeamReference
+ProjectM.TilePosition
+ProjectM.Network.NetworkId
+Stunlock.Core.PrefabGUID
+ProjectM.CastleBuilding.CastleBuildingAttachedChildrenBuffer [Buffer]
+ProjectM.BuffBuffer [Buffer]
+ProjectM.CreateGameplayEventOnDamageTaken [Buffer]
+ProjectM.ApplyBuffOnGameplayEvent [Buffer]
+ProjectM.GameplayEventIdMapping [Buffer]
+ProjectM.Network.Snapshot_CastleBuildingAttachedChildrenBuffer [Buffer]
+ProjectM.BlueprintRequirementBuffer [Buffer]
+ProjectM.GameplayEventListeners [Buffer]
+ProjectM.Network.NetSnapshot [Buffer]
+ProjectM.Network.SnapshotFrameChangedBuffer [Buffer]
+ProjectM.CastleBuilding.Placement.RestrictPlacementToMapZones
+ProjectM.IgnorePvETag
+ProjectM.TileCollisionTag
+ProjectM.TilePathfindingTag
+ProjectM.TileLineOfSightTag
+ProjectM.TilePlacementTag
+ProjectM.DisableWhenNoPlayersInRange
+ProjectM.Tiles.StaticTileModel
+ProjectM.Shared.DropTable
+ProjectM.Shared.StaticPhysicsCollider
+Unity.Entities.SpawnTag
+Unity.Entities.Prefab
+Unity.Entities.Simulate
+Unity.Entities.BlobAssetOwner
+ProjectM.TileModelRegistrationState
+ProjectM.Network.NetworkSnapshotType
+ProjectM.Tiles.TileModelLayer
+Unity.Physics.PhysicsWorldIndex

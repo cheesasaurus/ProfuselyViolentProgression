@@ -189,7 +189,7 @@ public class PrivilegeParser
         RegisterPrivs("all", CastlePrivileges.All);
 
         RegisterPrivs("lockbox", MiscPrivs.Lockbox);
-        RegisterPrivs("renameObjects", MiscPrivs.RenameObjects);
+        RegisterPrivs("renameStructures", MiscPrivs.RenameStructures);
         RegisterPrivs("musicbox", MiscPrivs.Musicbox); // planned feature
         RegisterPrivs("plantSeeds", MiscPrivs.PlantSeeds); // planned feature
 

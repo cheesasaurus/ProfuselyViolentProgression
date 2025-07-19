@@ -4,6 +4,7 @@ using ProfuselyViolentProgression.PalacePrivileges.Models;
 using ProjectM;
 using ProjectM.CastleBuilding;
 using Unity.Entities;
+using Unity.Transforms;
 
 namespace ProfuselyViolentProgression.PalacePrivileges.Services;
 
@@ -61,7 +62,7 @@ public class CastleService
     {
         castleHeart = Entity.Null;
 
-        if (!_entityManager.TryGetComponentData<Residency>(character, out var residency))
+        if (!_entityManager.TryGetComponentData<Translation>(character, out var translation))
         {
             return false;
         }

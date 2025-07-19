@@ -15,7 +15,7 @@ public unsafe class UseTreasuryForBuildingPatch
     private static EntityManager _entityManager = WorldUtil.Game.EntityManager;
 
     /// <remarks>
-    /// GetPlacementResourcesResult.HasEnoughResources is used when a player tries to place a new TileModel while building
+    /// GetPlacementResourcesResult.HasEnoughResources is called when a player tries to place a new TileModel while building
     /// </remarks>
     [HarmonyPatch(typeof(GetPlacementResourcesResult), nameof(GetPlacementResourcesResult.HasEnoughResources))]
     [HarmonyPrefix]
