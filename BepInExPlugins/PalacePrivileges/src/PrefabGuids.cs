@@ -93,4 +93,28 @@ public static class PrefabGuids
     public static PrefabGUID TM_Castle_Wall_Door_Wood_Tier02_StrongbladeDLC01Variant_Standard = new PrefabGUID(-1441209695);
     public static PrefabGUID TM_Castle_Wall_Door_Wood_Tier02_StrongbladeDLC01Variant_ServantLock = new PrefabGUID(1394627606);
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // seed blueprints //////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public static PrefabGUID BP_Castle_Chain_Plant_BloodRose = new PrefabGUID(-591319789);
+    public static PrefabGUID BP_Castle_Chain_Plant_FireBlossom = new PrefabGUID(1141816596);
+    public static PrefabGUID BP_Castle_Chain_Plant_SnowFlower = new PrefabGUID(-1475317620);
+    public static PrefabGUID BP_Castle_Chain_Plant_HellsClarion = new PrefabGUID(-1946047422);
+    public static PrefabGUID BP_Castle_Chain_Plant_MourningLily = new PrefabGUID(-1057579736);
+    public static PrefabGUID BP_Castle_Chain_Plant_Sunflower = new PrefabGUID(1659865297);
+    public static PrefabGUID BP_Castle_Chain_Plant_Lotus = new PrefabGUID(1230409568);
+    public static PrefabGUID BP_Castle_Chain_Plant_Grapes = new PrefabGUID(-486047789);
+    public static PrefabGUID BP_Castle_Chain_Plant_Thistle = new PrefabGUID(-437194426);
+    public static PrefabGUID BP_Castle_Chain_Plant_BleedingHeart = new PrefabGUID(-1473915226);
+    public static PrefabGUID BP_Castle_Chain_Plant_GhostShroom = new PrefabGUID(-947749857);
+    public static PrefabGUID BP_Castle_Chain_Plant_Cotton = new PrefabGUID(1171326100);
+    public static PrefabGUID BP_Castle_Chain_Plant_TrippyShroom = new PrefabGUID(1228922848);
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // sapling blueprints////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    
+    // todo
+
 }

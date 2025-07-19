@@ -47,5 +47,7 @@
 - [ ] Priv: `arena.startContest`
 - [ ] Priv: `redist.quickSend`
 - [ ] Priv: `build.useTreasury`
-- [ ] Priv: `plantSeeds`
+- [ ] Privs: planting things in garden
 - specific privs for building
+- replacing damaged walls
+- replacing damaged doors - only with a door of the same type.

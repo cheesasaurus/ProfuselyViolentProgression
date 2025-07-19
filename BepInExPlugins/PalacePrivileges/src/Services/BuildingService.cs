@@ -39,7 +39,7 @@ public class BuildingService
     /// <summary>
     /// Checks if a structure can only be placed in an area owned by your team. (e.g. a castle)
     /// </summary>
-    public bool IsStructureRestrictedToOwnedArea(PrefabGUID prefabGUID)
+    public bool IsStructureOnlyAttachableToOwnedArea(PrefabGUID prefabGUID)
     {
         if (!_blueprintHashLookupMap.TryGetValue(prefabGUID, out var blueprintData))
         {
@@ -52,6 +52,33 @@ public class BuildingService
         }
 
         return castleAreaRequirement.RequirementType is CastleAreaRequirementType.AttachToOwnedArea;
+    }
+
+    public bool IsSeed(PrefabGUID prefabGUID)
+    {
+        if (!_blueprintHashLookupMap.TryGetValue(prefabGUID, out var blueprintData))
+        {
+            return false;
+        }
+
+        // todo: check TileData component and find our way down to the field TileBlob.AllUsedPlacementFlags
+        // something in there should be the PlacementTypeObjectFlags we're looking for.
+        // need to find PlacementTypeObjectFlags.Seed
+
+        // todo: implement
+        return false;
+    }
+
+    public bool IsSapling(PrefabGUID prefabGUID)
+    {
+        if (!_blueprintHashLookupMap.TryGetValue(prefabGUID, out var blueprintData))
+        {
+            return false;
+        }
+
+
+        // todo: implement
+        return false;
     }
 
 }

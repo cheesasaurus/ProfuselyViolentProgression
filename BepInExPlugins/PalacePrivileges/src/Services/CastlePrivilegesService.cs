@@ -21,13 +21,15 @@ public class CastlePrivilegesService
         Misc = MiscPrivs.None,
         Build = BuildPrivs.None,
         Craft = CraftPrivs.AccessStations,
-        Door = DoorPrivs.NotServantLocked | DoorPrivs.Wide | DoorPrivs.ThinFence,
-        Prisoner = PrisonerPrivs.None,
+        Door = DoorPrivs.NotServantLocked | DoorPrivs.Wide,
+        Prison = PrisonPrivs.None,
         Servant = ServantPrivs.Convert,
         Teleporter = TeleporterPrivs.Waygate,
         Redistribution = RedistributionPrivs.None,
         Arena = ArenaPrivs.StartContest | ArenaPrivs.EditRules,
         Research = ResearchPrivs.All,
+        SowSeed = SowSeedPrivs.All,
+        PlantTree = PlantTreePrivs.None,
     };
 
     public CastlePrivilegesService(

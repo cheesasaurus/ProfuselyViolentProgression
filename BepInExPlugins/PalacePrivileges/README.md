@@ -48,6 +48,7 @@ By default, clan members will have the following privileges:
   - Using research tables and the stygian altar.
   - Converting new servants.
   - Starting arena contests.
+  - Sow seeds (not saplings) in the garden.
 
 Notable privileges they do NOT have:
 - Building.
@@ -210,6 +211,27 @@ This is all done via chat commands...
 `doors.dyedWhite`
 `doors.dyedGrey`
 `doors.dyedBlack`
+
+### Garden privileges
+`sowSeed.all`
+`sowSeed.bloodRose`
+`sowSeed.fireBlossom`
+`sowSeed.snowFlower`
+`sowSeed.hellsClarion`
+`sowSeed.mourningLily`
+`sowSeed.sunflower`
+`sowSeed.plagueBrier`
+`sowSeed.grape`
+`sowSeed.corruptedFlower`
+`sowSeed.bleedingHeart`
+`sowSeed.ghostShroom`
+`sowSeed.trippyShroom`
+`sowSeed.cotton`
+`sowSeed.thistle`
+
+### Arbory privileges
+`plantTree.all`
+
 
 
 ## Chat commands

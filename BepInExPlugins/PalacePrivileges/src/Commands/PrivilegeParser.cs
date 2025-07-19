@@ -134,11 +134,11 @@ public class PrivilegeParser
         });
     }
 
-    private void RegisterPrivs(string name, PrisonerPrivs privs)
+    private void RegisterPrivs(string name, PrisonPrivs privs)
     {
         RegisterPrivs(name, new CastlePrivileges
         {
-            Prisoner = privs,
+            Prison = privs,
         });
     }
 
@@ -181,6 +181,22 @@ public class PrivilegeParser
             Research = privs,
         });
     }
+    
+    private void RegisterPrivs(string name, SowSeedPrivs privs)
+    {
+        RegisterPrivs(name, new CastlePrivileges
+        {
+            SowSeed = privs,
+        });
+    }
+
+    private void RegisterPrivs(string name, PlantTreePrivs privs)
+    {
+        RegisterPrivs(name, new CastlePrivileges
+        {
+            PlantTree = privs,
+        });
+    }
 
     private void InitPrivsLookup()
     {
@@ -189,9 +205,8 @@ public class PrivilegeParser
         RegisterPrivs("all", CastlePrivileges.All);
 
         RegisterPrivs("lockbox", MiscPrivs.Lockbox);
-        RegisterPrivs("renameStructures", MiscPrivs.RenameStructures);
         RegisterPrivs("musicbox", MiscPrivs.Musicbox); // planned feature
-        RegisterPrivs("plantSeeds", MiscPrivs.PlantSeeds); // planned feature
+        RegisterPrivs("renameStructures", MiscPrivs.RenameStructures);
 
         RegisterPrivs("build.all", BuildPrivs.All);
         RegisterPrivs("build.useTreasury", BuildPrivs.All);
@@ -201,13 +216,13 @@ public class PrivilegeParser
         RegisterPrivs("craft.accessStations", CraftPrivs.AccessStations); // planned feature
         RegisterPrivs("craft.toggleRecipes", CraftPrivs.ToggleRecipes); // planned feature
 
-        RegisterPrivs("prisoners.all", PrisonerPrivs.All);
-        RegisterPrivs("prisoners.subdue", PrisonerPrivs.Subdue);
-        RegisterPrivs("prisoners.kill", PrisonerPrivs.Kill);
-        RegisterPrivs("prisoners.extractBlood", PrisonerPrivs.ExtractBlood);
-        RegisterPrivs("prisoners.feedSafeFood", PrisonerPrivs.FeedSafeFood);
-        RegisterPrivs("prisoners.feedUnSafeFood", PrisonerPrivs.FeedUnSafeFood);
-        RegisterPrivs("prisoners.useTreasury", PrisonerPrivs.FeedUnSafeFood);
+        RegisterPrivs("prisoners.all", PrisonPrivs.All);
+        RegisterPrivs("prisoners.subdue", PrisonPrivs.Subdue);
+        RegisterPrivs("prisoners.kill", PrisonPrivs.Kill);
+        RegisterPrivs("prisoners.extractBlood", PrisonPrivs.ExtractBlood);
+        RegisterPrivs("prisoners.feedSafeFood", PrisonPrivs.FeedSafeFood);
+        RegisterPrivs("prisoners.feedUnSafeFood", PrisonPrivs.FeedUnSafeFood);
+        RegisterPrivs("prisoners.useTreasury", PrisonPrivs.FeedUnSafeFood);
 
         RegisterPrivs("servants.all", ServantPrivs.All);
         RegisterPrivs("servants.convert", ServantPrivs.Convert);
@@ -275,6 +290,10 @@ public class PrivilegeParser
         RegisterPrivs("doors.barrier", DoorPrivs.ThinBarrier);
         RegisterPrivs("doors.wideBars", DoorPrivs.WideBars);
         RegisterPrivs("doors.widePlanks", DoorPrivs.WidePlanks);
+
+        RegisterPrivs("sowSeed.all", SowSeedPrivs.All);
+
+        RegisterPrivs("plantTree.all", PlantTreePrivs.All);
     }
     
     protected struct NamedCastlePrivileges

@@ -9,9 +9,6 @@ using Unity.Entities;
 
 namespace ProfuselyViolentProgression.PalacePrivileges.Patches;
 
-// CastleBuilding.CharacterMenuOpenedSystem_Server
-
-
 [HarmonyPatch]
 public unsafe class PlaceTileModelSystemPatch
 {
@@ -51,14 +48,41 @@ public unsafe class PlaceTileModelSystemPatch
             var ev = tmEvents[i];
             LogUtil.LogDebug($"BuildTile: {DebugUtil.LookupPrefabName(ev.PrefabGuid)}");
 
-            if (!Core.BuildingService.IsStructureRestrictedToOwnedArea(ev.PrefabGuid))
+            if (!Core.BuildingService.IsStructureOnlyAttachableToOwnedArea(ev.PrefabGuid))
             {
                 continue;
             }
 
+            var character = fromCharacters[i].Character;
+
+            CastleActionRuling ruling;
+            if (Core.BuildingService.IsSeed(ev.PrefabGuid))
+            {
+                // todo: use seed rules
+            }
+            else if (Core.BuildingService.IsSapling(ev.PrefabGuid))
+            {
+                // todo: use sapling rules
+            }
+            else
+            {
+                // todo: use building rules
+            }            
+
+            // bool IsAllowed = true;
+            bool IsAllowed = false; // todo: use ruling.IsAllowed
+            if (!IsAllowed)
+            {
+                _entityManager.DestroyEntity(entities[i]);
+                // todo: uncomment once we have ruling
+                // Core.NotificationService.NotifyActionDenied(character, ref ruling);
+            }
+
+            
+
             // todo: implement
             // need to relate to the castle somehow
-            
+
 
             // todo: maybe something with the static GetPlacementResult class.
             // Entity `buildingInCastleTerritory`

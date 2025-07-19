@@ -1,0 +1,55 @@
+BuildTile: BP_Castle_Chain_Tree_Oak_01 PrefabGUID(75711340)
+-------------------------------------------
+ProjectM.DismantleDestroyData
+ProjectM.BlueprintData
+ProjectM.SpawnChainData+ActiveChildElement
+ProjectM.EditableTileModel
+ProjectM.CastleBuilding.CastleHeartConnection
+ProjectM.CastleAreaRequirement
+ProjectM.LastEditedBy
+ProjectM.StaticHierarchyData
+ProjectM.PlacementDestroyData
+ProjectM.DestroyData
+ProjectM.DestroyState
+ProjectM.AutoChainInstanceData
+ProjectM.SpawnChainData+SpawnChainConstants
+ProjectM.SpawnChainData+SpawnChainInstance
+ProjectM.Team
+ProjectM.TileBounds
+ProjectM.TileModelSpatialData
+ProjectM.TileData
+ProjectM.Network.Networked
+ProjectM.Network.UpToDateUserBitMask
+ProjectM.Network.FrameChanged
+ProjectM.Network.NetworkSnapshot
+ProjectM.Tiles.TileModel
+ProjectM.CastleBuilding.CastleBuildingAttachSettings
+ProjectM.CastleBuilding.CastleBuildingMaxRange
+Unity.Transforms.Rotation
+Unity.Transforms.Translation
+Unity.Transforms.LocalToWorld
+Unity.Transforms.LocalTransform
+ProjectM.TeamReference
+ProjectM.TilePosition
+ProjectM.Network.NetworkId
+Stunlock.Core.PrefabGUID
+ProjectM.StaticHierarchyBuffer [Buffer]
+ProjectM.CastleBuilding.CastleBuildingAttachToParentsBuffer [Buffer]
+ProjectM.SpawnChainData+QueuedTransitionRequests [Buffer]
+Unity.Entities.LinkedEntityGroup [Buffer]
+ProjectM.Network.Snapshot_CastleBuildingAttachToParentsBuffer [Buffer]
+ProjectM.BlueprintRequirementBuffer [Buffer]
+ProjectM.Network.NetSnapshot [Buffer]
+ProjectM.Network.SnapshotFrameChangedBuffer [Buffer]
+ProjectM.CastleBuilding.Placement.RestrictPlacementToMapZones
+ProjectM.TilePlacementTag
+ProjectM.DisableWhenNoPlayersInRange
+ProjectM.CastleBuilding.Rebuilding.CastleRebuildCommonTag
+ProjectM.CastleBuilding.Rebuilding.CastleRebuildHiddenTag
+Unity.Entities.SpawnTag
+Unity.Entities.Prefab
+Unity.Entities.Simulate
+Unity.Entities.BlobAssetOwner
+ProjectM.TileModelRegistrationState
+ProjectM.Network.NetworkSnapshotType
+ProjectM.Tiles.TileModelLayer

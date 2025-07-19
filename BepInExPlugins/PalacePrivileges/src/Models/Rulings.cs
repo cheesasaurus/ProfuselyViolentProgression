@@ -16,6 +16,8 @@ public enum RestrictedCastleActions
     CastleHeartRemoveFuel,
     CastleHeartDisableDefense,
     Build,
+    SowSeed,
+    SowSapling,
     BuildUseTreasury,
     OpenDoor,
     CloseDoor,
@@ -23,7 +25,7 @@ public enum RestrictedCastleActions
     ServantConvert,
     ServantTerminate,
     ServantRename,
-    ServantGearChange,        
+    ServantGearChange,
 }
 
 

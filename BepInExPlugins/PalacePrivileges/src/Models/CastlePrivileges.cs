@@ -10,12 +10,14 @@ public struct CastlePrivileges
     public BuildPrivs Build { get; set; }
     public CraftPrivs Craft { get; set; }
     public DoorPrivs Door { get; set; }
-    public PrisonerPrivs Prisoner { get; set; }
+    public PrisonPrivs Prison { get; set; }
     public ServantPrivs Servant { get; set; }
     public TeleporterPrivs Teleporter { get; set; }
     public RedistributionPrivs Redistribution { get; set; }
     public ArenaPrivs Arena { get; set; }
     public ResearchPrivs Research { get; set; }
+    public SowSeedPrivs SowSeed { get; set; }
+    public PlantTreePrivs PlantTree { get; set; }
 
     public readonly bool Intersects(CastlePrivileges other)
     {
@@ -23,12 +25,14 @@ public struct CastlePrivileges
             || BuildPrivs.None != (Build & other.Build)
             || CraftPrivs.None != (Craft & other.Craft)
             || DoorPrivs.None != (Door & other.Door)
-            || PrisonerPrivs.None != (Prisoner & other.Prisoner)
+            || PrisonPrivs.None != (Prison & other.Prison)
             || ServantPrivs.None != (Servant & other.Servant)
             || TeleporterPrivs.None != (Teleporter & other.Teleporter)
             || RedistributionPrivs.None != (Redistribution & other.Redistribution)
             || ArenaPrivs.None != (Arena & other.Arena)
-            || ResearchPrivs.None != (Research & other.Research);
+            || ResearchPrivs.None != (Research & other.Research)
+            || SowSeedPrivs.None != (SowSeed & other.SowSeed)
+            || PlantTreePrivs.None != (PlantTree & other.PlantTree);
     }
 
     public readonly bool IsSupersetOf(CastlePrivileges other)
@@ -37,12 +41,14 @@ public struct CastlePrivileges
             && other.Build == (Build & other.Build)
             && other.Craft == (Craft & other.Craft)
             && other.Door == (Door & other.Door)
-            && other.Prisoner == (Prisoner & other.Prisoner)
+            && other.Prison == (Prison & other.Prison)
             && other.Servant == (Servant & other.Servant)
             && other.Teleporter == (Teleporter & other.Teleporter)
             && other.Redistribution == (Redistribution & other.Redistribution)
             && other.Arena == (Arena & other.Arena)
-            && other.Research == (Research & other.Research);
+            && other.Research == (Research & other.Research)
+            && other.SowSeed == (SowSeed & other.SowSeed)
+            && other.PlantTree == (PlantTree & other.PlantTree);
     }
 
     public readonly bool IsSubsetOf(CastlePrivileges other)
@@ -51,12 +57,14 @@ public struct CastlePrivileges
             && Build == (Build & other.Build)
             && Craft == (Craft & other.Craft)
             && Door == (Door & other.Door)
-            && Prisoner == (Prisoner & other.Prisoner)
+            && Prison == (Prison & other.Prison)
             && Servant == (Servant & other.Servant)
             && Teleporter == (Teleporter & other.Teleporter)
             && Redistribution == (Redistribution & other.Redistribution)
             && Arena == (Arena & other.Arena)
-            && Research == (Research & other.Research);
+            && Research == (Research & other.Research)
+            && SowSeed == (SowSeed & other.SowSeed)
+            && PlantTree == (PlantTree & other.PlantTree);
     }
 
     public static readonly CastlePrivileges None = new CastlePrivileges();
@@ -67,7 +75,7 @@ public struct CastlePrivileges
         Build = BuildPrivs.All,
         Craft = CraftPrivs.All,
         Door = DoorPrivs.All,
-        Prisoner = PrisonerPrivs.All,
+        Prison = PrisonPrivs.All,
         Servant = ServantPrivs.All,
         Teleporter = TeleporterPrivs.All,
         Redistribution = RedistributionPrivs.All,
@@ -82,7 +90,7 @@ public struct CastlePrivileges
         result.Build = left.Build | right.Build;
         result.Craft = left.Craft | right.Craft;
         result.Door = left.Door | right.Door;
-        result.Prisoner = left.Prisoner | right.Prisoner;
+        result.Prison = left.Prison | right.Prison;
         result.Servant = left.Servant | right.Servant;
         result.Teleporter = left.Teleporter | right.Teleporter;
         result.Redistribution = left.Redistribution | right.Redistribution;
@@ -98,7 +106,7 @@ public struct CastlePrivileges
         result.Build = left.Build & right.Build;
         result.Craft = left.Craft & right.Craft;
         result.Door = left.Door & right.Door;
-        result.Prisoner = left.Prisoner & right.Prisoner;
+        result.Prison = left.Prison & right.Prison;
         result.Servant = left.Servant & right.Servant;
         result.Teleporter = left.Teleporter & right.Teleporter;
         result.Redistribution = left.Redistribution & right.Redistribution;
@@ -114,7 +122,7 @@ public struct CastlePrivileges
         result.Build = ~operand.Build;
         result.Craft = ~operand.Craft;
         result.Door = ~operand.Door;
-        result.Prisoner = ~operand.Prisoner;
+        result.Prison = ~operand.Prison;
         result.Servant = ~operand.Servant;
         result.Teleporter = ~operand.Teleporter;
         result.Redistribution = ~operand.Redistribution;
@@ -143,9 +151,9 @@ public struct CastlePrivileges
         {
             privNames.Add($"Door: {Door}");
         }
-        if (Prisoner != PrisonerPrivs.None)
+        if (Prison != PrisonPrivs.None)
         {
-            privNames.Add($"Prisoner: {Prisoner}");
+            privNames.Add($"Prisoner: {Prison}");
         }
         if (Servant != ServantPrivs.None)
         {
@@ -180,8 +188,7 @@ public enum MiscPrivs : long
     All = -1,
     Lockbox = 1 << 1,
     Musicbox = 1 << 2,
-    PlantSeeds = 1 << 3,
-    RenameStructures = 1 << 4,
+    RenameStructures = 1 << 3,
 }
 
 [Flags]
@@ -264,7 +271,7 @@ public enum DoorPrivs : long
 }
 
 [Flags]
-public enum PrisonerPrivs : long
+public enum PrisonPrivs : long
 {
     None = 0,
     All = -1,
@@ -321,4 +328,20 @@ public enum ArenaPrivs : long
     StartContest = 1,
     EditRules = 1 << 1,
     ZonePainting = 1 << 2,
+}
+
+[Flags]
+public enum SowSeedPrivs : long
+{
+    None = 0,
+    All = -1,
+    // todo: all seeds
+}
+
+[Flags]
+public enum PlantTreePrivs : long
+{
+    None = 0,
+    All = -1,
+    // todo: all saplings
 }
