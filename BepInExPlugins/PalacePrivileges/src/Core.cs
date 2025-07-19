@@ -17,6 +17,7 @@ public static class Core
     public static CastleService CastleService { get; private set; }
     public static CastleDoorService CastleDoorService { get; private set; }
     public static BuildingService BuildingService { get; private set; }
+    public static GardenService GardenService { get; private set; }
     public static PrivilegeParser PrivilegeParser { get; private set; }
     public static GlobalSettingsService GlobalSettingsService { get; private set; }
     public static CastlePrivilegesService CastlePrivilegesService { get; private set; }
@@ -31,12 +32,12 @@ public static class Core
         NetworkIdService = new();
         SCTService = new();
         UserService = new();
-
         AntiCheatService = new(log);
         CastleTerritoryService = new();
         CastleService = new(log, UserService);
         CastleDoorService = new(CastleService);
         BuildingService = new();
+        GardenService = new();
         PrivilegeParser = new();
 
         GlobalSettingsService = new(

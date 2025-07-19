@@ -335,7 +335,20 @@ public enum SowSeedPrivs : long
 {
     None = 0,
     All = -1,
-    // todo: all seeds
+    BloodRose = 1,
+    FireBlossom = 1 << 1,
+    SnowFlower = 1 << 2,
+    HellsClarion = 1 << 3,
+    MourningLily = 1 << 4,
+    Sunflower = 1 << 5,
+    PlagueBrier = 1 << 6,
+    Grapes = 1 << 7,
+    CorruptedFlower = 1 << 8,
+    BleedingHeart = 1 << 9,
+    GhostShroom = 1 << 10,
+    TrippyShroom = 1 << 11,
+    Cotton = 1 << 12,
+    Thistle = 1 << 13,
 }
 
 [Flags]
@@ -343,5 +356,16 @@ public enum PlantTreePrivs : long
 {
     None = 0,
     All = -1,
-    // todo: all saplings
+    Pine = 1,
+    Cypress = 1 << 1,
+    Aspen = 1 << 2,
+    AspenAutumn = 1 << 3,
+    Birch = 1 << 4,
+    BirchAutumn = 1 << 5,
+    Apple = 1 << 6,
+    Cursed = 1 << 7,
+    Gloomy = 1 << 8,
+    Cherry = 1 << 9,
+    CherryWhite = 1 << 10,
+    Oak = 1 << 11,
 }

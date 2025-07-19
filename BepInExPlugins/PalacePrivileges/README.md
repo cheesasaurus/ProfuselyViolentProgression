@@ -221,7 +221,7 @@ This is all done via chat commands...
 `sowSeed.mourningLily`
 `sowSeed.sunflower`
 `sowSeed.plagueBrier`
-`sowSeed.grape`
+`sowSeed.grapes`
 `sowSeed.corruptedFlower`
 `sowSeed.bleedingHeart`
 `sowSeed.ghostShroom`
@@ -231,7 +231,18 @@ This is all done via chat commands...
 
 ### Arbory privileges
 `plantTree.all`
-
+`plantTree.pine`
+`plantTree.cypress`
+`plantTree.aspen`
+`plantTree.aspenAutumn`
+`plantTree.birch`
+`plantTree.birchAutumn`
+`plantTree.apple`
+`plantTree.cursed`
+`plantTree.gloomy`
+`plantTree.cherry`
+`plantTree.cherryWhite`
+`plantTree.oak`
 
 
 ## Chat commands

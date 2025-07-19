@@ -1,8 +1,10 @@
+using System.Text;
 using ProfuselyViolentProgression.Core.Utilities;
 using ProfuselyViolentProgression.PalacePrivileges.Models;
 using ProjectM;
 using ProjectM.CastleBuilding.Placement;
 using ProjectM.Network;
+using ProjectM.Tiles;
 using Stunlock.Core;
 using Unity.Collections;
 using Unity.Entities;
@@ -52,33 +54,6 @@ public class BuildingService
         }
 
         return castleAreaRequirement.RequirementType is CastleAreaRequirementType.AttachToOwnedArea;
-    }
-
-    public bool IsSeed(PrefabGUID prefabGUID)
-    {
-        if (!_blueprintHashLookupMap.TryGetValue(prefabGUID, out var blueprintData))
-        {
-            return false;
-        }
-
-        // todo: check TileData component and find our way down to the field TileBlob.AllUsedPlacementFlags
-        // something in there should be the PlacementTypeObjectFlags we're looking for.
-        // need to find PlacementTypeObjectFlags.Seed
-
-        // todo: implement
-        return false;
-    }
-
-    public bool IsSapling(PrefabGUID prefabGUID)
-    {
-        if (!_blueprintHashLookupMap.TryGetValue(prefabGUID, out var blueprintData))
-        {
-            return false;
-        }
-
-
-        // todo: implement
-        return false;
     }
 
 }

@@ -56,11 +56,11 @@ public unsafe class PlaceTileModelSystemPatch
             var character = fromCharacters[i].Character;
 
             CastleActionRuling ruling;
-            if (Core.BuildingService.IsSeed(ev.PrefabGuid))
+            if (Core.GardenService.IsSeed(ev.PrefabGuid))
             {
                 // todo: use seed rules
             }
-            else if (Core.BuildingService.IsSapling(ev.PrefabGuid))
+            else if (Core.GardenService.IsSapling(ev.PrefabGuid))
             {
                 // todo: use sapling rules
             }

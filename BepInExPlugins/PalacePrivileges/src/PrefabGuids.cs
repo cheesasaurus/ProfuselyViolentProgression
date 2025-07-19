@@ -104,17 +104,29 @@ public static class PrefabGuids
     public static PrefabGUID BP_Castle_Chain_Plant_MourningLily = new PrefabGUID(-1057579736);
     public static PrefabGUID BP_Castle_Chain_Plant_Sunflower = new PrefabGUID(1659865297);
     public static PrefabGUID BP_Castle_Chain_Plant_Lotus = new PrefabGUID(1230409568);
-    public static PrefabGUID BP_Castle_Chain_Plant_Grapes = new PrefabGUID(-486047789);
-    public static PrefabGUID BP_Castle_Chain_Plant_Thistle = new PrefabGUID(-437194426);
+    public static PrefabGUID BP_Castle_Chain_Plant_Grapes = new PrefabGUID(-486047789);    
     public static PrefabGUID BP_Castle_Chain_Plant_BleedingHeart = new PrefabGUID(-1473915226);
+    public static PrefabGUID BP_Castle_Chain_Plant_CorruptedFlower = new PrefabGUID(1655131947);
     public static PrefabGUID BP_Castle_Chain_Plant_GhostShroom = new PrefabGUID(-947749857);
     public static PrefabGUID BP_Castle_Chain_Plant_Cotton = new PrefabGUID(1171326100);
     public static PrefabGUID BP_Castle_Chain_Plant_TrippyShroom = new PrefabGUID(1228922848);
+    public static PrefabGUID BP_Castle_Chain_Plant_Thistle = new PrefabGUID(-437194426);
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // sapling blueprints////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
-    // todo
+
+    public static PrefabGUID BP_Castle_Chain_Tree_Spruce_01 = new PrefabGUID(1218240817);
+    public static PrefabGUID BP_Castle_Chain_Tree_Cypress_01 = new PrefabGUID(308236778);
+    public static PrefabGUID BP_Castle_Chain_Tree_Aspen_01 = new PrefabGUID(-683262945);
+    public static PrefabGUID BP_Castle_Chain_Tree_AspenAutum_01 = new PrefabGUID(1072528933);
+    public static PrefabGUID BP_Castle_Chain_Tree_Birch_01 = new PrefabGUID(-355620152);
+    public static PrefabGUID BP_Castle_Chain_Tree_BirchAutum_01 = new PrefabGUID(500254158);
+    public static PrefabGUID BP_Castle_Chain_Tree_AppleTree_01 = new PrefabGUID(-1362642773);
+    public static PrefabGUID BP_Castle_Chain_Tree_AppleCursed_01 = new PrefabGUID(-315187808);
+    public static PrefabGUID BP_Castle_Chain_Tree_GloomTree_01 = new PrefabGUID(-1523660086);    
+    public static PrefabGUID BP_Castle_Chain_Tree_CherryBlossomWhite_01 = new PrefabGUID(148077443);
+    public static PrefabGUID BP_Castle_Chain_Tree_CherryBlossom_01 = new PrefabGUID(1646702119);    
+    public static PrefabGUID BP_Castle_Chain_Tree_Oak_01 = new PrefabGUID(75711340);
 
 }
