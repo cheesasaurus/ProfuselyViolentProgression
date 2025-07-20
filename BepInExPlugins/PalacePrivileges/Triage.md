@@ -22,7 +22,7 @@
 - [ ] Priv: `craft.useTreasury` (crafting station AND from inventory. should apply to horse station for elixers.)
 - [x] Priv: `servants.rename`
 - [x] Priv: `renameStructures`
-- [ ] Priv: `redist.edit`
+- [ ] Priv: `redist.edit` - be sure to validate the "clear all" thing at the engine itself too
 - [ ] Priv: `redist.toggleAutoSend`
 - [ ] Priv: `servants.throne`
 - [ ] Priv: `craft.toggleRecipes`

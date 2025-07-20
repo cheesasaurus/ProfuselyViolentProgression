@@ -71,6 +71,9 @@
 - SpaceConversion - utility for coordinate/index conversion. world, tile, local, chunk
 
 
+- InteractValidateAndStopSystemServer
+
+
 - ServerGameManager - has a bunch of utility stuff
 
 - ServerGameManager.InterruptCast(Entity character) - TODO: try this out. could be the missing piece for WallopWarpers
