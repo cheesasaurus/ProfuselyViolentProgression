@@ -32,7 +32,7 @@ public static class InterruptWaygateInteractPatch
             if (WallopWarpersUtil.IsInPvpCombat(ev.PlayerEntity))
             {
                 EntityManager.DestroyEntity(entity);
-                WallopWarpersUtil.SendMessagePvPTeleportDisallowed(ev.PlayerEntity);
+                WallopWarpersUtil.SendMessagePvPTeleportDisallowed(ev.PlayerEntity, ev.FromTarget);
             }
         }
     }
@@ -70,24 +70,19 @@ public static class InterruptWaygateInteractPatch
             return;
         }
 
-        if (WallopWarpersUtil.IsUseWaypointCast(abilityPrefabGUID) && WallopWarpersUtil.IsInPvpCombat(ev.Character))
+        bool isUsingWaygatetDuringPvP = WallopWarpersUtil.IsUseWaypointCast(abilityPrefabGUID) && WallopWarpersUtil.IsInPvpCombat(ev.Character);
+        if (!isUsingWaygatetDuringPvP)
         {
-            try
-            {
-                WallopWarpersUtil.SendMessagePvPTeleportDisallowed(ev.Character);
-                //WallopWarpersUtil.ImpairWaypointUse(ev.Character);
-                //WallopWarpersUtil.InterruptCast1(entity, ev); // this doesn't work
-                //WallopWarpersUtil.InterruptCast2(entity, ev); // this doesn't work
-                //WallopWarpersUtil.InterruptCast3(entity, ev); // this doesn't work
-                //EntityManager.DestroyEntity(entity); // this doesn't work, and causes jank
-
-                WallopWarpersUtil.InterruptCast4(entity, ev);
-            }
-            catch (Exception ex)
-            {
-                LogUtil.LogError(ex);
-            }
+            return;
         }
+        
+        if (!EntityManager.TryGetComponentData<AbilityTarget>(ev.Ability, out var abilityTarget))
+        {
+            return;
+        }
+        
+        WallopWarpersUtil.SendMessagePvPTeleportDisallowed(ev.Character, abilityTarget.Target._Entity);
+        WallopWarpersUtil.InterruptCast(ev);
     }
 
 }
