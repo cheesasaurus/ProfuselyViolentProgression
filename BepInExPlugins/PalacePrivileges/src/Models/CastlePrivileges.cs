@@ -223,7 +223,7 @@ public enum CraftPrivs : long
     None = 0,
     All = -1,
     UseTreasury = 1,
-    Craft = 1 << 1,
+    CraftItem = 1 << 1,
 }
 
 [Flags]

@@ -246,7 +246,7 @@ public class PrivilegeParser
         RegisterPrivs("build.useTreasury", BuildPrivs.All);
 
         RegisterPrivs("craft.all", CraftPrivs.All);
-        RegisterPrivs("craft.craft", CraftPrivs.Craft);
+        RegisterPrivs("craft.craftItem", CraftPrivs.CraftItem);
         RegisterPrivs("craft.useTreasury", CraftPrivs.UseTreasury);
 
         RegisterPrivs("prison.all", PrisonPrivs.All);

@@ -25,7 +25,7 @@
 - [ ] Priv: `redist.edit` - be sure to validate the "clear all" thing at the engine itself too
 - [ ] Priv: `redist.toggleAutoSend`
 - [x] Priv: `servants.throne`
-- [ ] Priv: `craft.toggleRecipes`
+- [ ] Priv: `toggleRefinement`
 
 
 ## Future features
@@ -38,7 +38,7 @@
   - maybe a special export string, with a command like `.castlePrivs import asdfklkjasdfjkhasdflongassstringbutnotlongerthanthemessagesizelimit`
   - same hosting strategy as CastleHeartPolice.
   - a chat command to export from the game wouldn't be usable, because the client doesn't have a way to copy/paste from messages.
-- [ ] Priv: `craft.craft`
+- [x] Priv: `craft.craftItem`
 - [x] Priv: `musicbox` - MoodSystem
 - [x] Priv: `servants.convert`
 - [x] Priv: `research.t1` `research.t2` `research.t3`

@@ -54,7 +54,6 @@ public unsafe class StartCraftingSystemPatch
             {
                 HandleGeneralCraft(entities[i], character, workstation, ev.RecipeId);
             }
-
         }
     }
 
@@ -66,7 +65,8 @@ public unsafe class StartCraftingSystemPatch
 
     private static void HandleGeneralCraft(Entity eventEntity, Entity character, Entity workstation, PrefabGUID recipePrefabGUID)
     {
-        // todo: implement
+        var ruling = Core.RestrictionService.ValidateAction_CraftItem(character, workstation, recipePrefabGUID);
+        EnforceRuling(eventEntity, character, ruling);
     }
     
     private static void EnforceRuling(Entity eventEntity, Entity character, CastleActionRuling ruling)

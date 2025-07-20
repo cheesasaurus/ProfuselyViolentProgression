@@ -82,7 +82,7 @@ This is all done via chat commands...
 - You fully trust Bobby.
   - `.castlePrivs grant player Bobby "all"`
 - Let clan members use the small teleporters.
-  - `.castlePrivs grant clan "tp.allSmall"`
+  - `.castlePrivs grant clan "tp.small"`
 - Let clan members waygate out, but not in.
   - `.castlePrivs ungrant clan "tp.waygateIn"`
 - Put some servant-locked doors at the entrance for clan members to use.
@@ -97,12 +97,12 @@ This is all done via chat commands...
   - Suzy will not be able to feed prisoners gruel or corrupted fish.
 
 ### Color-coded doors example
-- Johnny's favorite color is yellow and you made a special room just for him.
-  - Block off his room with the door from the Oakveil DLC.
-  - Put a servant lock on his door.
-  - Grant Johnny the `doors.dyedYellow` privilege.
-  - Dye the door yellow.
-  - Now, only you and Johnny will have access to this room!
+Timmy's favorite color is yellow and you made a special room just for him.
+1. Block off his room with the door from the Oakveil DLC.
+2. Put a servant lock on his door.
+3. Grant Timmy the `doors.dyedYellow` privilege.
+4. Dye the door yellow.
+5. Now, only you and Timmy will have access to this room!
 
 #### How to dye doors
 - Can only be done with the Oakveil DLC door.
@@ -126,7 +126,7 @@ This is all done via chat commands...
 
 ### Craft privileges
 `craft.all`
-`craft.craft`
+`craft.craftItem`
 `craft.useTreasury`
 
 ### Prison privileges

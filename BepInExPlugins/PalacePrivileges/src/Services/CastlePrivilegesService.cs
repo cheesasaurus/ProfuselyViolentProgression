@@ -20,7 +20,7 @@ public class CastlePrivilegesService
     {
         Misc = MiscPrivs.None,
         Build = BuildPrivs.None,
-        Craft = CraftPrivs.Craft,
+        Craft = CraftPrivs.CraftItem,
         Door = DoorPrivs.NotServantLocked | DoorPrivs.Wide,
         Prison = PrisonPrivs.None,
         Servant = ServantPrivs.Convert,
