@@ -18,7 +18,7 @@
 - [ ] Priv: `prisoners.feedUnsafeFood` (moved to mvp for anticheat)
 - [ ] Priv: `prisoners.feedSafeFood` (anticipating to implement alongside feedUnsafeFood)
 - [ ] Privs: `tp.red` `tp.yellow` `tp.purple` `tp.blue` `tp.allSmall`
-- [ ] Privs: `tp.waygate` `tp.waygateIn` `tp.waygateOut`
+- [x] Privs: `tp.waygate` `tp.waygateIn` `tp.waygateOut`
 - [ ] Priv: `craft.useTreasury` (crafting station AND from inventory. should apply to horse station for elixers.)
 - [x] Priv: `servants.rename`
 - [x] Priv: `renameStructures`
@@ -32,7 +32,7 @@
 
 - [ ] Cooldown: Using key after leaving clan. will make clan history lib first.
 - [x] Privs: opening / closing doors, by color
-- [x] `Check` command not showing redundant privileges. (e.g. listing all the seeds when sowseed.all is on)
+- [x] `Check` command should not show redundant privileges. (e.g. listing all the seeds when sowseed.all is on)
 - [ ] webapp with UI to set up privileges, and spit out commands.
   - check how arena does it.
   - maybe a special export string, with a command like `.castlePrivs import asdfklkjasdfjkhasdflongassstringbutnotlongerthanthemessagesizelimit`

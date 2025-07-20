@@ -1,7 +1,9 @@
 using BepInEx.Logging;
+using ProfuselyViolentProgression.Core.Utilities;
 using ProfuselyViolentProgression.PalacePrivileges.Commands;
 using ProfuselyViolentProgression.PalacePrivileges.Models;
 using ProfuselyViolentProgression.PalacePrivileges.Services;
+using ProjectM.Scripting;
 
 namespace ProfuselyViolentProgression.PalacePrivileges;
 
@@ -9,6 +11,8 @@ public static class Core
 {
     public static bool IsInitialized { get; private set; } = false;
     
+    public static ServerScriptMapper ServerScriptMapper { get; private set; }
+    public static ServerGameManager ServerGameManager => ServerScriptMapper.GetServerGameManager(); // it's a struct, so don't cache it
     public static SingletonService SingletonService { get; private set; }
     public static SCTService SCTService { get; private set; }
     public static UserService UserService { get; private set; }
@@ -29,6 +33,7 @@ public static class Core
     {
         IsInitialized = true;
 
+        ServerScriptMapper = WorldUtil.Server.GetExistingSystemManaged<ServerScriptMapper>();
         SingletonService = new();
         SCTService = new();
         UserService = new();

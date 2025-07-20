@@ -130,6 +130,12 @@ public class NotificationService
             case RestrictedCastleActions.ServantGearChange:
                 return $"{ownerName} has not given you permission to change servant gear.";
 
+            case RestrictedCastleActions.WaygateIn:
+                return $"{ownerName} has not given you permission to waygate in to their castle.";
+
+            case RestrictedCastleActions.WaygateOut:
+                return $"{ownerName} has not given you permission to waygate out of their castle.";
+
             default:
                 return $"{ownerName} has not given you permission to do that.";
         }

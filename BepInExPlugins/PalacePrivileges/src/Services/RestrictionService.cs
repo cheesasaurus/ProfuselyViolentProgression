@@ -715,7 +715,7 @@ public class RestrictionService
 
         if (!_castleService.TryGetCastleModel_ForConnectedEntity(coffin, out var castleModel))
         {
-            return CastleActionRuling.NewRuling_NotEnoughDataToDecide(RestrictedCastleActions.ServantRename, "Failed to Castle model");
+            return CastleActionRuling.NewRuling_NotEnoughDataToDecide(RestrictedCastleActions.ServantRename, "Failed to get Castle model");
         }
 
         if (!_entityManager.TryGetComponentData<PrefabGUID>(coffin, out var coffinPrefabGUID))
@@ -815,6 +815,76 @@ public class RestrictionService
 
     #endregion
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    #region castle waygate usage
+
+    public CastleActionRuling ValidateAction_WaygateIn(Entity actingCharacter, Entity toCastleWaygate)
+    {
+        var ruling = Internal_ValidateAction_CastleWaygate(actingCharacter, toCastleWaygate, RestrictedCastleActions.WaygateIn, PermissiblePrivsTo_WaygateIn);
+        _rulingLoggerService.LogRuling(ruling);
+        return ruling;
+    }
+
+    public CastleActionRuling ValidateAction_WaygateOut(Entity actingCharacter, Entity toCastleWaygate)
+    {
+        var ruling = Internal_ValidateAction_CastleWaygate(actingCharacter, toCastleWaygate, RestrictedCastleActions.WaygateOut, PermissiblePrivsTo_WaygateOut);
+        _rulingLoggerService.LogRuling(ruling);
+        return ruling;
+    }
     
+    private CastlePrivileges PermissiblePrivsTo_WaygateIn = new()
+    {
+        Teleporter = TeleporterPrivs.WaygateIn,
+    };
+
+    private CastlePrivileges PermissiblePrivsTo_WaygateOut = new()
+    {
+        Teleporter = TeleporterPrivs.WaygateOut,
+    };
+
+    private CastleActionRuling Internal_ValidateAction_CastleWaygate(
+        Entity actingCharacter,
+        Entity castleWaygate,
+        RestrictedCastleActions action,
+        CastlePrivileges permittedPrivs
+    )
+    {
+        if (!_userService.TryGetUserModel_ForCharacter(actingCharacter, out var actingUser))
+        {
+            return CastleActionRuling.NewRuling_NotEnoughDataToDecide(action, "Failed to get User model for acting character");
+        }
+
+        if (!_entityManager.TryGetComponentData<PrefabGUID>(castleWaygate, out var waygatePrefabGUID))
+        {
+            return CastleActionRuling.NewRuling_NotEnoughDataToDecide(action, "Failed to get prefabGUID for waygate");
+        }
+
+        if (!_castleService.TryGetCastleModel_ForConnectedEntity(castleWaygate, out var castleModel))
+        {
+            return CastleActionRuling.NewRuling_NotEnoughDataToDecide(action, "Failed to get Castle model");
+        }
+
+        var ruling = new CastleActionRuling();
+        ruling.Action = action;
+        ruling.TargetPrefabGUID = waygatePrefabGUID;
+        ruling.PermissiblePrivs = permittedPrivs;
+        HydrateRuling(ref ruling, actingUser, castleModel);
+
+        if (ruling.IsOwnerOfCastle)
+        {
+            return ruling.Allowed();
+        }
+
+        if (!ruling.IsSameClan)
+        {
+            return ruling.Disallowed();
+        }
+
+        ruling.IsAllowed = ruling.ActingUserPrivs.Intersects(ruling.PermissiblePrivs);
+        return ruling;
+    }
+
+    #endregion
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 }
