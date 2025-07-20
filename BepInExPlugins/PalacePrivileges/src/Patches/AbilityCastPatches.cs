@@ -130,7 +130,26 @@ public static class AbilityCastPatches
 
     private static void Handle_UsingSmallTeleporter(AbilityCastStartedEvent ev, AbilityTarget abilityTarget, PrefabGUID abilityPrefabGUID, PrefabGUID targetPrefabGUID)
     {
-        // todo: implement
+        if (targetPrefabGUID.Equals(PrefabGuids.TM_Castle_LocalTeleporter_Red))
+        {
+            var ruling = Core.RestrictionService.ValidateAction_UseTeleporterRed(ev.Character, abilityTarget.Target._Entity);
+            EnforceRuling(ev.Character, ruling);
+        }
+        else if (targetPrefabGUID.Equals(PrefabGuids.TM_Castle_LocalTeleporter_Yellow))
+        {
+            var ruling = Core.RestrictionService.ValidateAction_UseTeleporterYellow(ev.Character, abilityTarget.Target._Entity);
+            EnforceRuling(ev.Character, ruling);
+        }
+        else if (targetPrefabGUID.Equals(PrefabGuids.TM_Castle_LocalTeleporter_Purple))
+        {
+            var ruling = Core.RestrictionService.ValidateAction_UseTeleporterPurple(ev.Character, abilityTarget.Target._Entity);
+            EnforceRuling(ev.Character, ruling);
+        }
+        else if (targetPrefabGUID.Equals(PrefabGuids.TM_Castle_LocalTeleporter_Blue))
+        {
+            var ruling = Core.RestrictionService.ValidateAction_UseTeleporterBlue(ev.Character, abilityTarget.Target._Entity);
+            EnforceRuling(ev.Character, ruling);
+        }
     }
 
     private static void Handle_UsingThrone(AbilityCastStartedEvent ev, AbilityTarget abilityTarget, PrefabGUID abilityPrefabGUID, PrefabGUID targetPrefabGUID)
@@ -169,7 +188,7 @@ public static class AbilityCastPatches
     private static void Handle_UsingResearchStation(AbilityCastStartedEvent ev, AbilityTarget abilityTarget, PrefabGUID abilityPrefabGUID, PrefabGUID targetPrefabGUID)
     {
         // todo: implement
-        
+
     }
 
 }

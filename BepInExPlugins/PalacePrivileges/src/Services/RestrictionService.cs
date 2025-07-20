@@ -935,9 +935,9 @@ public class RestrictionService
         Servant = ServantPrivs.Throne,
     };
 
-    public CastleActionRuling ValidateAction_AccessRedistributionEngine(Entity actingCharacter, Entity musicbox)
+    public CastleActionRuling ValidateAction_AccessRedistributionEngine(Entity actingCharacter, Entity engine)
     {
-        var ruling = Internal_ValidateAction_AccessInteractiveStructure(actingCharacter, musicbox, RestrictedCastleActions.AccessRedistributionEngine, PermissiblePrivsTo_AccessRedistributionEngine);
+        var ruling = Internal_ValidateAction_AccessInteractiveStructure(actingCharacter, engine, RestrictedCastleActions.AccessRedistributionEngine, PermissiblePrivsTo_AccessRedistributionEngine);
         _rulingLoggerService.LogRuling(ruling);
         return ruling;
     }
@@ -945,6 +945,54 @@ public class RestrictionService
     private CastlePrivileges PermissiblePrivsTo_AccessRedistributionEngine = new()
     {
         Redistribution = RedistributionPrivs.Edit,
+    };
+
+    public CastleActionRuling ValidateAction_UseTeleporterRed(Entity actingCharacter, Entity teleporter)
+    {
+        var ruling = Internal_ValidateAction_AccessInteractiveStructure(actingCharacter, teleporter, RestrictedCastleActions.UseTeleporterRed, PermissiblePrivsTo_AccessTeleporterRed);
+        _rulingLoggerService.LogRuling(ruling);
+        return ruling;
+    }
+
+    private CastlePrivileges PermissiblePrivsTo_AccessTeleporterRed = new()
+    {
+        Teleporter = TeleporterPrivs.Red,
+    };
+
+    public CastleActionRuling ValidateAction_UseTeleporterYellow(Entity actingCharacter, Entity teleporter)
+    {
+        var ruling = Internal_ValidateAction_AccessInteractiveStructure(actingCharacter, teleporter, RestrictedCastleActions.UseTeleporterYellow, PermissiblePrivsTo_AccessTeleporterYellow);
+        _rulingLoggerService.LogRuling(ruling);
+        return ruling;
+    }
+
+    private CastlePrivileges PermissiblePrivsTo_AccessTeleporterYellow = new()
+    {
+        Teleporter = TeleporterPrivs.Yellow,
+    };
+
+    public CastleActionRuling ValidateAction_UseTeleporterPurple(Entity actingCharacter, Entity teleporter)
+    {
+        var ruling = Internal_ValidateAction_AccessInteractiveStructure(actingCharacter, teleporter, RestrictedCastleActions.UseTeleporterPurple, PermissiblePrivsTo_AccessTeleporterPurple);
+        _rulingLoggerService.LogRuling(ruling);
+        return ruling;
+    }
+
+    private CastlePrivileges PermissiblePrivsTo_AccessTeleporterPurple = new()
+    {
+        Teleporter = TeleporterPrivs.Purple,
+    };
+
+    public CastleActionRuling ValidateAction_UseTeleporterBlue(Entity actingCharacter, Entity teleporter)
+    {
+        var ruling = Internal_ValidateAction_AccessInteractiveStructure(actingCharacter, teleporter, RestrictedCastleActions.UseTeleporterBlue, PermissiblePrivsTo_AccessTeleporterBlue);
+        _rulingLoggerService.LogRuling(ruling);
+        return ruling;
+    }
+
+    private CastlePrivileges PermissiblePrivsTo_AccessTeleporterBlue = new()
+    {
+        Teleporter = TeleporterPrivs.Blue,
     };
 
     private CastleActionRuling Internal_ValidateAction_AccessInteractiveStructure(

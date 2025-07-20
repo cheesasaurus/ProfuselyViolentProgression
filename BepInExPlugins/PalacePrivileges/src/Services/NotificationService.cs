@@ -136,6 +136,18 @@ public class NotificationService
             case RestrictedCastleActions.WaygateOut:
                 return $"{ownerName} has not given you permission to waygate out of their castle.";
 
+            case RestrictedCastleActions.UseTeleporterRed:
+                return $"{ownerName} has not given you permission to use their red teleporters.";
+
+            case RestrictedCastleActions.UseTeleporterYellow:
+                return $"{ownerName} has not given you permission to use their yellow teleporters.";
+
+            case RestrictedCastleActions.UseTeleporterPurple:
+                return $"{ownerName} has not given you permission to use their purple teleporters.";
+
+            case RestrictedCastleActions.UseTeleporterBlue:
+                return $"{ownerName} has not given you permission to use their blue teleporters.";
+
             case RestrictedCastleActions.AccessLockbox:
                 return $"{ownerName} has not given you permission to use their lockbox.";
 
