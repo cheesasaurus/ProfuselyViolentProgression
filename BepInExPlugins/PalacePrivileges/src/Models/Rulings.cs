@@ -38,6 +38,10 @@ public enum RestrictedCastleActions
     AccessArenaStation,
     AccessThrone,
     AccessRedistributionEngine,
+    AccessResearchDeskT1,
+    AccessResearchDeskT2,
+    AccessResearchDeskT3,
+    AccessStygianAltar,
 }
 
 

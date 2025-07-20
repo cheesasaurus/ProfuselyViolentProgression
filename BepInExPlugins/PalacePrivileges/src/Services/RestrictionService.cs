@@ -995,6 +995,54 @@ public class RestrictionService
         Teleporter = TeleporterPrivs.Blue,
     };
 
+    public CastleActionRuling ValidateAction_AccessResearchDeskT1(Entity actingCharacter, Entity teleporter)
+    {
+        var ruling = Internal_ValidateAction_AccessInteractiveStructure(actingCharacter, teleporter, RestrictedCastleActions.AccessResearchDeskT1, PermissiblePrivsTo_AccessResearchDeskT1);
+        _rulingLoggerService.LogRuling(ruling);
+        return ruling;
+    }
+
+    private CastlePrivileges PermissiblePrivsTo_AccessResearchDeskT1 = new()
+    {
+        Research = ResearchPrivs.DeskTier1,
+    };
+
+    public CastleActionRuling ValidateAction_AccessResearchDeskT2(Entity actingCharacter, Entity teleporter)
+    {
+        var ruling = Internal_ValidateAction_AccessInteractiveStructure(actingCharacter, teleporter, RestrictedCastleActions.AccessResearchDeskT2, PermissiblePrivsTo_AccessResearchDeskT2);
+        _rulingLoggerService.LogRuling(ruling);
+        return ruling;
+    }
+
+    private CastlePrivileges PermissiblePrivsTo_AccessResearchDeskT2 = new()
+    {
+        Research = ResearchPrivs.DeskTier2,
+    };
+
+    public CastleActionRuling ValidateAction_AccessResearchDeskT3(Entity actingCharacter, Entity teleporter)
+    {
+        var ruling = Internal_ValidateAction_AccessInteractiveStructure(actingCharacter, teleporter, RestrictedCastleActions.AccessResearchDeskT3, PermissiblePrivsTo_AccessResearchDeskT3);
+        _rulingLoggerService.LogRuling(ruling);
+        return ruling;
+    }
+
+    private CastlePrivileges PermissiblePrivsTo_AccessResearchDeskT3 = new()
+    {
+        Research = ResearchPrivs.DeskTier3,
+    };
+
+    public CastleActionRuling ValidateAction_AccessStygianAltar(Entity actingCharacter, Entity teleporter)
+    {
+        var ruling = Internal_ValidateAction_AccessInteractiveStructure(actingCharacter, teleporter, RestrictedCastleActions.AccessStygianAltar, PermissiblePrivsTo_AccessStygianAltar);
+        _rulingLoggerService.LogRuling(ruling);
+        return ruling;
+    }
+
+    private CastlePrivileges PermissiblePrivsTo_AccessStygianAltar = new()
+    {
+        Research = ResearchPrivs.StygianAltar,
+    };
+
     private CastleActionRuling Internal_ValidateAction_AccessInteractiveStructure(
         Entity actingCharacter,
         Entity structure,

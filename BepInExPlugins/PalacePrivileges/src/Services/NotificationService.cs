@@ -163,6 +163,18 @@ public class NotificationService
             case RestrictedCastleActions.AccessRedistributionEngine:
                 return $"{ownerName} has not given you permission to alter redistribution.";
 
+            case RestrictedCastleActions.AccessResearchDeskT1:
+                return $"{ownerName} has not given you permission to use their research desk.";
+
+            case RestrictedCastleActions.AccessResearchDeskT2:
+                return $"{ownerName} has not given you permission to use their study.";
+
+            case RestrictedCastleActions.AccessResearchDeskT3:
+                return $"{ownerName} has not given you permission to use their athenaeum.";
+
+            case RestrictedCastleActions.AccessStygianAltar:
+                return $"{ownerName} has not given you permission to use their stygian altar.";
+
             default:
                 return $"{ownerName} has not given you permission to do that.";
         }

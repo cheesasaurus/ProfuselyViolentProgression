@@ -161,7 +161,7 @@ public static class PrefabGuids
     public static PrefabGUID AB_Interact_UseResearchstation_Cast = new PrefabGUID(-83188602);
     public static PrefabGUID TM_ResearchStation_T01 = new PrefabGUID(-495424062);
     public static PrefabGUID TM_ResearchStation_T02 = new PrefabGUID(-1292809886);
-    public static PrefabGUID M_ResearchStation_T03 = new PrefabGUID(-1262194203);
-    public static PrefabGUID M_StygianAltar_Passive_T01 = new PrefabGUID(-1938449679);
+    public static PrefabGUID TM_ResearchStation_T03 = new PrefabGUID(-1262194203);
+    public static PrefabGUID TM_StygianAltar_Passive_T01 = new PrefabGUID(-1938449679);
 
 }

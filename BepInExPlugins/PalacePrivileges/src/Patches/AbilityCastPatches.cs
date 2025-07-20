@@ -1,13 +1,10 @@
-using System;
 using HarmonyLib;
 using ProfuselyViolentProgression.Core.Utilities;
 using ProfuselyViolentProgression.PalacePrivileges.Models;
 using ProjectM;
-using ProjectM.Network;
 using Stunlock.Core;
 using Unity.Collections;
 using Unity.Entities;
-using Unity.Entities.UniversalDelegates;
 
 namespace ProfuselyViolentProgression.PalacePrivileges.Patches;
 
@@ -50,7 +47,6 @@ public static class AbilityCastPatches
         }
         if (abilityTarget.GetTargetType is not AbilityTarget.Type.InteractTarget)
         {
-            LogUtil.LogWarning("not interact target"); // todo: remove log
             return;
         }
         if (!_entityManager.TryGetComponentData<PrefabGUID>(ev.Ability, out var abilityPrefabGUID))
@@ -61,10 +57,6 @@ public static class AbilityCastPatches
         {
             return;
         }
-
-        DebugUtil.LogPrefabGuid(ev.Ability); // todo: remove log
-        LogUtil.LogDebug($"target: {DebugUtil.LookupPrefabName(targetPrefabGUID)}");
-        LogUtil.LogDebug("-------");
 
         // waygate
         if (abilityPrefabGUID.Equals(PrefabGuids.AB_Interact_UseWaypoint_Castle_Cast))
@@ -187,8 +179,26 @@ public static class AbilityCastPatches
 
     private static void Handle_UsingResearchStation(AbilityCastStartedEvent ev, AbilityTarget abilityTarget, PrefabGUID abilityPrefabGUID, PrefabGUID targetPrefabGUID)
     {
-        // todo: implement
-
+        if (targetPrefabGUID.Equals(PrefabGuids.TM_ResearchStation_T01))
+        {
+            var ruling = Core.RestrictionService.ValidateAction_AccessResearchDeskT1(ev.Character, abilityTarget.Target._Entity);
+            EnforceRuling(ev.Character, ruling);
+        }
+        else if (targetPrefabGUID.Equals(PrefabGuids.TM_ResearchStation_T02))
+        {
+            var ruling = Core.RestrictionService.ValidateAction_AccessResearchDeskT2(ev.Character, abilityTarget.Target._Entity);
+            EnforceRuling(ev.Character, ruling);
+        }
+        else if (targetPrefabGUID.Equals(PrefabGuids.TM_ResearchStation_T03))
+        {
+            var ruling = Core.RestrictionService.ValidateAction_AccessResearchDeskT3(ev.Character, abilityTarget.Target._Entity);
+            EnforceRuling(ev.Character, ruling);
+        }
+        else if (targetPrefabGUID.Equals(PrefabGuids.TM_StygianAltar_Passive_T01))
+        {
+            var ruling = Core.RestrictionService.ValidateAction_AccessStygianAltar(ev.Character, abilityTarget.Target._Entity);
+            EnforceRuling(ev.Character, ruling);
+        }
     }
 
 }

@@ -287,7 +287,7 @@ public class PrivilegeParser
         RegisterPrivs("research.t1", ResearchPrivs.DeskTier1);
         RegisterPrivs("research.t2", ResearchPrivs.DeskTier2);
         RegisterPrivs("research.t3", ResearchPrivs.DeskTier3);
-        RegisterPrivs("research.stygian", ResearchPrivs.AltarStygian);
+        RegisterPrivs("research.stygian", ResearchPrivs.StygianAltar);
         RegisterPrivs("research.useTreasury", ResearchPrivs.UseTreasury); // planned feature
 
         RegisterPrivs("doors.all", DoorPrivs.All);
