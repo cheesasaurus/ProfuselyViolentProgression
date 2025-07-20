@@ -96,6 +96,8 @@ public struct CastlePrivileges
         result.Redistribution = left.Redistribution | right.Redistribution;
         result.Arena = left.Arena | right.Arena;
         result.Research = left.Research | right.Research;
+        result.SowSeed = left.SowSeed | right.SowSeed;
+        result.PlantTree = left.PlantTree | right.PlantTree;
         return result;
     }
 
@@ -112,6 +114,8 @@ public struct CastlePrivileges
         result.Redistribution = left.Redistribution & right.Redistribution;
         result.Arena = left.Arena & right.Arena;
         result.Research = left.Research & right.Research;
+        result.SowSeed = left.SowSeed & right.SowSeed;
+        result.PlantTree = left.PlantTree & right.PlantTree;
         return result;
     }
 
@@ -128,6 +132,8 @@ public struct CastlePrivileges
         result.Redistribution = ~operand.Redistribution;
         result.Arena = ~operand.Arena;
         result.Research = ~operand.Research;
+        result.SowSeed = ~operand.SowSeed;
+        result.PlantTree = ~operand.PlantTree;
         return result;
     }
 
@@ -174,6 +180,14 @@ public struct CastlePrivileges
         if (Research != ResearchPrivs.None)
         {
             privNames.Add($"Research: {Research}");
+        }
+        if (SowSeed != SowSeedPrivs.None)
+        {
+            privNames.Add($"SowSeed: {Research}");
+        }
+        if (PlantTree != PlantTreePrivs.None)
+        {
+            privNames.Add($"PlantTree: {Research}");
         }
 
         return string.Join(" | ", privNames);

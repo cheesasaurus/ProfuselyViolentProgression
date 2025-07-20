@@ -35,6 +35,23 @@ public class GardenService
         return _saplingPrivLookup.ContainsKey(prefabGUID);
     }
 
+    public CastlePrivileges AssociatedPrivileges(PrefabGUID prefabGUID)
+    {
+        var privs = new CastlePrivileges();
+
+        if (_seedPrivLookup.TryGetValue(prefabGUID, out var seedPrivs))
+        {
+            privs.SowSeed |= seedPrivs;
+        }
+
+        if (_saplingPrivLookup.TryGetValue(prefabGUID, out var saplingPrivs))
+        {
+            privs.PlantTree |= saplingPrivs;
+        }
+
+        return privs;
+    }
+
     private void InitSeedPrivLookup()
     {
         _seedPrivLookup = new()

@@ -292,8 +292,34 @@ public class PrivilegeParser
         RegisterPrivs("doors.widePlanks", DoorPrivs.WidePlanks);
 
         RegisterPrivs("sowSeed.all", SowSeedPrivs.All);
+        RegisterPrivs("sowSeed.bloodRose", SowSeedPrivs.BloodRose);
+        RegisterPrivs("sowSeed.fireBlossom", SowSeedPrivs.FireBlossom);
+        RegisterPrivs("sowSeed.snowFlower", SowSeedPrivs.SnowFlower);
+        RegisterPrivs("sowSeed.hellsClarion", SowSeedPrivs.HellsClarion);
+        RegisterPrivs("sowSeed.mourningLily", SowSeedPrivs.MourningLily);
+        RegisterPrivs("sowSeed.sunflower", SowSeedPrivs.Sunflower);
+        RegisterPrivs("sowSeed.plagueBrier", SowSeedPrivs.PlagueBrier);
+        RegisterPrivs("sowSeed.grapes", SowSeedPrivs.Grapes);
+        RegisterPrivs("sowSeed.corruptedFlower", SowSeedPrivs.CorruptedFlower);
+        RegisterPrivs("sowSeed.bleedingHeart", SowSeedPrivs.BleedingHeart);
+        RegisterPrivs("sowSeed.ghostShroom", SowSeedPrivs.GhostShroom);
+        RegisterPrivs("sowSeed.trippyShroom", SowSeedPrivs.TrippyShroom);
+        RegisterPrivs("sowSeed.cotton", SowSeedPrivs.Cotton);
+        RegisterPrivs("sowSeed.thistle", SowSeedPrivs.Thistle);
 
         RegisterPrivs("plantTree.all", PlantTreePrivs.All);
+        RegisterPrivs("plantTree.pine", PlantTreePrivs.Pine);
+        RegisterPrivs("plantTree.cypress", PlantTreePrivs.Cypress);
+        RegisterPrivs("plantTree.aspen", PlantTreePrivs.Aspen);
+        RegisterPrivs("plantTree.aspenAutumn", PlantTreePrivs.AspenAutumn);
+        RegisterPrivs("plantTree.birch", PlantTreePrivs.Birch);
+        RegisterPrivs("plantTree.birchAutumn", PlantTreePrivs.BirchAutumn);
+        RegisterPrivs("plantTree.apple", PlantTreePrivs.Apple);
+        RegisterPrivs("plantTree.cursed", PlantTreePrivs.Cursed);
+        RegisterPrivs("plantTree.gloomy", PlantTreePrivs.Gloomy);
+        RegisterPrivs("plantTree.cherry", PlantTreePrivs.Cherry);
+        RegisterPrivs("plantTree.cherryWhite", PlantTreePrivs.CherryWhite);
+        RegisterPrivs("plantTree.oak", PlantTreePrivs.Oak);
     }
     
     protected struct NamedCastlePrivileges

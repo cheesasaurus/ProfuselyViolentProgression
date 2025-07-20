@@ -65,7 +65,8 @@ public static class Core
             antiCheatService: AntiCheatService,
             rulingLoggerService: RulingLoggerService,
             castleService: CastleService,
-            doorService: CastleDoorService
+            doorService: CastleDoorService,
+            gardenService: GardenService
         );
 
         NotificationService = new(SCTService);

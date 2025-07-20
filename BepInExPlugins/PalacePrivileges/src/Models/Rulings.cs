@@ -17,7 +17,7 @@ public enum RestrictedCastleActions
     CastleHeartDisableDefense,
     Build,
     SowSeed,
-    SowSapling,
+    PlantTree,
     BuildUseTreasury,
     OpenDoor,
     CloseDoor,

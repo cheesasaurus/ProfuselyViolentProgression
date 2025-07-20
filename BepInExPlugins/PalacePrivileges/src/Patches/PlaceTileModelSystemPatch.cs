@@ -66,41 +66,22 @@ public unsafe class PlaceTileModelSystemPatch
             CastleActionRuling ruling;
             if (Core.GardenService.IsSeed(ev.PrefabGuid))
             {
-                // todo: use seed rules
+                ruling = Core.RestrictionService.ValidateAction_SowSeed(character, ev.PrefabGuid, castleHeart);
             }
             else if (Core.GardenService.IsSapling(ev.PrefabGuid))
             {
-                // todo: use sapling rules
+                ruling = Core.RestrictionService.ValidateAction_PlantTree(character, ev.PrefabGuid, castleHeart);
             }
             else
             {
-                // todo: use building rules
+                ruling = Core.RestrictionService.ValidateAction_BuildPlaceObject(character, ev.PrefabGuid, castleHeart);
             }
 
-            // bool IsAllowed = true;
-            bool IsAllowed = false; // todo: use ruling.IsAllowed
-            if (!IsAllowed)
+            if (!ruling.IsAllowed)
             {
                 _entityManager.DestroyEntity(entities[i]);
-                // todo: uncomment once we have ruling
-                // Core.NotificationService.NotifyActionDenied(character, ref ruling);
+                Core.NotificationService.NotifyActionDenied(character, ref ruling);
             }
-
-
-
-            // todo: implement
-            // need to relate to the castle somehow
-
-
-            // todo: maybe something with the static GetPlacementResult class.
-            // Entity `buildingInCastleTerritory`
-            // Entity `castleHeartForArea`
-            // `TerrainChunk`
-            // `TerrainChunkLookup.TryGetChunk`
-            // `TerrainChunkLookup.TryGetChunkMetadataEntity`
-            // `TerrainConstants`
-
-
         }
     }
 

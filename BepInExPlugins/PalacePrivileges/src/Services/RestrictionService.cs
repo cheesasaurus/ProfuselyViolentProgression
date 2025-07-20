@@ -23,6 +23,7 @@ public class RestrictionService
     RulingLoggerService _rulingLoggerService;
     CastleService _castleService;
     CastleDoorService _doorService;
+    GardenService _gardenService;
     EntityManager _entityManager = WorldUtil.Server.EntityManager;
 
     public RestrictionService(
@@ -33,7 +34,8 @@ public class RestrictionService
         AntiCheatService antiCheatService,
         RulingLoggerService rulingLoggerService,
         CastleService castleService,
-        CastleDoorService doorService
+        CastleDoorService doorService,
+        GardenService gardenService
     )
     {
         _log = log;
@@ -44,6 +46,7 @@ public class RestrictionService
         _rulingLoggerService = rulingLoggerService;
         _castleService = castleService;
         _doorService = doorService;
+        _gardenService = gardenService;
     }
 
     private void HydrateRuling(ref CastleActionRuling ruling, UserModel actingUser, CastleModel castleModel)
@@ -232,13 +235,13 @@ public class RestrictionService
         Build = BuildPrivs.UnlistedTBD,
     };
 
-    public CastleActionRuling ValidateAction_BuildPlace(
+    public CastleActionRuling ValidateAction_BuildPlaceObject(
         Entity actingCharacter,
-        Entity objectToEdit,
-        CastleHeartConnection castleHeartConnection
+        PrefabGUID objectToPlacePrefabGUID,
+        Entity castleHeart
     )
     {
-        var ruling = Internal_ValidateAction_Build(actingCharacter, objectToEdit, castleHeartConnection);
+        var ruling = Internal_ValidateAction_Build(actingCharacter, objectToPlacePrefabGUID, castleHeart);
         _rulingLoggerService.LogRuling(ruling);
         return ruling;
     }
@@ -249,18 +252,18 @@ public class RestrictionService
         CastleHeartConnection castleHeartConnection
     )
     {
-        var ruling = Internal_ValidateAction_Build(actingCharacter, objectToEdit, castleHeartConnection);
+        var ruling = Internal_ValidateAction_Build(actingCharacter, objectToEdit, castleHeartConnection.CastleHeartEntity._Entity);
         _rulingLoggerService.LogRuling(ruling);
         return ruling;
     }
 
     public CastleActionRuling ValidateAction_BuildDismantle(
         Entity actingCharacter,
-        Entity objectToEdit,
+        Entity objectToDismantle,
         CastleHeartConnection castleHeartConnection
     )
     {
-        var ruling = Internal_ValidateAction_Build(actingCharacter, objectToEdit, castleHeartConnection);
+        var ruling = Internal_ValidateAction_Build(actingCharacter, objectToDismantle, castleHeartConnection.CastleHeartEntity._Entity);
         _rulingLoggerService.LogRuling(ruling);
         return ruling;
     }
@@ -271,7 +274,7 @@ public class RestrictionService
         CastleHeartConnection castleHeartConnection
     )
     {
-        var ruling = Internal_ValidateAction_Build(actingCharacter, objectToEdit, castleHeartConnection);
+        var ruling = Internal_ValidateAction_Build(actingCharacter, objectToEdit, castleHeartConnection.CastleHeartEntity._Entity);
         _rulingLoggerService.LogRuling(ruling);
         return ruling;
     }
@@ -282,16 +285,29 @@ public class RestrictionService
         CastleHeartConnection castleHeartConnection
     )
     {
-        var ruling = Internal_ValidateAction_Build(actingCharacter, objectToEdit, castleHeartConnection);
+        var ruling = Internal_ValidateAction_Build(actingCharacter, objectToEdit, castleHeartConnection.CastleHeartEntity._Entity);
         _rulingLoggerService.LogRuling(ruling);
         return ruling;
+    }
+
+    private CastleActionRuling Internal_ValidateAction_Build(
+        Entity actingCharacter,
+        Entity objectToBuild,
+        Entity castleHeart
+    )
+    {
+        if (!_entityManager.TryGetComponentData<PrefabGUID>(objectToBuild, out var objectPrefabGUID))
+        {
+            return CastleActionRuling.NewRuling_NotEnoughDataToDecide(RestrictedCastleActions.Build, "Failed to get PrefabGUID of objectToBuild");
+        }
+        return Internal_ValidateAction_Build(actingCharacter, objectPrefabGUID, castleHeart);
     }
 
 
     private CastleActionRuling Internal_ValidateAction_Build(
         Entity actingCharacter,
-        Entity objectToEdit,
-        CastleHeartConnection castleHeartConnection
+        PrefabGUID objectPrefabGUID,
+        Entity castleHeart
     )
     {
         if (!_userService.TryGetUserModel_ForCharacter(actingCharacter, out var actingUser))
@@ -299,15 +315,10 @@ public class RestrictionService
             return CastleActionRuling.NewRuling_NotEnoughDataToDecide(RestrictedCastleActions.Build, "Failed to get User model for acting character");
         }
 
-        if (!_castleService.TryGetCastleModel(castleHeartConnection.CastleHeartEntity._Entity, out var castleModel))
+        if (!_castleService.TryGetCastleModel(castleHeart, out var castleModel))
         {
             return CastleActionRuling.NewRuling_NotEnoughDataToDecide(RestrictedCastleActions.Build, "Failed to get Castle model");
-        }
-
-        if (!_entityManager.TryGetComponentData<PrefabGUID>(objectToEdit, out var objectPrefabGUID))
-        {
-            return CastleActionRuling.NewRuling_NotEnoughDataToDecide(RestrictedCastleActions.Build, "Failed to get PrefabGUID of objectToEdit");
-        }
+        }        
 
         var ruling = new CastleActionRuling();
         ruling.TargetPrefabGUID = objectPrefabGUID;
@@ -325,7 +336,7 @@ public class RestrictionService
             _antiCheatService.Detected_BadBuilder(actingUser);
             return ruling.Disallowed();
         }
-        
+
         ruling.IsAllowed = ruling.ActingUserPrivs.Intersects(ruling.PermissiblePrivs);
         return ruling;
     }
@@ -382,6 +393,74 @@ public class RestrictionService
         ruling.IsAllowed = ruling.ActingUserPrivs.Intersects(ruling.PermissiblePrivs);
         return ruling;
     }
+
+    #endregion
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    #region Placing seeds and saplings
+
+    public CastleActionRuling ValidateAction_SowSeed(Entity actingCharacter, PrefabGUID seedPrefabGUID, Entity castleHeart)
+    {
+        var ruling = Internal_ValidateAction_PlaceSeedOrSapling(
+            actingCharacter,
+            seedPrefabGUID,
+            castleHeart,
+            RestrictedCastleActions.SowSeed,
+            _gardenService.AssociatedPrivileges(seedPrefabGUID)
+        );
+        _rulingLoggerService.LogRuling(ruling);
+        return ruling;
+    }
+
+    public CastleActionRuling ValidateAction_PlantTree(Entity actingCharacter, PrefabGUID treePrefabGUID, Entity castleHeart)
+    {
+        var ruling = Internal_ValidateAction_PlaceSeedOrSapling(
+            actingCharacter,
+            treePrefabGUID,
+            castleHeart,
+            RestrictedCastleActions.PlantTree,
+            _gardenService.AssociatedPrivileges(treePrefabGUID)
+        );
+        _rulingLoggerService.LogRuling(ruling);
+        return ruling;
+    }
+
+    private CastleActionRuling Internal_ValidateAction_PlaceSeedOrSapling(
+        Entity actingCharacter,
+        PrefabGUID objectPrefabGUID,
+        Entity castleHeart,
+        RestrictedCastleActions action,
+        CastlePrivileges permissiblePrivs
+    )
+    {
+        if (!_userService.TryGetUserModel_ForCharacter(actingCharacter, out var actingUser))
+        {
+            return CastleActionRuling.NewRuling_NotEnoughDataToDecide(action, "Failed to get User model for acting character");
+        }
+
+        if (!_castleService.TryGetCastleModel(castleHeart, out var castleModel))
+        {
+            return CastleActionRuling.NewRuling_NotEnoughDataToDecide(action, "Failed to get Castle model");
+        }
+
+        var ruling = new CastleActionRuling();
+        ruling.Action = action;
+        ruling.TargetPrefabGUID = objectPrefabGUID;
+        ruling.PermissiblePrivs = permissiblePrivs;
+        HydrateRuling(ref ruling, actingUser, castleModel);
+
+        if (ruling.IsOwnerOfCastle)
+        {
+            return ruling.Allowed();
+        }
+
+        if (!ruling.IsSameClan)
+        {
+            return ruling.Disallowed();
+        }
+
+        ruling.IsAllowed = ruling.ActingUserPrivs.Intersects(ruling.PermissiblePrivs);
+        return ruling;
+    }    
 
     #endregion
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -724,6 +803,5 @@ public class RestrictionService
     #endregion
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     
-    // todo: seeds and saplings
 
 }

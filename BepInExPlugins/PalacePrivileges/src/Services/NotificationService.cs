@@ -102,6 +102,12 @@ public class NotificationService
             case RestrictedCastleActions.BuildUseTreasury:
                 return $"{ownerName} has not given you permission to use the treasury for building.";
 
+            case RestrictedCastleActions.SowSeed:
+                return $"{ownerName} has not given you permission to sow that seed.";
+
+            case RestrictedCastleActions.PlantTree:
+                return $"{ownerName} has not given you permission to plant that tree.";
+
             case RestrictedCastleActions.OpenDoor:
             case RestrictedCastleActions.CloseDoor:
                 return $"{ownerName} has not given you permission to use that kind of door.";
