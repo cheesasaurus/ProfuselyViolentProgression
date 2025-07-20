@@ -136,6 +136,15 @@ public class NotificationService
             case RestrictedCastleActions.PrisonerKill:
                 return $"{ownerName} has not given you permission to kill prisoners.";
 
+            case RestrictedCastleActions.PrisonerExtractBlood:
+                return $"{ownerName} has not given you permission to extract blood from prisoners.";
+
+            case RestrictedCastleActions.PrisonerFeedSafeFood:
+                return $"{ownerName} has not given you permission to feed safe food to prisoners.";
+
+            case RestrictedCastleActions.PrisonerFeedUnSafeFood:
+                return $"{ownerName} has not given you permission to feed unsafe food to prisoners.";
+
             case RestrictedCastleActions.WaygateIn:
                 return $"{ownerName} has not given you permission to waygate in to their castle.";
 

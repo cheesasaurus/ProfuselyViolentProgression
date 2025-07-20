@@ -22,6 +22,7 @@ public static class Core
     public static CastleDoorService CastleDoorService { get; private set; }
     public static BuildingService BuildingService { get; private set; }
     public static GardenService GardenService { get; private set; }
+    public static PrisonService PrisonService { get; private set; }
     public static PrivilegeParser PrivilegeParser { get; private set; }
     public static GlobalSettingsService GlobalSettingsService { get; private set; }
     public static CastlePrivilegesService CastlePrivilegesService { get; private set; }
@@ -43,6 +44,7 @@ public static class Core
         CastleDoorService = new(CastleService);
         BuildingService = new();
         GardenService = new();
+        PrisonService = new();
         PrivilegeParser = new();
 
         GlobalSettingsService = new(
@@ -71,7 +73,8 @@ public static class Core
             rulingLoggerService: RulingLoggerService,
             castleService: CastleService,
             doorService: CastleDoorService,
-            gardenService: GardenService
+            gardenService: GardenService,
+            prisonService: PrisonService
         );
 
         NotificationService = new(SCTService);

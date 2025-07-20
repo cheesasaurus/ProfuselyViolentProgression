@@ -24,6 +24,7 @@ public class RestrictionService
     CastleService _castleService;
     CastleDoorService _doorService;
     GardenService _gardenService;
+    PrisonService _prisonService;
     EntityManager _entityManager = WorldUtil.Server.EntityManager;
 
     public RestrictionService(
@@ -35,7 +36,8 @@ public class RestrictionService
         RulingLoggerService rulingLoggerService,
         CastleService castleService,
         CastleDoorService doorService,
-        GardenService gardenService
+        GardenService gardenService,
+        PrisonService prisonService
     )
     {
         _log = log;
@@ -47,6 +49,7 @@ public class RestrictionService
         _castleService = castleService;
         _doorService = doorService;
         _gardenService = gardenService;
+        _prisonService = prisonService;
     }
 
     private void HydrateRuling(ref CastleActionRuling ruling, UserModel actingUser, CastleModel castleModel)
@@ -103,7 +106,7 @@ public class RestrictionService
         _rulingLoggerService.LogRuling(ruling);
         return ruling;
     }
-    
+
     public CastleActionRuling ValidateAction_CastleHeartRelocate(Entity actingCharacter, Entity castleHeartEntity)
     {
         var ruling = Internal_ValidateAction_ClanOnlyAtCastleHeart(
@@ -210,7 +213,7 @@ public class RestrictionService
         ruling.TargetPrefabGUID = targetPrefabGUID;
         ruling.Action = RestrictedCastleActions.CastleHeartDisableDefense;
         ruling.PermissiblePrivs = CastlePrivileges.None;
-        HydrateRuling(ref ruling, actingUser, castleModel);        
+        HydrateRuling(ref ruling, actingUser, castleModel);
         ruling.IsAllowed = ruling.IsCastleWithoutOwner || !IsFormerClanMemberOnKeyCooldown(ruling);
         return ruling;
     }
@@ -331,7 +334,7 @@ public class RestrictionService
         if (!_castleService.TryGetCastleModel(castleHeart, out var castleModel))
         {
             return CastleActionRuling.NewRuling_NotEnoughDataToDecide(RestrictedCastleActions.Build, "Failed to get Castle model");
-        }        
+        }
 
         var ruling = new CastleActionRuling();
         ruling.TargetPrefabGUID = objectPrefabGUID;
@@ -364,7 +367,7 @@ public class RestrictionService
         _rulingLoggerService.LogRuling(ruling);
         return ruling;
     }
-    
+
     private CastlePrivileges PermissiblePrivsTo_BuildUseTreasury = new()
     {
         Build = BuildPrivs.UseTreasury,
@@ -380,7 +383,7 @@ public class RestrictionService
         if (!_userService.TryGetUserModel_ForCharacter(actingCharacter, out var actingUser))
         {
             return CastleActionRuling.NewRuling_NotEnoughDataToDecide(RestrictedCastleActions.BuildUseTreasury, "Failed to get User model for acting character");
-        }        
+        }
 
         if (!_castleService.TryGetCastleModel(castleHeartEntity, out var castleModel))
         {
@@ -473,7 +476,7 @@ public class RestrictionService
 
         ruling.IsAllowed = ruling.ActingUserPrivs.Intersects(ruling.PermissiblePrivs);
         return ruling;
-    }    
+    }
 
     #endregion
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -519,7 +522,7 @@ public class RestrictionService
             _antiCheatService.Detected_DoorLockPicker(actingUser);
             return ruling.Disallowed();
         }
-        
+
         ruling.IsAllowed = ruling.ActingUserPrivs.Intersects(ruling.PermissiblePrivs);
         return ruling;
     }
@@ -586,7 +589,7 @@ public class RestrictionService
             _antiCheatService.Detected_NaughtyNamer(actingUser);
             return ruling.Disallowed();
         }
-        
+
         ruling.IsAllowed = ruling.ActingUserPrivs.Intersects(ruling.PermissiblePrivs);
         return ruling;
     }
@@ -645,7 +648,7 @@ public class RestrictionService
         {
             return ruling.Disallowed();
         }
-        
+
         ruling.IsAllowed = ruling.ActingUserPrivs.Intersects(ruling.PermissiblePrivs);
         return ruling;
     }
@@ -744,7 +747,7 @@ public class RestrictionService
             _antiCheatService.Detected_NaughtyNamer(actingUser);
             return ruling.Disallowed();
         }
-        
+
         ruling.IsAllowed = ruling.ActingUserPrivs.Intersects(ruling.PermissiblePrivs);
         return ruling;
     }
@@ -830,7 +833,7 @@ public class RestrictionService
         _rulingLoggerService.LogRuling(ruling);
         return ruling;
     }
-    
+
     private CastlePrivileges PermissiblePrivsTo_WaygateIn = new()
     {
         Teleporter = TeleporterPrivs.WaygateIn,
@@ -1148,6 +1151,105 @@ public class RestrictionService
 
         if (!ruling.IsSameClan)
         {
+            _antiCheatService.Detected_PrisonBreaker(actingUser);
+            return ruling.Disallowed();
+        }
+
+        ruling.IsAllowed = ruling.ActingUserPrivs.Intersects(ruling.PermissiblePrivs);
+        return ruling;
+    }
+
+    #endregion
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    #region prisoner feeding
+
+    public CastleActionRuling ValidateAction_PrisonerFeeding(Entity actingCharacter, Entity prison, PrefabGUID recipePrefabGUID)
+    {
+        var ruling = Internal_Step1_ValidateAction_PrisonerFeeding(actingCharacter, prison, recipePrefabGUID);
+        _rulingLoggerService.LogRuling(ruling);
+        return ruling;
+    }
+
+    private CastlePrivileges PermissiblePrivsTo_PrisonerExtractBlood = new()
+    {
+        Prison = PrisonPrivs.ExtractBlood,
+    };
+    private CastlePrivileges PermissiblePrivsTo_PrisonerFeedSafeFood = new()
+    {
+        Prison = PrisonPrivs.FeedSafeFood,
+    };
+    private CastlePrivileges PermissiblePrivsTo_PrisonerFeedUnSafeFood = new()
+    {
+        Prison = PrisonPrivs.FeedUnSafeFood,
+    };
+
+    private CastleActionRuling Internal_Step1_ValidateAction_PrisonerFeeding(
+        Entity actingCharacter,
+        Entity prison,
+        PrefabGUID recipePrefabGUID
+    )
+    {
+        var recipeCategory = _prisonService.DetermineRecipeCategory(recipePrefabGUID);
+        RestrictedCastleActions action;
+        CastlePrivileges permissiblePrivs;
+        
+        switch (recipeCategory)
+        {
+            case PrisonService.PrisonRecipeCategory.ExtractBlood:
+                action = RestrictedCastleActions.PrisonerExtractBlood;
+                permissiblePrivs = PermissiblePrivsTo_PrisonerExtractBlood;
+                break;
+
+            case PrisonService.PrisonRecipeCategory.SafeFood:
+                action = RestrictedCastleActions.PrisonerFeedSafeFood;
+                permissiblePrivs = PermissiblePrivsTo_PrisonerFeedSafeFood;
+                break;
+
+            case PrisonService.PrisonRecipeCategory.UnsafeFood:
+                action = RestrictedCastleActions.PrisonerFeedUnSafeFood;
+                permissiblePrivs = PermissiblePrivsTo_PrisonerFeedUnSafeFood;
+                break;
+
+            default:
+            case PrisonService.PrisonRecipeCategory.Unknown:
+                return CastleActionRuling.NewRuling_NotEnoughDataToDecide(RestrictedCastleActions.PrisonCraftItemUnknown, "Unrecognized prison recipe", recipePrefabGUID);
+        }
+
+        return Internal_Step2_ValidateAction_PrisonerFeeding(actingCharacter, prison, recipePrefabGUID, action, ref permissiblePrivs);
+    }
+
+    private CastleActionRuling Internal_Step2_ValidateAction_PrisonerFeeding(
+        Entity actingCharacter,
+        Entity prison,
+        PrefabGUID recipePrefabGUID,
+        RestrictedCastleActions action,
+        [In] ref CastlePrivileges permittedPrivs
+    )
+    {
+        if (!_userService.TryGetUserModel_ForCharacter(actingCharacter, out var actingUser))
+        {
+            return CastleActionRuling.NewRuling_NotEnoughDataToDecide(action, "Failed to get User model for acting character", recipePrefabGUID);
+        }
+
+        if (!_castleService.TryGetCastleModel_ForConnectedEntity(prison, out var castleModel))
+        {
+            return CastleActionRuling.NewRuling_NotEnoughDataToDecide(action, "Failed to get Castle model", recipePrefabGUID);
+        }
+
+        var ruling = new CastleActionRuling();
+        ruling.Action = action;
+        ruling.TargetPrefabGUID = recipePrefabGUID;
+        ruling.PermissiblePrivs = permittedPrivs;
+        HydrateRuling(ref ruling, actingUser, castleModel);
+
+        if (ruling.IsOwnerOfCastle)
+        {
+            return ruling.Allowed();
+        }
+
+        if (!ruling.IsSameClan)
+        {
+            _antiCheatService.Detected_PrisonBreaker(actingUser);
             return ruling.Disallowed();
         }
 

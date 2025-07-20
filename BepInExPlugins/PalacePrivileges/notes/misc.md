@@ -85,3 +85,8 @@
   - Charm - pulling prisoner out of cell with charm button
   - Kill - pressed kill button at cell
 
+- ImprisonedBuffSystem - for dusk callers?
+
+
+- StartCraftingSystem - start crafting at a station
+- StartCharacterCraftingSystem - start crafting on the go (crafting tab in the character menu)

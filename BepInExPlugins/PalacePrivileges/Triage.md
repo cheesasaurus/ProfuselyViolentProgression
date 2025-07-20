@@ -14,9 +14,9 @@
 - [x] Priv: `servants.gear`
 - [x] Priv: `prisoners.subdue` (moved to mvp for anticheat)
 - [x] Priv: `prisoners.kill` (moved to mvp for anticheat)
-- [ ] Priv: `prisoners.extractBlood` (moved to mvp for anticheat)
-- [ ] Priv: `prisoners.feedUnsafeFood` (moved to mvp for anticheat)
-- [ ] Priv: `prisoners.feedSafeFood` (anticipating to implement alongside feedUnsafeFood)
+- [x] Priv: `prisoners.extractBlood` (moved to mvp for anticheat)
+- [x] Priv: `prisoners.feedUnsafeFood` (moved to mvp for anticheat)
+- [x] Priv: `prisoners.feedSafeFood` (anticipating to implement alongside feedUnsafeFood)
 - [x] Privs: `tp.red` `tp.yellow` `tp.purple` `tp.blue` `tp.allSmall`
 - [x] Privs: `tp.waygate` `tp.waygateIn` `tp.waygateOut`
 - [ ] Priv: `craft.useTreasury` (crafting station AND from inventory. should apply to horse station for elixers.)

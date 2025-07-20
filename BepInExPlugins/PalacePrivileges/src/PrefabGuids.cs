@@ -164,4 +164,24 @@ public static class PrefabGuids
     public static PrefabGUID TM_ResearchStation_T03 = new PrefabGUID(-1262194203);
     public static PrefabGUID TM_StygianAltar_Passive_T01 = new PrefabGUID(-1938449679);
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // prison ///////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public static PrefabGUID Recipe_Consumable_PrisonPotion = new PrefabGUID(1839006118);
+    public static PrefabGUID Recipe_Consumable_PrisonPotion_Bloodwine = new PrefabGUID(1930190516);
+    public static PrefabGUID Recipe_Misc_ExtractEssencePrisoner = new PrefabGUID(1716338316);
+    public static PrefabGUID Recipe_Misc_FeedPrisoner_Rat = new PrefabGUID(1469101010);
+    public static PrefabGUID Recipe_Misc_FeedPrisoner_Fish_FatGoby = new PrefabGUID(-2047246570);
+    public static PrefabGUID Recipe_Misc_FeedPrisoner_Fish_RainbowTrout = new PrefabGUID(-1206171767);
+    public static PrefabGUID Recipe_Misc_FeedPrisoner_Fish_FierceStinger = new PrefabGUID(-37587809);
+    public static PrefabGUID Recipe_Misc_FeedPrisoner_Fish_TwilightSnapper = new PrefabGUID(-252411567);
+    public static PrefabGUID Recipe_Misc_FeedPrisoner_Fish_SageFish = new PrefabGUID(1800570390);
+    public static PrefabGUID Recipe_Misc_FeedPrisoner_Fish_BloodSnapper = new PrefabGUID(956953141);
+    public static PrefabGUID Recipe_Misc_FeedPrisoner_Fish_SwampDweller  = new PrefabGUID(-460272822);
+    public static PrefabGUID Recipe_Misc_FeedPrisoner_Fish_GoldenRiverBass  = new PrefabGUID(1816434122);
+    public static PrefabGUID Recipe_Misc_FeedPrisoner_Fish_Corrupted  = new PrefabGUID(493259323);
+    public static PrefabGUID Recipe_Misc_FeedPrisoner_IrradiantGruel  = new PrefabGUID(-279936313);
+
+
 }

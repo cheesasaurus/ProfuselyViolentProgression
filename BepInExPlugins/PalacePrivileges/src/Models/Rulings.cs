@@ -29,6 +29,10 @@ public enum RestrictedCastleActions
     ServantGearChange,
     PrisonerSubdue,
     PrisonerKill,
+    PrisonerExtractBlood,
+    PrisonerFeedSafeFood,
+    PrisonerFeedUnSafeFood,
+    PrisonCraftItemUnknown,
     WaygateIn,
     WaygateOut,
     UseTeleporterRed,
@@ -92,6 +96,22 @@ public struct CastleActionRuling
             NotEnoughDataReason = reason,
             IsAllowed = true,
             Action = action,
+        };
+    }
+    
+    public static CastleActionRuling NewRuling_NotEnoughDataToDecide(
+        RestrictedCastleActions action,
+        string reason,
+        PrefabGUID targetprefabGUID
+    )
+    {
+        return new()
+        {
+            NotEnoughDataToDecide = true,
+            NotEnoughDataReason = reason,
+            IsAllowed = true,
+            Action = action,
+            TargetPrefabGUID = targetprefabGUID
         };        
     }
     

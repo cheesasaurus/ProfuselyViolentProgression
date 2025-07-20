@@ -56,11 +56,19 @@ public unsafe class DebugPatches
         // todo
     }
 
-    //[HarmonyPatch(typeof(InteractWithPrisonerSystem), nameof(InteractWithPrisonerSystem.OnUpdate))]
+    //[HarmonyPatch(typeof(StartCraftingSystem), nameof(StartCraftingSystem.OnUpdate))]
     //[HarmonyPrefix]
-    public static void SomePatchThing4()
+    public static void SomePatchThing4(StartCraftingSystem __instance)
     {
-        //LogUtil.LogDebug("interact with prisoner");
+        //LogUtil.LogDebug("start crafting at station");
+        // todo
+    }
+
+    //[HarmonyPatch(typeof(StartCharacterCraftingSystem), nameof(StartCharacterCraftingSystem.OnUpdate))]
+    //[HarmonyPrefix]
+    public static void SomePatchThing5(StartCharacterCraftingSystem __instance)
+    {
+        //LogUtil.LogDebug("start crafting on the go");
         // todo
     }
 
