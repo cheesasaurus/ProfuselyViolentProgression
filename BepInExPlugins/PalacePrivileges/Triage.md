@@ -7,7 +7,7 @@
 - [x] Restrict: Abandoning the castle.
 - [x] Restrict: Exposing the castle heart.
 - [x] Restrict: Removing blood from the castle heart.
-- [ ] Restrict: Relocating the castle. - CastleRebuildConnectEvent?
+- [x] Restrict: Relocating the castle.
 - [ ] Priv: `arena.zonePainting`
 - [ ] Priv: `lockbox` - InteractValidator?
 - [x] Priv: `servants.terminate`

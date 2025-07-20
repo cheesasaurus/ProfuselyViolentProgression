@@ -66,6 +66,7 @@ public class RestrictionService
     private CastlePrivileges PermissiblePrivsTo_CastleHeartAbandon = CastlePrivileges.None; // only owner; no privileges can be granted for this.
     private CastlePrivileges PermissiblePrivsTo_CastleHeartExpose = CastlePrivileges.None; // only owner; no privileges can be granted for this.
     private CastlePrivileges PermissiblePrivsTo_CastleHeartRemoveFuel = CastlePrivileges.None; // only owner; no privileges can be granted for this.
+    private CastlePrivileges PermissiblePrivsTo_CastleHeartRelocate = CastlePrivileges.None; // only owner; no privileges can be granted for this.
 
     public CastleActionRuling ValidateAction_CastleHeartAbandon(Entity actingCharacter, Entity castleHeartEntity)
     {
@@ -98,6 +99,18 @@ public class RestrictionService
             castleHeartEntity,
             RestrictedCastleActions.CastleHeartRemoveFuel,
             PermissiblePrivsTo_CastleHeartRemoveFuel
+        );
+        _rulingLoggerService.LogRuling(ruling);
+        return ruling;
+    }
+    
+    public CastleActionRuling ValidateAction_CastleHeartRelocate(Entity actingCharacter, Entity castleHeartEntity)
+    {
+        var ruling = Internal_ValidateAction_ClanOnlyAtCastleHeart(
+            actingCharacter,
+            castleHeartEntity,
+            RestrictedCastleActions.CastleHeartRelocate,
+            PermissiblePrivsTo_CastleHeartRelocate
         );
         _rulingLoggerService.LogRuling(ruling);
         return ruling;
@@ -135,7 +148,7 @@ public class RestrictionService
         {
             return ruling.Disallowed();
         }
-        
+
         ruling.IsAllowed = ruling.ActingUserPrivs.Intersects(ruling.PermissiblePrivs);
         return ruling;
     }

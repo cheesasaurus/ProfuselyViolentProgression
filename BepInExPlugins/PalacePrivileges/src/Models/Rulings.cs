@@ -14,6 +14,7 @@ public enum RestrictedCastleActions
     CastleHeartAbandon,
     CastleHeartExpose,
     CastleHeartRemoveFuel,
+    CastleHeartRelocate,
     CastleHeartDisableDefense,
     Build,
     SowSeed,

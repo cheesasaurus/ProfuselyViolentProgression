@@ -78,15 +78,13 @@ public class CastleService
     public bool TryGetCastleHeartOfTerritory_AtPosition(Translation worldPosition, [In] ref MapZoneCollection mapZoneCollection, out Entity castleHeart)
     {
         castleHeart = Entity.Null;
-        
+
         var tilePosition = SpaceConversion.WorldToTile(worldPosition.Value);
 
         if (!mapZoneCollection.TryGetCastleTerritory(ref _entityManager, tilePosition.xz, out CastleTerritory castleTerritory))
         {
             return false;
         }
-
-        LogUtil.LogDebug($"Found castle territory!"); // todo: remove
 
         castleHeart = castleTerritory.CastleHeart;
         return true;

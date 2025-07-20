@@ -9,7 +9,7 @@ using Unity.Entities;
 namespace ProfuselyViolentProgression.PalacePrivileges.Services;
 
 /// <summary>
-/// Knows things about building castles
+/// Knows things about seeds and saplings
 /// </summary>
 public class GardenService
 {

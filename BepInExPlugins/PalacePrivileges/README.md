@@ -85,7 +85,7 @@ This is all done via chat commands...
   - `.castlePrivs grant clan "tp.allSmall"`
 - Let clan members waygate out, but not in.
   - `.castlePrivs ungrant clan "tp.waygateIn"`
-- Put some servant-locked doors at the entrance for clan members to also use.
+- Put some servant-locked doors at the entrance for clan members to use.
   - `.castlePrivs grant clan "doors.battlement"`
   - Clan members will now be able to use all "Battlement Gate" doors. Even with servant locks.  
 - Billy is a known scoundrel, but you want to team up for a bit of mayhem.
@@ -118,7 +118,6 @@ This is all done via chat commands...
 `lockbox`
 `musicbox`
 `renameStructures`
-`plantSeeds`
 
 ### Build privileges
 `build.all`
