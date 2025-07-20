@@ -815,7 +815,6 @@ public class RestrictionService
 
     #endregion
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     #region castle waygate usage
 
     public CastleActionRuling ValidateAction_WaygateIn(Entity actingCharacter, Entity toCastleWaygate)
@@ -867,6 +866,112 @@ public class RestrictionService
         var ruling = new CastleActionRuling();
         ruling.Action = action;
         ruling.TargetPrefabGUID = waygatePrefabGUID;
+        ruling.PermissiblePrivs = permittedPrivs;
+        HydrateRuling(ref ruling, actingUser, castleModel);
+
+        if (ruling.IsOwnerOfCastle)
+        {
+            return ruling.Allowed();
+        }
+
+        if (!ruling.IsSameClan)
+        {
+            return ruling.Disallowed();
+        }
+
+        ruling.IsAllowed = ruling.ActingUserPrivs.Intersects(ruling.PermissiblePrivs);
+        return ruling;
+    }
+
+    #endregion
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    #region access interactive structures
+
+    public CastleActionRuling ValidateAction_AccessLockbox(Entity actingCharacter, Entity lockbox)
+    {
+        var ruling = Internal_ValidateAction_AccessInteractiveStructure(actingCharacter, lockbox, RestrictedCastleActions.AccessLockbox, PermissiblePrivsTo_AccessLockbox);
+        _rulingLoggerService.LogRuling(ruling);
+        return ruling;
+    }
+
+    private CastlePrivileges PermissiblePrivsTo_AccessLockbox = new()
+    {
+        Misc = MiscPrivs.Lockbox,
+    };
+
+    public CastleActionRuling ValidateAction_AccessMusicbox(Entity actingCharacter, Entity musicbox)
+    {
+        var ruling = Internal_ValidateAction_AccessInteractiveStructure(actingCharacter, musicbox, RestrictedCastleActions.AccessMusicbox, PermissiblePrivsTo_AccessMusicbox);
+        _rulingLoggerService.LogRuling(ruling);
+        return ruling;
+    }
+
+    private CastlePrivileges PermissiblePrivsTo_AccessMusicbox = new()
+    {
+        Misc = MiscPrivs.Musicbox,
+    };
+
+    public CastleActionRuling ValidateAction_AccessArenaStation(Entity actingCharacter, Entity musicbox)
+    {
+        var ruling = Internal_ValidateAction_AccessInteractiveStructure(actingCharacter, musicbox, RestrictedCastleActions.AccessArenaStation, PermissiblePrivsTo_AccessArenaStation);
+        _rulingLoggerService.LogRuling(ruling);
+        return ruling;
+    }
+
+    private CastlePrivileges PermissiblePrivsTo_AccessArenaStation = new()
+    {
+        Arena = ArenaPrivs.UseStation,
+    };
+
+    public CastleActionRuling ValidateAction_AccessThrone(Entity actingCharacter, Entity musicbox)
+    {
+        var ruling = Internal_ValidateAction_AccessInteractiveStructure(actingCharacter, musicbox, RestrictedCastleActions.AccessThrone, PermissiblePrivsTo_AccessThrone);
+        _rulingLoggerService.LogRuling(ruling);
+        return ruling;
+    }
+
+    private CastlePrivileges PermissiblePrivsTo_AccessThrone = new()
+    {
+        Servant = ServantPrivs.Throne,
+    };
+
+    public CastleActionRuling ValidateAction_AccessRedistributionEngine(Entity actingCharacter, Entity musicbox)
+    {
+        var ruling = Internal_ValidateAction_AccessInteractiveStructure(actingCharacter, musicbox, RestrictedCastleActions.AccessRedistributionEngine, PermissiblePrivsTo_AccessRedistributionEngine);
+        _rulingLoggerService.LogRuling(ruling);
+        return ruling;
+    }
+
+    private CastlePrivileges PermissiblePrivsTo_AccessRedistributionEngine = new()
+    {
+        Redistribution = RedistributionPrivs.Edit,
+    };
+
+    private CastleActionRuling Internal_ValidateAction_AccessInteractiveStructure(
+        Entity actingCharacter,
+        Entity structure,
+        RestrictedCastleActions action,
+        CastlePrivileges permittedPrivs
+    )
+    {
+        if (!_userService.TryGetUserModel_ForCharacter(actingCharacter, out var actingUser))
+        {
+            return CastleActionRuling.NewRuling_NotEnoughDataToDecide(action, "Failed to get User model for acting character");
+        }
+
+        if (!_entityManager.TryGetComponentData<PrefabGUID>(structure, out var structurePrefabGUID))
+        {
+            return CastleActionRuling.NewRuling_NotEnoughDataToDecide(action, "Failed to get prefabGUID for interactive structure");
+        }
+
+        if (!_castleService.TryGetCastleModel_ForConnectedEntity(structure, out var castleModel))
+        {
+            return CastleActionRuling.NewRuling_NotEnoughDataToDecide(action, "Failed to get Castle model");
+        }
+
+        var ruling = new CastleActionRuling();
+        ruling.Action = action;
+        ruling.TargetPrefabGUID = structurePrefabGUID;
         ruling.PermissiblePrivs = permittedPrivs;
         HydrateRuling(ref ruling, actingUser, castleModel);
 

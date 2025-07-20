@@ -5,6 +5,15 @@ namespace ProfuselyViolentProgression.PalacePrivileges;
 
 public static class PrefabGuids
 {
+    public static PrefabGUID AB_Interact_OpenContainer_Cast = new PrefabGUID(-305054665);
+    public static PrefabGUID TM_Stash_Chest_SafetyBox = new PrefabGUID(1842080060);
+    public static PrefabGUID AB_Interact_UseMusicPlayerStation_Cast = new PrefabGUID(1522881987);
+    public static PrefabGUID AB_Interact_UseWorkstation_Cast = new PrefabGUID(434360908);
+    public static PrefabGUID AB_Interact_UseStables_Cast = new PrefabGUID(-587833951);
+    public static PrefabGUID AB_Interact_UseInventoryRouteStation_Cast = new PrefabGUID(1081392595);
+    public static PrefabGUID AB_Interact_ArenaStation_Cast = new PrefabGUID(1623165510);
+    public static PrefabGUID AB_Interact_Throne_Cast = new PrefabGUID(1832821794);
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // wide castle doors ////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -133,7 +142,26 @@ public static class PrefabGuids
     // teleportation ////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public static PrefabGUID AB_Interact_UseWaypoint_Castle_Cast = new PrefabGUID(-1252882299);
     public static PrefabGUID TM_Workstation_Waypoint_Castle = new PrefabGUID(-1348294483);
+    public static PrefabGUID AB_Interact_UseWaypoint_Castle_Cast = new PrefabGUID(-1252882299);
+
+    public static PrefabGUID AB_Interact_LocalCastleTeleport_Red_Cast = new PrefabGUID(-1644954585); // also used for purple teleporter
+    public static PrefabGUID AB_Interact_LocalCastleTeleport_Yellow_Cast = new PrefabGUID(-211215583);
+    public static PrefabGUID AB_Interact_LocalCastleTeleport_Blue_Cast = new PrefabGUID(-155879739);
+
+    public static PrefabGUID TM_Castle_LocalTeleporter_Red = new PrefabGUID(1326023321);
+    public static PrefabGUID TM_Castle_LocalTeleporter_Yellow = new PrefabGUID(1579702125);
+    public static PrefabGUID TM_Castle_LocalTeleporter_Purple = new PrefabGUID(2027471241);
+    public static PrefabGUID TM_Castle_LocalTeleporter_Blue = new PrefabGUID(760696617);
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // research /////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public static PrefabGUID AB_Interact_UseResearchstation_Cast = new PrefabGUID(-83188602);
+    public static PrefabGUID TM_ResearchStation_T01 = new PrefabGUID(-495424062);
+    public static PrefabGUID TM_ResearchStation_T02 = new PrefabGUID(-1292809886);
+    public static PrefabGUID M_ResearchStation_T03 = new PrefabGUID(-1262194203);
+    public static PrefabGUID M_StygianAltar_Passive_T01 = new PrefabGUID(-1938449679);
 
 }

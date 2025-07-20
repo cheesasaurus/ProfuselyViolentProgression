@@ -118,6 +118,7 @@ This is all done via chat commands...
 `lockbox`
 `musicbox`
 `renameStructures`
+`toggleRefinement`
 
 ### Build privileges
 `build.all`
@@ -125,9 +126,8 @@ This is all done via chat commands...
 
 ### Craft privileges
 `craft.all`
+`craft.craft`
 `craft.useTreasury`
-`craft.accessStations`
-`craft.toggleRecipes`
 
 ### Prison privileges
 `prison.all`
@@ -173,8 +173,7 @@ This is all done via chat commands...
 
 ### Arena privileges
 `arena.all`
-`arena.startContest`
-`arena.editRules`
+`arena.useStation`
 `arena.zonePainting`
 
 ### Door privileges

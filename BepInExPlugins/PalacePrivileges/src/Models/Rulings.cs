@@ -29,6 +29,15 @@ public enum RestrictedCastleActions
     ServantGearChange,
     WaygateIn,
     WaygateOut,
+    UseTeleporterRed,
+    UseTeleporterYellow,
+    UseTeleporterPurple,
+    UseTeleporterBlue,
+    AccessLockbox,
+    AccessMusicbox,
+    AccessArenaStation,
+    AccessThrone,
+    AccessRedistributionEngine,
 }
 
 

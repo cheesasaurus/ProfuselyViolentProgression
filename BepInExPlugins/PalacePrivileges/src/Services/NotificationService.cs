@@ -136,6 +136,21 @@ public class NotificationService
             case RestrictedCastleActions.WaygateOut:
                 return $"{ownerName} has not given you permission to waygate out of their castle.";
 
+            case RestrictedCastleActions.AccessLockbox:
+                return $"{ownerName} has not given you permission to use their lockbox.";
+
+            case RestrictedCastleActions.AccessMusicbox:
+                return $"{ownerName} has not given you permission to use their music box.";
+
+            case RestrictedCastleActions.AccessArenaStation:
+                return $"{ownerName} has not given you permission to use their arena station.";
+
+            case RestrictedCastleActions.AccessThrone:
+                return $"{ownerName} has not given you permission to use their throne.";
+
+            case RestrictedCastleActions.AccessRedistributionEngine:
+                return $"{ownerName} has not given you permission to alter redistribution.";
+
             default:
                 return $"{ownerName} has not given you permission to do that.";
         }

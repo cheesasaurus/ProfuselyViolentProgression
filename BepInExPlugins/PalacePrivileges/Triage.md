@@ -9,7 +9,7 @@
 - [x] Restrict: Removing blood from the castle heart.
 - [x] Restrict: Relocating the castle.
 - [ ] Priv: `arena.zonePainting`
-- [ ] Priv: `lockbox` - InteractValidator?
+- [x] Priv: `lockbox`
 - [x] Priv: `servants.terminate`
 - [x] Priv: `servants.gear`
 - [ ] Priv: `prisoners.subdue` (moved to mvp for anticheat)
@@ -24,7 +24,7 @@
 - [x] Priv: `renameStructures`
 - [ ] Priv: `redist.edit` - be sure to validate the "clear all" thing at the engine itself too
 - [ ] Priv: `redist.toggleAutoSend`
-- [ ] Priv: `servants.throne`
+- [x] Priv: `servants.throne`
 - [ ] Priv: `craft.toggleRecipes`
 
 
@@ -38,14 +38,13 @@
   - maybe a special export string, with a command like `.castlePrivs import asdfklkjasdfjkhasdflongassstringbutnotlongerthanthemessagesizelimit`
   - same hosting strategy as CastleHeartPolice.
   - a chat command to export from the game wouldn't be usable, because the client doesn't have a way to copy/paste from messages.
-- [ ] Priv: `craft.accessStations`
-- [ ] Priv: `musicbox` - MoodSystem
+- [ ] Priv: `craft.craft`
+- [x] Priv: `musicbox` - MoodSystem
 - [x] Priv: `servants.convert`
 - [ ] Priv: `research.t1` `research.t2` `research.t3`
 - [ ] Priv: `research.stygian`
 - [ ] Priv: `research.useTreasury`
-- [ ] Priv: `arena.editRules` (not sure if this is server or clientside)
-- [ ] Priv: `arena.startContest` - CastleArenaUtility
+- [x] Priv: `arena.useStation`
 - [ ] Priv: `redist.quickSend`
 - [x] Priv: `build.useTreasury`
 - [x] Privs: planting things in garden

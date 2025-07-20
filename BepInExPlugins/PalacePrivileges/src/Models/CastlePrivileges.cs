@@ -205,6 +205,7 @@ public enum MiscPrivs : long
     Lockbox = 1 << 1,
     Musicbox = 1 << 2,
     RenameStructures = 1 << 3,
+    ToggleRefinement = 1 << 4,
 }
 
 [Flags]
@@ -214,7 +215,6 @@ public enum BuildPrivs : long
     All = -1,
     UnlistedTBD = 1,
     UseTreasury = 1 << 1,
-    
 }
 
 [Flags]
@@ -223,8 +223,7 @@ public enum CraftPrivs : long
     None = 0,
     All = -1,
     UseTreasury = 1,
-    AccessStations = 1 << 1,
-    ToggleRecipes = 1 << 2,
+    Craft = 1 << 1,
 }
 
 [Flags]
@@ -341,9 +340,8 @@ public enum ArenaPrivs : long
 {
     None = 0,
     All = -1,
-    StartContest = 1,
-    EditRules = 1 << 1,
-    ZonePainting = 1 << 2,
+    UseStation = 1,
+    ZonePainting = 1 << 1,
 }
 
 [Flags]
