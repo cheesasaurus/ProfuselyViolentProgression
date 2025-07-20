@@ -10,6 +10,9 @@ public class CastleTerritoryService
 {
     private EntityManager _entityManager = WorldUtil.Server.EntityManager;
 
-    
+    public CastleTerritoryService()
+    {
+
+    }
 
 }

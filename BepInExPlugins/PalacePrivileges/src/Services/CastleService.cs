@@ -1,10 +1,15 @@
+using System.Runtime.InteropServices;
 using BepInEx.Logging;
 using ProfuselyViolentProgression.Core.Utilities;
 using ProfuselyViolentProgression.PalacePrivileges.Models;
 using ProjectM;
 using ProjectM.CastleBuilding;
+using ProjectM.Terrain;
+using ProjectM.Tiles;
 using Unity.Entities;
+using Unity.Mathematics;
 using Unity.Transforms;
+using UnityEngine;
 
 namespace ProfuselyViolentProgression.PalacePrivileges.Services;
 
@@ -57,17 +62,34 @@ public class CastleService
 
         return true;
     }
-    
-    public bool TryGetCastleHeartOfTerritory_WhereCharacterIs(Entity character, out Entity castleHeart)
+
+    public bool TryGetCastleHeartOfTerritory_WhereCharacterIs(Entity character, [In] ref MapZoneCollection mapZoneCollection, out Entity castleHeart)
     {
         castleHeart = Entity.Null;
 
-        if (!_entityManager.TryGetComponentData<Translation>(character, out var translation))
+        if (!_entityManager.TryGetComponentData<Translation>(character, out var position))
         {
             return false;
         }
-        // todo: implement
-        return false;
+
+        return TryGetCastleHeartOfTerritory_AtPosition(position, ref mapZoneCollection, out castleHeart);
+    }
+
+    public bool TryGetCastleHeartOfTerritory_AtPosition(Translation worldPosition, [In] ref MapZoneCollection mapZoneCollection, out Entity castleHeart)
+    {
+        castleHeart = Entity.Null;
+        
+        var tilePosition = SpaceConversion.WorldToTile(worldPosition.Value);
+
+        if (!mapZoneCollection.TryGetCastleTerritory(ref _entityManager, tilePosition.xz, out CastleTerritory castleTerritory))
+        {
+            return false;
+        }
+
+        LogUtil.LogDebug($"Found castle territory!"); // todo: remove
+
+        castleHeart = castleTerritory.CastleHeart;
+        return true;
     }
 
 }

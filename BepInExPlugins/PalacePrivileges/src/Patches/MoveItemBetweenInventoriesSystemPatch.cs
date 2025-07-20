@@ -29,7 +29,7 @@ public unsafe class MoveItemBetweenInventoriesSystemPatch
         var fromCharacters = query.ToComponentDataArray<FromCharacter>(Allocator.Temp);
         var moveItemEvents = query.ToComponentDataArray<MoveItemBetweenInventoriesEvent>(Allocator.Temp);
 
-        var networkIdToEntityMap = Core.NetworkIdService.NetworkIdToEntityMap();
+        var networkIdToEntityMap = Core.SingletonService.FetchNetworkIdToEntityMap();
 
         for (var i = 0; i < entities.Length; i++)
         {

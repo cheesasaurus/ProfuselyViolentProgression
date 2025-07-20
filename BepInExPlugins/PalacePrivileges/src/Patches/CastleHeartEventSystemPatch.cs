@@ -28,7 +28,7 @@ public unsafe class CastleHeartEventSystemPatch
         var fromCharacters = query.ToComponentDataArray<FromCharacter>(Allocator.Temp);
         var heartEvents = query.ToComponentDataArray<CastleHeartInteractEvent>(Allocator.Temp);
 
-        var networkIdLookup = Core.NetworkIdService.NetworkIdToEntityMap();
+        var networkIdLookup = Core.SingletonService.FetchNetworkIdToEntityMap();
 
         for (var i = 0; i < entities.Length; i++)
         {

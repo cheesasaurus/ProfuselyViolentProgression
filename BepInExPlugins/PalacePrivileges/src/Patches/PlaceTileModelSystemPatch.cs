@@ -6,6 +6,7 @@ using ProjectM.CastleBuilding;
 using ProjectM.Network;
 using Unity.Collections;
 using Unity.Entities;
+using Unity.Transforms;
 
 namespace ProfuselyViolentProgression.PalacePrivileges.Patches;
 
@@ -24,7 +25,7 @@ public unsafe class PlaceTileModelSystemPatch
             return;
         }
 
-        var networkIdToEntityMap = Core.NetworkIdService.NetworkIdToEntityMap();
+        var networkIdToEntityMap = Core.SingletonService.FetchNetworkIdToEntityMap();
 
         ProcessEvents_BuildTile(__instance._BuildTileQuery, ref networkIdToEntityMap);
         ProcessEvents_StartEdit(__instance._StartEditQuery, ref networkIdToEntityMap);
@@ -43,6 +44,8 @@ public unsafe class PlaceTileModelSystemPatch
         var fromCharacters = query.ToComponentDataArray<FromCharacter>(Allocator.Temp);
         var tmEvents = query.ToComponentDataArray<BuildTileModelEvent>(Allocator.Temp);
 
+        var mapZoneCollection = Core.SingletonService.FetchMapZoneCollection();
+
         for (var i = 0; i < entities.Length; i++)
         {
             var ev = tmEvents[i];
@@ -54,6 +57,11 @@ public unsafe class PlaceTileModelSystemPatch
             }
 
             var character = fromCharacters[i].Character;
+
+            if (!Core.CastleService.TryGetCastleHeartOfTerritory_AtPosition(ev.SpawnTranslation, ref mapZoneCollection, out var castleHeart))
+            {
+                continue;
+            }
 
             CastleActionRuling ruling;
             if (Core.GardenService.IsSeed(ev.PrefabGuid))
@@ -67,7 +75,7 @@ public unsafe class PlaceTileModelSystemPatch
             else
             {
                 // todo: use building rules
-            }            
+            }
 
             // bool IsAllowed = true;
             bool IsAllowed = false; // todo: use ruling.IsAllowed
@@ -78,7 +86,7 @@ public unsafe class PlaceTileModelSystemPatch
                 // Core.NotificationService.NotifyActionDenied(character, ref ruling);
             }
 
-            
+
 
             // todo: implement
             // need to relate to the castle somehow

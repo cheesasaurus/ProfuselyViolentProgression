@@ -1,0 +1,73 @@
+ProjectM.AchievementOwner
+ProjectM.CurrentMapZone
+ProjectM.ProgressionMapper
+ProjectM.EntityInput
+ProjectM.Controller
+ProjectM.Network.User
+ProjectM.Network.InputCommandDataProxy
+ProjectM.AdminUser
+ProjectM.ClanRole
+ProjectM.DestroyData
+ProjectM.DestroyState
+ProjectM.Emoter
+ProjectM.Shapeshift
+ProjectM.Team
+ProjectM.Terrain.CurrentWorldRegion
+ProjectM.Network.Networked
+ProjectM.Network.UpToDateUserBitMask
+ProjectM.Network.SyncToUserBitMask
+ProjectM.Network.Latency
+ProjectM.Network.FrameChanged
+ProjectM.Network.NetworkSnapshot
+ProjectM.Network.UserStats
+ProjectM.Network.UserVisitedRegions
+ProjectM.Network.DisconnectedTimer
+ProjectM.Network.UserHeartCount
+ProjectM.Network.UserControllerData
+ProjectM.Network.UserTutorialProgression
+Unity.Transforms.Rotation
+Unity.Transforms.Translation
+Unity.Transforms.LocalToWorld
+Unity.Transforms.LocalTransform
+ProjectM.TeamReference
+ProjectM.Network.NetworkId
+Stunlock.Core.PrefabGUID
+ProjectM.AttachParentId
+ProjectM.Network.ConnectedUser
+ProjectM.Network.ServerNetworkState
+ProjectM.AllyPermission [Buffer]
+ProjectM.RespawnPointOwnerBuffer [Buffer]
+ProjectM.UserMapZoneElement [Buffer]
+ProjectM.QueuedWorkstationCraftAction [Buffer]
+ProjectM.QueuedWorkstationCraftActionItems [Buffer]
+ProjectM.AttachedBuffer [Buffer]
+ProjectM.Network.SyncToUserBuffer [Buffer]
+ProjectM.Network.InputCommandBufferElement [Buffer]
+ProjectM.EmoteAbility [Buffer]
+ProjectM.ShapeshiftAbility [Buffer]
+ProjectM.Network.Snapshot_AllyPermission [Buffer]
+ProjectM.Network.Snapshot_QueuedWorkstationCraftAction [Buffer]
+ProjectM.Network.Snapshot_RespawnPointOwnerBuffer [Buffer]
+ProjectM.Network.Snapshot_UnlockedWaypointElement [Buffer]
+ProjectM.Network.Snapshot_UserMapZoneElement [Buffer]
+ProjectM.WorkstationRecipesBuffer [Buffer]
+ProjectM.UnlockedWaypointElement [Buffer]
+ProjectM.Network.NetSnapshot [Buffer]
+ProjectM.Network.SnapshotFrameChangedBuffer [Buffer]
+ProjectM.Network.TileCollisionHistoryElement [Buffer]
+ProjectM.Network.TileGameplayHeightsHistoryElement [Buffer]
+ProjectM.Network.TileCollisionHistoryMetadataElement [Buffer]
+ProjectM.Network.TileDisabledCollisionHistoryElement [Buffer]
+ProjectM.Network.InputCommandStateHistoryBufferElement [Buffer]
+ProjectM.Network.UserDestroyedEntityBuffer [Buffer]
+ProjectM.Network.IncomingClientMessage [Buffer]
+ProjectM.Network.IncomingNetBuffer [Buffer]
+ProjectM.Network.UserNetBuffer [Buffer]
+ProjectM.Network.UserEntityNetworkState [Buffer]
+ProjectM.Network.PriorityEntitiesToSerializeBuffer [Buffer]
+ProjectM.Network.PanicEntitiesToSerializeBuffer [Buffer]
+ProjectM.Network.AlwaysNetworked
+ProjectM.Network.OnlySyncToUsersTag
+Unity.Entities.Simulate
+ProjectM.Network.IsConnected
+ProjectM.Network.NetworkSnapshotType

@@ -31,7 +31,7 @@ public unsafe class RenamingPatches
         var fromCharacters = query.ToComponentDataArray<FromCharacter>(Allocator.Temp);
         var renameInteractables = query.ToComponentDataArray<InteractEvents_Client.RenameInteractable>(Allocator.Temp);
 
-        var networkIdToEntityMap = Core.NetworkIdService.NetworkIdToEntityMap();
+        var networkIdToEntityMap = Core.SingletonService.FetchNetworkIdToEntityMap();
 
         for (var i = 0; i < entities.Length; i++)
         {

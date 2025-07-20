@@ -9,7 +9,7 @@ public static class Core
 {
     public static bool IsInitialized { get; private set; } = false;
     
-    public static NetworkIdService NetworkIdService { get; private set; }
+    public static SingletonService SingletonService { get; private set; }
     public static SCTService SCTService { get; private set; }
     public static UserService UserService { get; private set; }
     public static AntiCheatService AntiCheatService { get; private set; }
@@ -29,7 +29,7 @@ public static class Core
     {
         IsInitialized = true;
 
-        NetworkIdService = new();
+        SingletonService = new();
         SCTService = new();
         UserService = new();
         AntiCheatService = new(log);

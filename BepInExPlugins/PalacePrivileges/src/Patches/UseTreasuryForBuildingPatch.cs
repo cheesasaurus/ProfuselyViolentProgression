@@ -38,7 +38,7 @@ public unsafe class UseTreasuryForBuildingPatch
             return EXECUTE_ORIGINAL_METHOD;
         }
 
-        var ruling = Core.RestrictionService.ValidateAction_BuildUseTreasury(character);
+        var ruling = Core.RestrictionService.ValidateAction_BuildUseTreasury(character, ref mapZoneCollection);
         if (ruling.IsAllowed)
         {
             return EXECUTE_ORIGINAL_METHOD;

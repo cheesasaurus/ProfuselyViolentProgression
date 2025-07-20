@@ -30,7 +30,7 @@ public unsafe class ServantGearPatches
         var fromCharacters = query.ToComponentDataArray<FromCharacter>(Allocator.Temp);
         var equipEvents = query.ToComponentDataArray<EquipServantItemFromInventoryEvent>(Allocator.Temp);
 
-        var networkIdToEntityMap = Core.NetworkIdService.NetworkIdToEntityMap();
+        var networkIdToEntityMap = Core.SingletonService.FetchNetworkIdToEntityMap();
 
         for (var i = 0; i < entities.Length; i++)
         {
@@ -66,7 +66,7 @@ public unsafe class ServantGearPatches
         var fromCharacters = query.ToComponentDataArray<FromCharacter>(Allocator.Temp);
         var equipEvents = query.ToComponentDataArray<UnequipServantItemEvent>(Allocator.Temp);
 
-        var networkIdToEntityMap = Core.NetworkIdService.NetworkIdToEntityMap();
+        var networkIdToEntityMap = Core.SingletonService.FetchNetworkIdToEntityMap();
 
         for (var i = 0; i < entities.Length; i++)
         {
@@ -107,7 +107,7 @@ public unsafe class ServantGearPatches
         var fromCharacters = query.ToComponentDataArray<FromCharacter>(Allocator.Temp);
         var equipEvents = query.ToComponentDataArray<EquipmentToEquipmentTransferEvent>(Allocator.Temp);
 
-        var networkIdToEntityMap = Core.NetworkIdService.NetworkIdToEntityMap();
+        var networkIdToEntityMap = Core.SingletonService.FetchNetworkIdToEntityMap();
 
         for (var i = 0; i < entities.Length; i++)
         {

@@ -31,7 +31,7 @@ public unsafe class ServantCoffinPatches
         var fromCharacters = query.ToComponentDataArray<FromCharacter>(Allocator.Temp);
         var servantCoffinActionEvents = query.ToComponentDataArray<ServantCoffinActionEvent>(Allocator.Temp);
 
-        var networkIdToEntityMap = Core.NetworkIdService.NetworkIdToEntityMap();
+        var networkIdToEntityMap = Core.SingletonService.FetchNetworkIdToEntityMap();
 
         for (var i = 0; i < entities.Length; i++)
         {
@@ -67,7 +67,7 @@ public unsafe class ServantCoffinPatches
         var fromCharacters = query.ToComponentDataArray<FromCharacter>(Allocator.Temp);
         var changeServantNameEvents = query.ToComponentDataArray<ChangeServantNameEvent>(Allocator.Temp);
 
-        var networkIdToEntityMap = Core.NetworkIdService.NetworkIdToEntityMap();
+        var networkIdToEntityMap = Core.SingletonService.FetchNetworkIdToEntityMap();
 
         for (var i = 0; i < entities.Length; i++)
         {

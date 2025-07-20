@@ -7,9 +7,9 @@
 - [x] Restrict: Abandoning the castle.
 - [x] Restrict: Exposing the castle heart.
 - [x] Restrict: Removing blood from the castle heart.
-- [ ] Restrict: Relocating the castle.
+- [ ] Restrict: Relocating the castle. - CastleRebuildConnectEvent?
 - [ ] Priv: `arena.zonePainting`
-- [ ] Priv: `lockbox`
+- [ ] Priv: `lockbox` - InteractValidator?
 - [x] Priv: `servants.terminate`
 - [x] Priv: `servants.gear`
 - [ ] Priv: `prisoners.subdue` (moved to mvp for anticheat)
@@ -38,16 +38,16 @@
   - same hosting strategy as CastleHeartPolice.
   - a chat command to export from the game wouldn't be usable, because the client doesn't have a way to copy/paste from messages.
 - [ ] Priv: `craft.accessStations`
-- [ ] Priv: `musicbox`
+- [ ] Priv: `musicbox` - MoodSystem
 - [x] Priv: `servants.convert`
 - [ ] Priv: `research.t1` `research.t2` `research.t3`
 - [ ] Priv: `research.stygian`
 - [ ] Priv: `research.useTreasury`
 - [ ] Priv: `arena.editRules` (not sure if this is server or clientside)
-- [ ] Priv: `arena.startContest`
+- [ ] Priv: `arena.startContest` - CastleArenaUtility
 - [ ] Priv: `redist.quickSend`
 - [ ] Priv: `build.useTreasury`
 - [ ] Privs: planting things in garden
 - specific privs for building
 - replacing damaged walls
-- replacing damaged doors - only with a door of the same type.
+- replacing damaged doors - only with a door of the same type?

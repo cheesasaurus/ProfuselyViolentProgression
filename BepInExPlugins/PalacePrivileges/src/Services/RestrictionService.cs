@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using BepInEx.Logging;
 using ProfuselyViolentProgression.Core.Utilities;
 using ProfuselyViolentProgression.PalacePrivileges.Models;
@@ -333,9 +334,9 @@ public class RestrictionService
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     #region BuildUseTreasury
 
-    public CastleActionRuling ValidateAction_BuildUseTreasury(Entity actingCharacter)
+    public CastleActionRuling ValidateAction_BuildUseTreasury(Entity actingCharacter, [In] ref MapZoneCollection mapZoneCollection)
     {
-        var ruling = Internal_ValidateAction_BuildUseTreasury(actingCharacter);
+        var ruling = Internal_ValidateAction_BuildUseTreasury(actingCharacter, ref mapZoneCollection);
         _rulingLoggerService.LogRuling(ruling);
         return ruling;
     }
@@ -345,9 +346,9 @@ public class RestrictionService
         Build = BuildPrivs.UseTreasury,
     };
 
-    private CastleActionRuling Internal_ValidateAction_BuildUseTreasury(Entity actingCharacter)
+    private CastleActionRuling Internal_ValidateAction_BuildUseTreasury(Entity actingCharacter, [In] ref MapZoneCollection mapZoneCollection)
     {
-        if (!_castleService.TryGetCastleHeartOfTerritory_WhereCharacterIs(actingCharacter, out var castleHeartEntity))
+        if (!_castleService.TryGetCastleHeartOfTerritory_WhereCharacterIs(actingCharacter, ref mapZoneCollection, out var castleHeartEntity))
         {
             return CastleActionRuling.NewRuling_NotEnoughDataToDecide(RestrictedCastleActions.BuildUseTreasury, "Failed to get castle heart of territory where acting character is");
         }
