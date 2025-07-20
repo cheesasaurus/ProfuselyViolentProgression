@@ -112,7 +112,7 @@ public class CastlePrivsCommands
         }
 
         var clanPrivs = Core.CastlePrivilegesService.PrivilegesForClan(ctx.User.PlatformId);
-        var privNames = Core.PrivilegeParser.PrivilegeNames(clanPrivs);
+        var privNames = Core.PrivilegeParser.PrivilegeNames(clanPrivs, discardRedundant: true);
 
         ctx.Reply($"Privileges for clan members:");
         SendMessages_Privileges(ctx, privNames);
@@ -146,8 +146,8 @@ public class CastlePrivsCommands
             return;
         }
 
-        var grantedPrivNames = Core.PrivilegeParser.PrivilegeNames(actingPlayerPrivileges.Granted);
-        var forbiddenPrivNames = Core.PrivilegeParser.PrivilegeNames(actingPlayerPrivileges.Forbidden);
+        var grantedPrivNames = Core.PrivilegeParser.PrivilegeNames(actingPlayerPrivileges.Granted, discardRedundant: true);
+        var forbiddenPrivNames = Core.PrivilegeParser.PrivilegeNames(actingPlayerPrivileges.Forbidden, discardRedundant: true);
 
         if (!grantedPrivNames.Any() && !forbiddenPrivNames.Any())
         {

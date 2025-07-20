@@ -81,6 +81,8 @@ public struct CastlePrivileges
         Redistribution = RedistributionPrivs.All,
         Arena = ArenaPrivs.All,
         Research = ResearchPrivs.All,
+        SowSeed = SowSeedPrivs.All,
+        PlantTree = PlantTreePrivs.All,
     };
 
     public static CastlePrivileges operator |(CastlePrivileges left, CastlePrivileges right)

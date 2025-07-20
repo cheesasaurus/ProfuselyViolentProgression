@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using ProfuselyViolentProgression.Core.Utilities;
 using ProfuselyViolentProgression.PalacePrivileges.Models;
 
@@ -41,52 +42,81 @@ public class PrivilegeParser
         return result;
     }
 
-    public List<string> PrivilegeNames(CastlePrivileges privs)
+    public List<string> PrivilegeNames(CastlePrivileges privs, bool discardRedundant = false)
     {
-        // todo: filter out redundant privileges.
-        // e.g. "cat.all cat.some cat.1 cat.2"
-        // should simply be "cat.all"
-        // Needs some thought; the obvious way would not scale well
-        //
-        // idea: for each group, order by largest flag value first.
-        // then while extracting from that, check if each added thing is a superset before adding.
-        // but still doesn't scale great.
-        //
-        // maybe something else we can do with flags, like creating a master flags to check.
-        // when something is added, turn on its bits in the master flags.
-        // And only check the master flags when extracting.
-        // But not sure that would be correct; need to think about it.
-        //
-        // Probably needs some preprocessing
-        var names = new List<string>();
-        
-        foreach (var (key, namedPriv) in PrivsLookup)
+        var namedPrivsSelected = new List<NamedCastlePrivileges>();
+        var namesSelected = new List<string>();
+
+        var grouped = Internal_PrivilegeNamesGrouped(privs, discardRedundant);
+        foreach (var namedPrivs in grouped.NamedPrivs.Values)
         {
-            if (namedPriv.Privs.IsSubsetOf(privs))
+            foreach (var namedPriv in namedPrivs)
             {
-                names.Add(namedPriv.Name);
+                bool isSubsetOfPrev = namedPrivsSelected
+                    .Where(np => np.Privs.IsSupersetOf(namedPriv.Privs))
+                    .Any();
+
+                if (discardRedundant && isSubsetOfPrev)
+                {
+                    continue;
+                }
+                namedPrivsSelected.Add(namedPriv);
+                namesSelected.Add(namedPriv.Name);
             }
         }
-        return names;
+        return namesSelected;
+    }    
+
+    public Dictionary<string, List<string>> PrivilegeNamesGrouped(CastlePrivileges privs, bool discardRedundant = false)
+    {
+        return Internal_PrivilegeNamesGrouped(privs, discardRedundant).NamesOnly;
     }
 
-    public Dictionary<string, List<string>> PrivilegeNamesGrouped(CastlePrivileges privs)
+    private class GroupedNamedPrivileges
     {
+        public Dictionary<string, List<string>> NamesOnly = new();
+        public Dictionary<string, List<NamedCastlePrivileges>> NamedPrivs = new();
+    }
+
+    private GroupedNamedPrivileges Internal_PrivilegeNamesGrouped(CastlePrivileges privs, bool discardRedundant = false)
+    {
+        var groupedByPrefix = new Dictionary<string, List<NamedCastlePrivileges>>();
+        groupedByPrefix.Add("", []);
+
         var groupedNames = new Dictionary<string, List<string>>();
         groupedNames.Add("", []);
 
         foreach (var (key, namedPriv) in PrivsLookup)
         {
-            if (namedPriv.Privs.IsSubsetOf(privs))
+            if (!namedPriv.Privs.IsSubsetOf(privs))
             {
-                if (!groupedNames.ContainsKey(namedPriv.Prefix))
-                {
-                    groupedNames.Add(namedPriv.Prefix, []);
-                }
-                groupedNames[namedPriv.Prefix].Add(namedPriv.Name);
+                continue;
             }
+
+            if (!groupedByPrefix.ContainsKey(namedPriv.Prefix))
+            {
+                groupedByPrefix.Add(namedPriv.Prefix, []);
+                groupedNames.Add(namedPriv.Prefix, []);
+            }
+
+            bool isSubsetOfPrev = groupedByPrefix[namedPriv.Prefix]
+                .Where(np => np.Privs.IsSupersetOf(namedPriv.Privs))
+                .Any();
+
+            if (discardRedundant && isSubsetOfPrev)
+            {
+                continue;
+            }
+
+            groupedByPrefix[namedPriv.Prefix].Add(namedPriv);
+            groupedNames[namedPriv.Prefix].Add(namedPriv.Name);
         }
-        return groupedNames;
+
+        return new GroupedNamedPrivileges
+        {
+            NamesOnly = groupedNames,
+            NamedPrivs = groupedByPrefix,
+        };
     }
 
     private void RegisterPrivs(string name, CastlePrivileges privs)
@@ -200,6 +230,9 @@ public class PrivilegeParser
 
     private void InitPrivsLookup()
     {
+        // Any "aggregate" privileges (e.g. `tp.small`) should be registered before the things they include (e.g. [tp.red, tp.yellow...]).
+        // This ordering is used to filter redundant privileges from being listed to the user during checks.
+
         // todo: comment out anything not functional before release
 
         RegisterPrivs("all", CastlePrivileges.All);
@@ -235,11 +268,11 @@ public class PrivilegeParser
         RegisterPrivs("tp.waygate", TeleporterPrivs.Waygate);
         RegisterPrivs("tp.waygateOut", TeleporterPrivs.WaygateOut);
         RegisterPrivs("tp.waygateIn", TeleporterPrivs.WaygateIn);
+        RegisterPrivs("tp.small", TeleporterPrivs.AllSmall);
         RegisterPrivs("tp.red", TeleporterPrivs.Red);
         RegisterPrivs("tp.yellow", TeleporterPrivs.Yellow);
         RegisterPrivs("tp.purple", TeleporterPrivs.Purple);
-        RegisterPrivs("tp.blue", TeleporterPrivs.Blue);
-        RegisterPrivs("tp.allSmall", TeleporterPrivs.AllSmall);
+        RegisterPrivs("tp.blue", TeleporterPrivs.Blue);        
 
         RegisterPrivs("redist.all", RedistributionPrivs.All); // planned feature
         RegisterPrivs("redist.quickSend", RedistributionPrivs.QuickSend); // planned feature
@@ -261,8 +294,10 @@ public class PrivilegeParser
         RegisterPrivs("doors.all", DoorPrivs.All);
         RegisterPrivs("doors.servantLocked", DoorPrivs.ServantLocked);
         RegisterPrivs("doors.notServantLocked", DoorPrivs.NotServantLocked);
-        RegisterPrivs("doors.thin", DoorPrivs.Thin);
         RegisterPrivs("doors.wide", DoorPrivs.Wide);
+        RegisterPrivs("doors.wideBars", DoorPrivs.WideBars);
+        RegisterPrivs("doors.widePlanks", DoorPrivs.WidePlanks);
+        RegisterPrivs("doors.thin", DoorPrivs.Thin);
         RegisterPrivs("doors.fence", DoorPrivs.ThinFence);
         RegisterPrivs("doors.palisade", DoorPrivs.ThinPalisade);
         RegisterPrivs("doors.basic", DoorPrivs.ThinBasic);
@@ -287,9 +322,7 @@ public class PrivilegeParser
         RegisterPrivs("doors.dyedGrey", DoorPrivs.DyedGrey);
         RegisterPrivs("doors.dyedBlack", DoorPrivs.DyedBlack);
         RegisterPrivs("doors.prison", DoorPrivs.ThinPrison);
-        RegisterPrivs("doors.barrier", DoorPrivs.ThinBarrier);
-        RegisterPrivs("doors.wideBars", DoorPrivs.WideBars);
-        RegisterPrivs("doors.widePlanks", DoorPrivs.WidePlanks);
+        RegisterPrivs("doors.barrier", DoorPrivs.ThinBarrier);        
 
         RegisterPrivs("sowSeed.all", SowSeedPrivs.All);
         RegisterPrivs("sowSeed.bloodRose", SowSeedPrivs.BloodRose);

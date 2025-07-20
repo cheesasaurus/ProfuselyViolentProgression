@@ -151,11 +151,11 @@ This is all done via chat commands...
 `tp.waygate`
 `tp.waygateOut`
 `tp.waygateIn`
+`tp.small`
 `tp.red`
 `tp.yellow`
 `tp.purple`
 `tp.blue`
-`tp.allSmall`
 
 ### Redistribution privileges
 `redist.all`

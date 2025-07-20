@@ -32,7 +32,7 @@
 
 - [ ] Cooldown: Using key after leaving clan. will make clan history lib first.
 - [x] Privs: opening / closing doors, by color
-- [ ] `Check` command not showing redundant privileges. (e.g. listing all the seeds when sowseed.all is on)
+- [x] `Check` command not showing redundant privileges. (e.g. listing all the seeds when sowseed.all is on)
 - [ ] webapp with UI to set up privileges, and spit out commands.
   - check how arena does it.
   - maybe a special export string, with a command like `.castlePrivs import asdfklkjasdfjkhasdflongassstringbutnotlongerthanthemessagesizelimit`
@@ -49,6 +49,8 @@
 - [ ] Priv: `redist.quickSend`
 - [x] Priv: `build.useTreasury`
 - [x] Privs: planting things in garden
-- specific privs for building
-- replacing damaged walls
-- replacing damaged doors - only with a door of the same type?
+- [ ] specific privs for building. needs design
+- [ ] replacing damaged walls
+- [ ] replacing damaged doors - only with a door of the same type?
+- [ ] command: `.castlePrivs reset clan`
+- [ ] command: `.castlePrivs reset players`
