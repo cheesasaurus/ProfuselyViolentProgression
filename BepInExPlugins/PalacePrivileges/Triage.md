@@ -12,8 +12,8 @@
 - [x] Priv: `lockbox`
 - [x] Priv: `servants.terminate`
 - [x] Priv: `servants.gear`
-- [ ] Priv: `prisoners.subdue` (moved to mvp for anticheat)
-- [ ] Priv: `prisoners.kill` (moved to mvp for anticheat)
+- [x] Priv: `prisoners.subdue` (moved to mvp for anticheat)
+- [x] Priv: `prisoners.kill` (moved to mvp for anticheat)
 - [ ] Priv: `prisoners.extractBlood` (moved to mvp for anticheat)
 - [ ] Priv: `prisoners.feedUnsafeFood` (moved to mvp for anticheat)
 - [ ] Priv: `prisoners.feedSafeFood` (anticipating to implement alongside feedUnsafeFood)

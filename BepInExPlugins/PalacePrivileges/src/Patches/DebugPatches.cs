@@ -56,24 +56,11 @@ public unsafe class DebugPatches
         // todo
     }
 
-    //[HarmonyPatch(typeof(InteractValidator), nameof(InteractValidator.ValidateCanInteractWith), new Type[] { typeof(Entity), typeof(Entity) })]
+    //[HarmonyPatch(typeof(InteractWithPrisonerSystem), nameof(InteractWithPrisonerSystem.OnUpdate))]
     //[HarmonyPrefix]
-    public static bool SomePatchThing4(ref bool __result)
+    public static void SomePatchThing4()
     {
-        LogUtil.LogDebug("checking1");
-        __result = false;
-        return false;
-        // todo
-    }
-
-
-    //[HarmonyPatch(typeof(InteractValidator), nameof(InteractValidator.ValidateCanInteractWith), new Type[] { typeof(Entity), typeof(Entity), typeof(float3), typeof(float3), typeof(bool) })]
-    //[HarmonyPrefix]
-    public static bool SomePatchThing5(ref bool __result, Entity owner, Entity target, float3 interactorPosition, float3 targetPosition, bool skipCollisionCheck)
-    {
-        LogUtil.LogDebug("checking2");
-        __result = false;
-        return false;
+        //LogUtil.LogDebug("interact with prisoner");
         // todo
     }
 

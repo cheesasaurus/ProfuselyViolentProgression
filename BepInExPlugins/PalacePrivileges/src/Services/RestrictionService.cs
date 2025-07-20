@@ -911,9 +911,9 @@ public class RestrictionService
         Misc = MiscPrivs.Musicbox,
     };
 
-    public CastleActionRuling ValidateAction_AccessArenaStation(Entity actingCharacter, Entity musicbox)
+    public CastleActionRuling ValidateAction_AccessArenaStation(Entity actingCharacter, Entity arenaStation)
     {
-        var ruling = Internal_ValidateAction_AccessInteractiveStructure(actingCharacter, musicbox, RestrictedCastleActions.AccessArenaStation, PermissiblePrivsTo_AccessArenaStation);
+        var ruling = Internal_ValidateAction_AccessInteractiveStructure(actingCharacter, arenaStation, RestrictedCastleActions.AccessArenaStation, PermissiblePrivsTo_AccessArenaStation);
         _rulingLoggerService.LogRuling(ruling);
         return ruling;
     }
@@ -923,9 +923,9 @@ public class RestrictionService
         Arena = ArenaPrivs.UseStation,
     };
 
-    public CastleActionRuling ValidateAction_AccessThrone(Entity actingCharacter, Entity musicbox)
+    public CastleActionRuling ValidateAction_AccessThrone(Entity actingCharacter, Entity throne)
     {
-        var ruling = Internal_ValidateAction_AccessInteractiveStructure(actingCharacter, musicbox, RestrictedCastleActions.AccessThrone, PermissiblePrivsTo_AccessThrone);
+        var ruling = Internal_ValidateAction_AccessInteractiveStructure(actingCharacter, throne, RestrictedCastleActions.AccessThrone, PermissiblePrivsTo_AccessThrone);
         _rulingLoggerService.LogRuling(ruling);
         return ruling;
     }
@@ -1068,6 +1068,76 @@ public class RestrictionService
         var ruling = new CastleActionRuling();
         ruling.Action = action;
         ruling.TargetPrefabGUID = structurePrefabGUID;
+        ruling.PermissiblePrivs = permittedPrivs;
+        HydrateRuling(ref ruling, actingUser, castleModel);
+
+        if (ruling.IsOwnerOfCastle)
+        {
+            return ruling.Allowed();
+        }
+
+        if (!ruling.IsSameClan)
+        {
+            return ruling.Disallowed();
+        }
+
+        ruling.IsAllowed = ruling.ActingUserPrivs.Intersects(ruling.PermissiblePrivs);
+        return ruling;
+    }
+
+    #endregion
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    #region prisoner interaction
+
+    public CastleActionRuling ValidateAction_PrisonerSubdue(Entity actingCharacter, Entity prison)
+    {
+        var ruling = Internal_ValidateAction_InteractWithPrisoner(actingCharacter, prison, RestrictedCastleActions.PrisonerSubdue, PermissiblePrivsTo_PrisonerSubdue);
+        _rulingLoggerService.LogRuling(ruling);
+        return ruling;
+    }
+
+    private CastlePrivileges PermissiblePrivsTo_PrisonerSubdue = new()
+    {
+        Prison = PrisonPrivs.Subdue,
+    };
+
+    public CastleActionRuling ValidateAction_PrisonerKill(Entity actingCharacter, Entity prison)
+    {
+        var ruling = Internal_ValidateAction_InteractWithPrisoner(actingCharacter, prison, RestrictedCastleActions.PrisonerKill, PermissiblePrivsTo_PrisonerKill);
+        _rulingLoggerService.LogRuling(ruling);
+        return ruling;
+    }
+
+    private CastlePrivileges PermissiblePrivsTo_PrisonerKill = new()
+    {
+        Prison = PrisonPrivs.Kill,
+    };
+
+    private CastleActionRuling Internal_ValidateAction_InteractWithPrisoner(
+        Entity actingCharacter,
+        Entity prison,
+        RestrictedCastleActions action,
+        CastlePrivileges permittedPrivs
+    )
+    {
+        if (!_userService.TryGetUserModel_ForCharacter(actingCharacter, out var actingUser))
+        {
+            return CastleActionRuling.NewRuling_NotEnoughDataToDecide(action, "Failed to get User model for acting character");
+        }
+
+        if (!_entityManager.TryGetComponentData<PrefabGUID>(prison, out var prisonPrefabGUID))
+        {
+            return CastleActionRuling.NewRuling_NotEnoughDataToDecide(action, "Failed to get prefabGUID for prison");
+        }
+
+        if (!_castleService.TryGetCastleModel_ForConnectedEntity(prison, out var castleModel))
+        {
+            return CastleActionRuling.NewRuling_NotEnoughDataToDecide(action, "Failed to get Castle model");
+        }
+
+        var ruling = new CastleActionRuling();
+        ruling.Action = action;
+        ruling.TargetPrefabGUID = prisonPrefabGUID;
         ruling.PermissiblePrivs = permittedPrivs;
         HydrateRuling(ref ruling, actingUser, castleModel);
 

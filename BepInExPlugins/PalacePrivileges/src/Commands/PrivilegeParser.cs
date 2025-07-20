@@ -249,13 +249,13 @@ public class PrivilegeParser
         RegisterPrivs("craft.craft", CraftPrivs.Craft);
         RegisterPrivs("craft.useTreasury", CraftPrivs.UseTreasury);
 
-        RegisterPrivs("prisoners.all", PrisonPrivs.All);
-        RegisterPrivs("prisoners.subdue", PrisonPrivs.Subdue);
-        RegisterPrivs("prisoners.kill", PrisonPrivs.Kill);
-        RegisterPrivs("prisoners.extractBlood", PrisonPrivs.ExtractBlood);
-        RegisterPrivs("prisoners.feedSafeFood", PrisonPrivs.FeedSafeFood);
-        RegisterPrivs("prisoners.feedUnSafeFood", PrisonPrivs.FeedUnSafeFood);
-        RegisterPrivs("prisoners.useTreasury", PrisonPrivs.FeedUnSafeFood);
+        RegisterPrivs("prison.all", PrisonPrivs.All);
+        RegisterPrivs("prison.subdue", PrisonPrivs.Subdue);
+        RegisterPrivs("prison.kill", PrisonPrivs.Kill);
+        RegisterPrivs("prison.extractBlood", PrisonPrivs.ExtractBlood);
+        RegisterPrivs("prison.feedSafeFood", PrisonPrivs.FeedSafeFood);
+        RegisterPrivs("prison.feedUnSafeFood", PrisonPrivs.FeedUnSafeFood);
+        RegisterPrivs("prison.useTreasury", PrisonPrivs.FeedUnSafeFood);
 
         RegisterPrivs("servants.all", ServantPrivs.All);
         RegisterPrivs("servants.convert", ServantPrivs.Convert);

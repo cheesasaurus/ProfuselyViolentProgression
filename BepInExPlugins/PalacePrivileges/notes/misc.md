@@ -76,5 +76,12 @@
 
 - ServerGameManager - has a bunch of utility stuff
 
-- ServerGameManager.InterruptCast(Entity character) - TODO: try this out. could be the missing piece for WallopWarpers
+- ServerGameManager.InterruptCast(Entity character)
+
+- InteractWithPrisonerSystem
+- InteractWithPrisonerEvent
+- EventHelper.PrisonInteraction
+  - Imprison - happens when placing prisoner into cell
+  - Charm - pulling prisoner out of cell with charm button
+  - Kill - pressed kill button at cell
 

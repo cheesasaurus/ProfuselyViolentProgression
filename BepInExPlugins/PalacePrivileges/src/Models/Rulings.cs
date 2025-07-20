@@ -27,6 +27,8 @@ public enum RestrictedCastleActions
     ServantTerminate,
     ServantRename,
     ServantGearChange,
+    PrisonerSubdue,
+    PrisonerKill,
     WaygateIn,
     WaygateOut,
     UseTeleporterRed,
