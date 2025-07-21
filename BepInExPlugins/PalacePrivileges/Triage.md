@@ -20,6 +20,7 @@
 - [x] Privs: `tp.red` `tp.yellow` `tp.purple` `tp.blue` `tp.allSmall`
 - [x] Privs: `tp.waygate` `tp.waygateIn` `tp.waygateOut`
 - [ ] Priv: `craft.useTreasury` (crafting station AND from inventory. should apply to horse station for elixers.)
+- [ ] Priv: `repair.useTreasury`
 - [x] Priv: `servants.rename`
 - [x] Priv: `renameStructures`
 - [ ] Priv: `redist.edit` - be sure to validate the "clear all" thing at the engine itself too
