@@ -180,11 +180,5 @@ public class CastlePrivilegesService
     }
 
     // todo: can we do a wrapper thing to get rid of all this duplicated code
-
-    public ulong GetPlatformIdOfTerritoryOwner(Entity castleTerritoryEntity)
-    {
-        // todo: check if this works
-        return GetTerritoryOwnerRequestSystem.GetPlatformId(ref _entityManager, castleTerritoryEntity);
-    }
     
 }

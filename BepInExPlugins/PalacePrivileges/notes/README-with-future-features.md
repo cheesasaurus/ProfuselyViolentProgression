@@ -1,5 +1,8 @@
 # PalacePrivileges
 
+⚠️WIP⚠️
+
+
 Safely clan up for PvP!
 
 Restricts what clan members can do in your castle. Grant more privileges via chat commands.
@@ -22,6 +25,9 @@ Some actions may only be performed by the castle owner. Clan members cannot be g
 - Exposing the castle heart.
 - Removing blood from the castle heart.
 - Relocating the castle.
+
+Recently-separated clan members cannot use keys on your castle heart.\
+(The exact timeframe can be configured by an admin. Default 48 hours.)
 
 
 ## Unrestricted actions
@@ -261,10 +267,16 @@ Timmy's favorite color is yellow and you made a special room just for him.
   - Check castle privileges granted to your clan.
 - `.castlePrivs check player Bilbo`
   - Check castle privileges granted/forbidden to the player named `Bilbo`.
+- `.castlePrivs settings`
+  - Check global settings.
 
 
 ## Admin chat commands
 
+- `.castlePrivs set KeyClanCooldownHours 48.0`
+  - When clan members separate, they must wait `48` hours before using keys on each other's castles.
+  - Could be set to `0.5` to make the waiting time 30 minutes.
+  - Could be set to `0` to remove the waiting time.
 - `.castlePrivs set DebugLogRulings true`
   - When enabled, logs details about every ruling made. For debugging purposes.
   - Disabled by default.

@@ -61,6 +61,4 @@ public unsafe class RenamingPatches
         }
     }
 
-    // todo: servants
-
 }

@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using ProfuselyViolentProgression.Core.Utilities;
 using ProfuselyViolentProgression.PalacePrivileges.Models;
 
 namespace ProfuselyViolentProgression.PalacePrivileges.Commands;
@@ -233,14 +232,12 @@ public class PrivilegeParser
         // Any "aggregate" privileges (e.g. `tp.small`) should be registered before the things they include (e.g. [tp.red, tp.yellow...]).
         // This ordering is used to filter redundant privileges from being listed to the user during checks.
 
-        // todo: comment out anything not functional before release
-
         RegisterPrivs("all", CastlePrivileges.All);
 
         RegisterPrivs("lockbox", MiscPrivs.Lockbox);
         RegisterPrivs("musicbox", MiscPrivs.Musicbox);
         RegisterPrivs("renameStructures", MiscPrivs.RenameStructures);
-        RegisterPrivs("toggleRefinement", MiscPrivs.ToggleRefinement); // planned feature
+        RegisterPrivs("toggleRefinement", MiscPrivs.ToggleRefinement);
 
         RegisterPrivs("build.all", BuildPrivs.All);
         //RegisterPrivs("build.useTreasury", BuildPrivs.All); // implemented, but kind of pointless right now. builders could just open their way into the treasury

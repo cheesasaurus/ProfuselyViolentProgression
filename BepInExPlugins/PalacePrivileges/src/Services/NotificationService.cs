@@ -96,7 +96,7 @@ public class NotificationService
                 return $"Only the owner ({ownerName}) may relocate their castle.";
 
             case RestrictedCastleActions.CastleHeartDisableDefense:
-                var hoursRemaining = 48; // todo: actual
+                var hoursRemaining = 48; // todo: actual. make history lib first
                 return $"Cannot key the castle of recent clanmates. {hoursRemaining} hours remaining.";
 
             case RestrictedCastleActions.Build:

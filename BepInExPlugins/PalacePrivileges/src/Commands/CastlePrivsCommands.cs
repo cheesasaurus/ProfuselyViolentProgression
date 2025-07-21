@@ -19,13 +19,7 @@ public class CastlePrivsCommands
     protected string PrivColorForbidden = VampireCommandFramework.Color.Red;
     protected string PrivSeparator = " <color=grey>|</color> ";
     protected int PrivsPerChunk = 10;
-
-    // todo: remove
-    [Command("debug", description: "debug stuff")]
-    public unsafe void CommandDebug(ChatCommandContext ctx)
-    {
-        ctx.Reply("A");
-    }
+    
 
     [Command("list", description: "List possible castle privileges and categories.")]
     public void CommandList(ChatCommandContext ctx)
@@ -374,7 +368,8 @@ public class CastlePrivsCommands
         ctx.Reply($"Requalified player {playerName} for potential clan privileges:\n<color={PrivColorValid}>{privNamesStr}</color>");
     }
 
-    [Command("settings", description: "Check global settings.")]
+    // todo: enable once KeyClanCooldownHours is implemented
+    // [Command("settings", description: "Check global settings.")]
     public void CommandSettings(ChatCommandContext ctx)
     {
         var globalSettings = Core.GlobalSettingsService.GetGlobalSettings();
