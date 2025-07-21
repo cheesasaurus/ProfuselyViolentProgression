@@ -332,7 +332,7 @@ public enum RedistributionPrivs : long
     All = -1,
     QuickSend = 1,
     ToggleAutoSend = 1 << 1,
-    Edit = 1 << 2,
+    EditRoutes = 1 << 2,
 }
 
 [Flags]

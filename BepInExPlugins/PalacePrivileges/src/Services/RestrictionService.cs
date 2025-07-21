@@ -947,7 +947,7 @@ public class RestrictionService
 
     private CastlePrivileges PermissiblePrivsTo_AccessRedistributionEngine = new()
     {
-        Redistribution = RedistributionPrivs.Edit,
+        Redistribution = RedistributionPrivs.EditRoutes,
     };
 
     public CastleActionRuling ValidateAction_UseTeleporterRed(Entity actingCharacter, Entity teleporter)
@@ -1073,6 +1073,13 @@ public class RestrictionService
         ruling.TargetPrefabGUID = structurePrefabGUID;
         ruling.PermissiblePrivs = permittedPrivs;
         HydrateRuling(ref ruling, actingUser, castleModel);
+
+        // todo: should be able to access research desks/altar when defense disabled
+        // need to rework some of this
+        // if (ruling.IsDefenseDisabled || ruling.IsCastleWithoutOwner)
+        // {
+        //     return ruling.Allowed();
+        // }
 
         if (ruling.IsOwnerOfCastle)
         {
@@ -1302,7 +1309,6 @@ public class RestrictionService
 
         if (!ruling.IsSameClan)
         {
-            _antiCheatService.Detected_PrisonBreaker(actingUser);
             return ruling.Disallowed();
         }
 
@@ -1359,7 +1365,199 @@ public class RestrictionService
 
         if (!ruling.IsSameClan)
         {
+            return ruling.Disallowed();
+        }
+
+        ruling.IsAllowed = ruling.ActingUserPrivs.Intersects(ruling.PermissiblePrivs);
+        return ruling;
+    }
+
+    #endregion
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    #region redistribution route editing
+
+    public CastleActionRuling ValidateAction_RedistributionRouteAdd(Entity actingCharacter, Entity fromStation)
+    {
+        var ruling = Internal_ValidateAction_RedistributionEditRoute(actingCharacter, fromStation, RestrictedCastleActions.RedistributionRouteAdd);
+        _rulingLoggerService.LogRuling(ruling);
+        return ruling;
+    }
+
+    public CastleActionRuling ValidateAction_RedistributionRouteRemove(Entity actingCharacter, Entity fromStation)
+    {
+        var ruling = Internal_ValidateAction_RedistributionEditRoute(actingCharacter, fromStation, RestrictedCastleActions.RedistributionRouteRemove);
+        _rulingLoggerService.LogRuling(ruling);
+        return ruling;
+    }
+
+    public CastleActionRuling ValidateAction_RedistributionRouteReorder(Entity actingCharacter, Entity fromStation)
+    {
+        var ruling = Internal_ValidateAction_RedistributionEditRoute(actingCharacter, fromStation, RestrictedCastleActions.RedistributionRouteReorder);
+        _rulingLoggerService.LogRuling(ruling);
+        return ruling;
+    }
+
+    public CastleActionRuling ValidateAction_RedistributionClearRoutes(Entity actingCharacter, Entity engine)
+    {
+        var ruling = Internal_ValidateAction_RedistributionEditRoute(actingCharacter, engine, RestrictedCastleActions.RedistributionRoutesClear);
+        _rulingLoggerService.LogRuling(ruling);
+        return ruling;
+    }
+
+    private CastlePrivileges PermissiblePrivsTo_RedistributionEditRoute = new()
+    {
+        Redistribution = RedistributionPrivs.EditRoutes,
+    };
+
+    private CastleActionRuling Internal_ValidateAction_RedistributionEditRoute(
+        Entity actingCharacter,
+        Entity station,
+        RestrictedCastleActions action
+    )
+    {
+        if (!_userService.TryGetUserModel_ForCharacter(actingCharacter, out var actingUser))
+        {
+            return CastleActionRuling.NewRuling_NotEnoughDataToDecide(action, "Failed to get User model for acting character");
+        }
+
+        if (!_entityManager.TryGetComponentData<PrefabGUID>(station, out var stationPrefabGUID))
+        {
+            return CastleActionRuling.NewRuling_NotEnoughDataToDecide(action, "Failed to get prefabGUID for station");
+        }
+
+        if (!_castleService.TryGetCastleModel_ForConnectedEntity(station, out var castleModel))
+        {
+            return CastleActionRuling.NewRuling_NotEnoughDataToDecide(action, "Failed to get Castle model");
+        }
+
+        var ruling = new CastleActionRuling();
+        ruling.Action = action;
+        ruling.TargetPrefabGUID = stationPrefabGUID;
+        ruling.PermissiblePrivs = PermissiblePrivsTo_RedistributionEditRoute;
+        HydrateRuling(ref ruling, actingUser, castleModel);
+
+        if (ruling.IsOwnerOfCastle)
+        {
+            return ruling.Allowed();
+        }
+
+        if (!ruling.IsSameClan)
+        {
             _antiCheatService.Detected_PrisonBreaker(actingUser);
+            return ruling.Disallowed();
+        }
+
+        ruling.IsAllowed = ruling.ActingUserPrivs.Intersects(ruling.PermissiblePrivs);
+        return ruling;
+    }
+
+    #endregion
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    #region redistribution toggle auto send
+
+    public CastleActionRuling ValidateAction_RedistributionToggleAutoSend(Entity actingCharacter, Entity station)
+    {
+        var ruling = Internal_ValidateAction_RedistributionToggleAutoSend(actingCharacter, station, RestrictedCastleActions.RedistributionToggleAutoSend);
+        _rulingLoggerService.LogRuling(ruling);
+        return ruling;
+    }
+
+    private CastlePrivileges PermissiblePrivsTo_RedistributionToggleAutoSend = new()
+    {
+        Redistribution = RedistributionPrivs.ToggleAutoSend,
+    };
+
+    private CastleActionRuling Internal_ValidateAction_RedistributionToggleAutoSend(
+        Entity actingCharacter,
+        Entity station,
+        RestrictedCastleActions action
+    )
+    {
+        if (!_userService.TryGetUserModel_ForCharacter(actingCharacter, out var actingUser))
+        {
+            return CastleActionRuling.NewRuling_NotEnoughDataToDecide(action, "Failed to get User model for acting character");
+        }
+
+        if (!_entityManager.TryGetComponentData<PrefabGUID>(station, out var stationPrefabGUID))
+        {
+            return CastleActionRuling.NewRuling_NotEnoughDataToDecide(action, "Failed to get prefabGUID for station");
+        }
+
+        if (!_castleService.TryGetCastleModel_ForConnectedEntity(station, out var castleModel))
+        {
+            return CastleActionRuling.NewRuling_NotEnoughDataToDecide(action, "Failed to get Castle model");
+        }
+
+        var ruling = new CastleActionRuling();
+        ruling.Action = action;
+        ruling.TargetPrefabGUID = stationPrefabGUID;
+        ruling.PermissiblePrivs = PermissiblePrivsTo_RedistributionToggleAutoSend;
+        HydrateRuling(ref ruling, actingUser, castleModel);
+
+        if (ruling.IsOwnerOfCastle)
+        {
+            return ruling.Allowed();
+        }
+
+        if (!ruling.IsSameClan)
+        {
+            return ruling.Disallowed();
+        }
+
+        ruling.IsAllowed = ruling.ActingUserPrivs.Intersects(ruling.PermissiblePrivs);
+        return ruling;
+    }
+
+    #endregion
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    #region redistribution quick send
+
+    public CastleActionRuling ValidateAction_RedistributionQuickSend(Entity actingCharacter, Entity fromStation)
+    {
+        var ruling = Internal_ValidateAction_RedistributionQuickSend(actingCharacter, fromStation, RestrictedCastleActions.RedistributionQuickSend);
+        _rulingLoggerService.LogRuling(ruling);
+        return ruling;
+    }
+
+    private CastlePrivileges PermissiblePrivsTo_RedistributionQuickSend = new()
+    {
+        Redistribution = RedistributionPrivs.QuickSend,
+    };
+
+    private CastleActionRuling Internal_ValidateAction_RedistributionQuickSend(
+        Entity actingCharacter,
+        Entity fromStation,
+        RestrictedCastleActions action
+    )
+    {
+        if (!_userService.TryGetUserModel_ForCharacter(actingCharacter, out var actingUser))
+        {
+            return CastleActionRuling.NewRuling_NotEnoughDataToDecide(action, "Failed to get User model for acting character");
+        }
+
+        if (!_entityManager.TryGetComponentData<PrefabGUID>(fromStation, out var stationPrefabGUID))
+        {
+            return CastleActionRuling.NewRuling_NotEnoughDataToDecide(action, "Failed to get prefabGUID for station");
+        }
+
+        if (!_castleService.TryGetCastleModel_ForConnectedEntity(fromStation, out var castleModel))
+        {
+            return CastleActionRuling.NewRuling_NotEnoughDataToDecide(action, "Failed to get Castle model");
+        }
+
+        var ruling = new CastleActionRuling();
+        ruling.Action = action;
+        ruling.TargetPrefabGUID = stationPrefabGUID;
+        ruling.PermissiblePrivs = PermissiblePrivsTo_RedistributionQuickSend;
+        HydrateRuling(ref ruling, actingUser, castleModel);
+
+        if (ruling.IsOwnerOfCastle)
+        {
+            return ruling.Allowed();
+        }
+
+        if (!ruling.IsSameClan)
+        {
             return ruling.Disallowed();
         }
 

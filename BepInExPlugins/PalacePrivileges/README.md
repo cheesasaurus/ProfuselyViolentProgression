@@ -157,7 +157,7 @@ Timmy's favorite color is yellow and you made a special room just for him.
 `redist.all`
 `redist.quickSend`
 `redist.toggleAutoSend`
-`redist.edit`
+`redist.editRoutes`
 
 ### Research privileges
 `research.all`

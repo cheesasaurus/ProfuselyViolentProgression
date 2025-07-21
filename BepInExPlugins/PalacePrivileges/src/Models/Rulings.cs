@@ -51,6 +51,12 @@ public enum RestrictedCastleActions
     AccessResearchDeskT2,
     AccessResearchDeskT3,
     AccessStygianAltar,
+    RedistributionRoutesClear,
+    RedistributionRouteAdd,
+    RedistributionRouteRemove,
+    RedistributionRouteReorder,
+    RedistributionToggleAutoSend,
+    RedistributionQuickSend,
 }
 
 

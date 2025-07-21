@@ -21,8 +21,8 @@
 - [x] Privs: `tp.waygate` `tp.waygateIn` `tp.waygateOut`
 - [x] Priv: `servants.rename`
 - [x] Priv: `renameStructures`
-- [ ] Priv: `redist.edit` - be sure to validate the "clear all" thing at the engine itself too
-- [ ] Priv: `redist.toggleAutoSend`
+- [x] Priv: `redist.editRoutes` - be sure to validate the "clear all" thing at the engine itself too
+- [x] Priv: `redist.toggleAutoSend`
 - [x] Priv: `servants.throne`
 - [ ] Priv: `toggleRefinement`
 
@@ -56,7 +56,7 @@ Of course we could go up a few levels and implement our own version of the entir
 - [x] Priv: `research.stygian`
 - [ ] Priv: `research.useTreasury`
 - [x] Priv: `arena.useStation`
-- [ ] Priv: `redist.quickSend`
+- [x] Priv: `redist.quickSend`
 - [x] Priv: `build.useTreasury`
 - [x] Privs: planting things in garden
 - [ ] specific privs for building. needs design

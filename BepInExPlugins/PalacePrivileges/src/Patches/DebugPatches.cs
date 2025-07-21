@@ -5,6 +5,7 @@ using ProfuselyViolentProgression.Core.Utilities;
 using ProjectM;
 using ProjectM.CastleBuilding;
 using ProjectM.Contest.Arena;
+using ProjectM.Gameplay;
 using ProjectM.Gameplay.Systems;
 using ProjectM.Network;
 using Unity.Collections;
@@ -55,6 +56,6 @@ public unsafe class DebugPatches
     public static void SomePatchThing3()
     {
         // todo
-    }
+    } 
 
 }

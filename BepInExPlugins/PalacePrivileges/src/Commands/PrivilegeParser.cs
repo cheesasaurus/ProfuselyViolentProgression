@@ -240,10 +240,10 @@ public class PrivilegeParser
         RegisterPrivs("lockbox", MiscPrivs.Lockbox);
         RegisterPrivs("musicbox", MiscPrivs.Musicbox);
         RegisterPrivs("renameStructures", MiscPrivs.RenameStructures);
-        RegisterPrivs("toggleRefinement", MiscPrivs.ToggleRefinement);
+        RegisterPrivs("toggleRefinement", MiscPrivs.ToggleRefinement); // planned feature
 
         RegisterPrivs("build.all", BuildPrivs.All);
-        //RegisterPrivs("build.useTreasury", BuildPrivs.All); // implemented, but kind of pointless. builders could just open their way into the treasury
+        //RegisterPrivs("build.useTreasury", BuildPrivs.All); // implemented, but kind of pointless right now. builders could just open their way into the treasury
 
         RegisterPrivs("craft.all", CraftPrivs.All);
         RegisterPrivs("craft.craftItem", CraftPrivs.CraftItem);
@@ -274,10 +274,10 @@ public class PrivilegeParser
         RegisterPrivs("tp.purple", TeleporterPrivs.Purple);
         RegisterPrivs("tp.blue", TeleporterPrivs.Blue);        
 
-        RegisterPrivs("redist.all", RedistributionPrivs.All); // planned feature
-        RegisterPrivs("redist.quickSend", RedistributionPrivs.QuickSend); // planned feature
-        RegisterPrivs("redist.toggleAutoSend", RedistributionPrivs.ToggleAutoSend); // planned feature
-        RegisterPrivs("redist.edit", RedistributionPrivs.Edit); // planned feature
+        RegisterPrivs("redist.all", RedistributionPrivs.All);
+        RegisterPrivs("redist.quickSend", RedistributionPrivs.QuickSend);
+        RegisterPrivs("redist.toggleAutoSend", RedistributionPrivs.ToggleAutoSend);
+        RegisterPrivs("redist.editRoutes", RedistributionPrivs.EditRoutes);
 
         RegisterPrivs("arena.all", ArenaPrivs.All);
         RegisterPrivs("arena.useStation", ArenaPrivs.UseStation);

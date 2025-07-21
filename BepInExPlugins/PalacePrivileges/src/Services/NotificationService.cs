@@ -199,6 +199,18 @@ public class NotificationService
             case RestrictedCastleActions.AccessStygianAltar:
                 return $"{ownerName} has not given you permission to use their stygian altar.";
 
+            case RestrictedCastleActions.RedistributionRoutesClear:
+            case RestrictedCastleActions.RedistributionRouteAdd:
+            case RestrictedCastleActions.RedistributionRouteRemove:
+            case RestrictedCastleActions.RedistributionRouteReorder:
+                return $"{ownerName} has not given you permission to edit redistribution routes.";
+
+            case RestrictedCastleActions.RedistributionToggleAutoSend:
+                return $"{ownerName} has not given you permission to toggle auto send.";
+
+            case RestrictedCastleActions.RedistributionQuickSend:
+                return $"{ownerName} has not given you permission to quick send via redistribution.";
+
             default:
                 return $"{ownerName} has not given you permission to do that.";
         }

@@ -130,3 +130,29 @@
 - ArenaSyncUtility
 
 - CastleArenaBlockOperationEventSystem
+
+
+- InventoryRouteEventSystem
+  - adding a connection
+  - removing a connection
+  - re-ordering
+  - NOT quick send
+  - NOT clear all
+
+- InventoryRouteStationEventSystem
+  - clear all button is pressed at redistribution engine
+
+- InventoryRouteDestroySystem - does the actual destroying of routes?
+
+- InventoryRouteSetAutoTransferEventSystem
+  - toggle auto send
+
+- InventoryRouteEventSystem
+  - manually quick send
+  - NOT automatically sending things via processing
+
+- InventoryRouteSetAutoTransferEvent - toggle for auto send
+- InventoryRouteModeEvent - toggle for something?
+- InventoryRouteClearEvent - clear all connections
+
+
