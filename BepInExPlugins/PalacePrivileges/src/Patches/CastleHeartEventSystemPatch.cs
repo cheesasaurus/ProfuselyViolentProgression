@@ -61,24 +61,24 @@ public unsafe class CastleHeartEventSystemPatch
     {
         var character = fromCharacter.Character;
         var ruling = Core.RestrictionService.ValidateAction_CastleHeartAbandon(character, castleHeart);
-        EnforceRuling(eventEntity, character, ruling);
+        EnforceRuling(eventEntity, character, ref ruling);
     }
 
     private static void HandleExpose(Entity eventEntity, FromCharacter fromCharacter, Entity castleHeart)
     {
         var character = fromCharacter.Character;
         var ruling = Core.RestrictionService.ValidateAction_CastleHeartExpose(character, castleHeart);
-        EnforceRuling(eventEntity, character, ruling);
+        EnforceRuling(eventEntity, character, ref ruling);
     }
 
     private static void HandleRaid(Entity eventEntity, FromCharacter fromCharacter, Entity castleHeart)
     {
         var character = fromCharacter.Character;
         var ruling = Core.RestrictionService.ValidateAction_CastleHeartDisableDefense(character, castleHeart);
-        EnforceRuling(eventEntity, character, ruling);
+        EnforceRuling(eventEntity, character, ref ruling);
     }
 
-    private static void EnforceRuling(Entity eventEntity, Entity character, CastleActionRuling ruling)
+    private static void EnforceRuling(Entity eventEntity, Entity character, ref CastleActionRuling ruling)
     {
         if (!ruling.IsAllowed)
         {

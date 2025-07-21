@@ -24,7 +24,7 @@
 - [x] Priv: `redist.editRoutes` - be sure to validate the "clear all" thing at the engine itself too
 - [x] Priv: `redist.toggleAutoSend`
 - [x] Priv: `servants.throne`
-- [ ] Priv: `toggleRefinement`
+- [x] Priv: `toggleRefinement`
 
 
 ## Important but not feasible

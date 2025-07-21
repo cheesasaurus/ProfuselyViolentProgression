@@ -57,6 +57,7 @@ public enum RestrictedCastleActions
     RedistributionRouteReorder,
     RedistributionToggleAutoSend,
     RedistributionQuickSend,
+    ToggleRefinement,
 }
 
 

@@ -1649,6 +1649,70 @@ public class RestrictionService
 
     #endregion
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    #region toggle refining
+
+    public CastleActionRuling ValidateAction_ToggleRefinement(Entity actingCharacter, Entity fromStation)
+    {
+        var ruling = Internal_ValidateAction_ToggleRefinement(actingCharacter, fromStation, RestrictedCastleActions.ToggleRefinement);
+        _rulingLoggerService.LogRuling(ruling);
+        return ruling;
+    }
+
+    public CastleActionRuling ValidateAction_ToggleRefinementRecipe(Entity actingCharacter, Entity fromStation, PrefabGUID recipePrefabGUID)
+    {
+        var ruling = Internal_ValidateAction_ToggleRefinement(actingCharacter, fromStation, RestrictedCastleActions.ToggleRefinement);
+        _rulingLoggerService.LogRuling(ruling);
+        return ruling;
+    }
+
+    private CastlePrivileges PermissiblePrivsTo_ToggleRefinement = new()
+    {
+        Misc = MiscPrivs.ToggleRefinement,
+    };
+
+    private CastleActionRuling Internal_ValidateAction_ToggleRefinement(
+        Entity actingCharacter,
+        Entity fromStation,
+        RestrictedCastleActions action
+    )
+    {
+        if (!_userService.TryGetUserModel_ForCharacter(actingCharacter, out var actingUser))
+        {
+            return CastleActionRuling.NewRuling_NotEnoughDataToDecide(action, "Failed to get User model for acting character");
+        }
+
+        if (!_entityManager.TryGetComponentData<PrefabGUID>(fromStation, out var stationPrefabGUID))
+        {
+            return CastleActionRuling.NewRuling_NotEnoughDataToDecide(action, "Failed to get prefabGUID for station");
+        }
+
+        if (!_castleService.TryGetCastleModel_ForConnectedEntity(fromStation, out var castleModel))
+        {
+            return CastleActionRuling.NewRuling_NotEnoughDataToDecide(action, "Failed to get Castle model");
+        }
+
+        var ruling = new CastleActionRuling();
+        ruling.Action = action;
+        ruling.TargetPrefabGUID = stationPrefabGUID;
+        ruling.PermissiblePrivs = PermissiblePrivsTo_ToggleRefinement;
+        HydrateRuling(ref ruling, actingUser, castleModel);
+
+        if (ruling.IsOwnerOfCastle)
+        {
+            return ruling.Allowed();
+        }
+
+        if (!ruling.IsSameClan)
+        {
+            return ruling.Disallowed();
+        }
+
+        ruling.IsAllowed = ruling.ActingUserPrivs.Intersects(ruling.PermissiblePrivs);
+        return ruling;
+    }
+
+    #endregion
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     
     
 

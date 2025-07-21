@@ -211,6 +211,9 @@ public class NotificationService
             case RestrictedCastleActions.RedistributionQuickSend:
                 return $"{ownerName} has not given you permission to quick send via redistribution.";
 
+            case RestrictedCastleActions.ToggleRefinement:
+                return $"{ownerName} has not given you permission to toggle refinement.";
+
             default:
                 return $"{ownerName} has not given you permission to do that.";
         }

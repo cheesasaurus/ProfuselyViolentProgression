@@ -1,22 +1,13 @@
-using System;
 using HarmonyLib;
 using HookDOTS.API.Attributes;
 using ProfuselyViolentProgression.Core.Utilities;
 using ProfuselyViolentProgression.PalacePrivileges.Models;
-using ProjectM;
-using ProjectM.CastleBuilding;
-using ProjectM.Contest.Arena;
 using ProjectM.Gameplay;
-using ProjectM.Gameplay.Systems;
 using ProjectM.Network;
 using Unity.Collections;
 using Unity.Entities;
-using Unity.Entities.UniversalDelegates;
-using Unity.Mathematics;
 
 namespace ProfuselyViolentProgression.PalacePrivileges.Patches;
-
-
 
 [HarmonyPatch]
 public unsafe class RedistributionPatches
