@@ -19,14 +19,24 @@
 - [x] Priv: `prisoners.feedSafeFood` (anticipating to implement alongside feedUnsafeFood)
 - [x] Privs: `tp.red` `tp.yellow` `tp.purple` `tp.blue` `tp.allSmall`
 - [x] Privs: `tp.waygate` `tp.waygateIn` `tp.waygateOut`
-- [ ] Priv: `craft.useTreasury` (crafting station AND from inventory. should apply to horse station for elixers.)
-- [ ] Priv: `repair.useTreasury`
 - [x] Priv: `servants.rename`
 - [x] Priv: `renameStructures`
 - [ ] Priv: `redist.edit` - be sure to validate the "clear all" thing at the engine itself too
 - [ ] Priv: `redist.toggleAutoSend`
 - [x] Priv: `servants.throne`
 - [ ] Priv: `toggleRefinement`
+
+
+## Important but not feasible
+
+Issue: harmony can't patch generic methods. Which `InventoryUtilities.CanCraftRecipe` happens to be.
+Of course we could go up a few levels and implement our own version of the entire thing ourselves... but not worth it.
+
+- [ ] Priv: `craft.useTreasury` (crafting station AND from inventory)
+- [ ] Priv: `prison.useTreasury` - prison buttons are techcnically crafting, so same limitation.
+- [ ] Priv: `repair.useTreasury`
+- [ ] Priv: using treasury for horse perks at stables. Probably doable with StablesUtility.CanAfford...
+  - but considering just a coverall `useTreasury` privilege instead of having to set things one-by-one.
 
 
 ## Future features

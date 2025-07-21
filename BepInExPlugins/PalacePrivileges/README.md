@@ -53,7 +53,6 @@ By default, clan members will have the following privileges:
 Notable privileges they do NOT have:
 - Building.
 - Lockbox access.
-- Using resources from the treasury to craft.
 - Using the small teleporters.
 - Messing with existing servants.
 - Messing with existing prisoners.
@@ -122,12 +121,10 @@ Timmy's favorite color is yellow and you made a special room just for him.
 
 ### Build privileges
 `build.all`
-`build.useTreasury`
 
 ### Craft privileges
 `craft.all`
 `craft.craftItem`
-`craft.useTreasury`
 
 ### Prison privileges
 `prison.all`
@@ -136,7 +133,6 @@ Timmy's favorite color is yellow and you made a special room just for him.
 `prison.extractBlood`
 `prison.feedSafeFood`
 `prison.feedUnsafeFood`
-`prison.useTreasury`
 
 ### Servant privileges
 `servants.all`
@@ -169,7 +165,6 @@ Timmy's favorite color is yellow and you made a special room just for him.
 `research.t2`
 `research.t3`
 `research.stygian`
-`research.useTreasury`
 
 ### Arena privileges
 `arena.all`

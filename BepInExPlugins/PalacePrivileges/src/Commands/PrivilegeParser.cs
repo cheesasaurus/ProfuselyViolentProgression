@@ -243,11 +243,11 @@ public class PrivilegeParser
         RegisterPrivs("toggleRefinement", MiscPrivs.ToggleRefinement);
 
         RegisterPrivs("build.all", BuildPrivs.All);
-        RegisterPrivs("build.useTreasury", BuildPrivs.All);
+        //RegisterPrivs("build.useTreasury", BuildPrivs.All); // implemented, but kind of pointless. builders could just open their way into the treasury
 
         RegisterPrivs("craft.all", CraftPrivs.All);
         RegisterPrivs("craft.craftItem", CraftPrivs.CraftItem);
-        RegisterPrivs("craft.useTreasury", CraftPrivs.UseTreasury);
+        //RegisterPrivs("craft.useTreasury", CraftPrivs.UseTreasury); // future feature
 
         RegisterPrivs("prison.all", PrisonPrivs.All);
         RegisterPrivs("prison.subdue", PrisonPrivs.Subdue);
@@ -255,7 +255,7 @@ public class PrivilegeParser
         RegisterPrivs("prison.extractBlood", PrisonPrivs.ExtractBlood);
         RegisterPrivs("prison.feedSafeFood", PrisonPrivs.FeedSafeFood);
         RegisterPrivs("prison.feedUnSafeFood", PrisonPrivs.FeedUnSafeFood);
-        RegisterPrivs("prison.useTreasury", PrisonPrivs.FeedUnSafeFood);
+        // RegisterPrivs("prison.useTreasury", PrisonPrivs.UseTreasury); // future feature
 
         RegisterPrivs("servants.all", ServantPrivs.All);
         RegisterPrivs("servants.convert", ServantPrivs.Convert);
@@ -288,7 +288,7 @@ public class PrivilegeParser
         RegisterPrivs("research.t2", ResearchPrivs.DeskTier2);
         RegisterPrivs("research.t3", ResearchPrivs.DeskTier3);
         RegisterPrivs("research.stygian", ResearchPrivs.StygianAltar);
-        RegisterPrivs("research.useTreasury", ResearchPrivs.UseTreasury); // planned feature
+        // RegisterPrivs("research.useTreasury", ResearchPrivs.UseTreasury); // future feature
 
         RegisterPrivs("doors.all", DoorPrivs.All);
         RegisterPrivs("doors.servantLocked", DoorPrivs.ServantLocked);
