@@ -220,7 +220,7 @@ public class RestrictionService
 
     private bool IsFormerClanMemberOnKeyCooldown(CastleActionRuling ruling)
     {
-        if (ruling.IsCastleWithoutOwner)
+        if (ruling.IsCastleWithoutOwner || ruling.IsSameClan)
         {
             return false;
         }
@@ -892,7 +892,13 @@ public class RestrictionService
 
     public CastleActionRuling ValidateAction_AccessLockbox(Entity actingCharacter, Entity lockbox)
     {
-        var ruling = Internal_ValidateAction_AccessInteractiveStructure(actingCharacter, lockbox, RestrictedCastleActions.AccessLockbox, PermissiblePrivsTo_AccessLockbox);
+        var ruling = Internal_ValidateAction_AccessInteractiveStructure(
+            actingCharacter,
+            lockbox,
+            RestrictedCastleActions.AccessLockbox,
+            PermissiblePrivsTo_AccessLockbox,
+            isRaidable: false
+        );
         _rulingLoggerService.LogRuling(ruling);
         return ruling;
     }
@@ -904,7 +910,13 @@ public class RestrictionService
 
     public CastleActionRuling ValidateAction_AccessMusicbox(Entity actingCharacter, Entity musicbox)
     {
-        var ruling = Internal_ValidateAction_AccessInteractiveStructure(actingCharacter, musicbox, RestrictedCastleActions.AccessMusicbox, PermissiblePrivsTo_AccessMusicbox);
+        var ruling = Internal_ValidateAction_AccessInteractiveStructure(
+            actingCharacter,
+            musicbox,
+            RestrictedCastleActions.AccessMusicbox,
+            PermissiblePrivsTo_AccessMusicbox,
+            isRaidable: false
+        );
         _rulingLoggerService.LogRuling(ruling);
         return ruling;
     }
@@ -916,7 +928,13 @@ public class RestrictionService
 
     public CastleActionRuling ValidateAction_AccessArenaStation(Entity actingCharacter, Entity arenaStation)
     {
-        var ruling = Internal_ValidateAction_AccessInteractiveStructure(actingCharacter, arenaStation, RestrictedCastleActions.AccessArenaStation, PermissiblePrivsTo_AccessArenaStation);
+        var ruling = Internal_ValidateAction_AccessInteractiveStructure(
+            actingCharacter,
+            arenaStation,
+            RestrictedCastleActions.AccessArenaStation,
+            PermissiblePrivsTo_AccessArenaStation,
+            isRaidable: false
+        );
         _rulingLoggerService.LogRuling(ruling);
         return ruling;
     }
@@ -928,7 +946,13 @@ public class RestrictionService
 
     public CastleActionRuling ValidateAction_AccessThrone(Entity actingCharacter, Entity throne)
     {
-        var ruling = Internal_ValidateAction_AccessInteractiveStructure(actingCharacter, throne, RestrictedCastleActions.AccessThrone, PermissiblePrivsTo_AccessThrone);
+        var ruling = Internal_ValidateAction_AccessInteractiveStructure(
+            actingCharacter,
+            throne,
+            RestrictedCastleActions.AccessThrone,
+            PermissiblePrivsTo_AccessThrone,
+            isRaidable: false
+        );
         _rulingLoggerService.LogRuling(ruling);
         return ruling;
     }
@@ -940,7 +964,13 @@ public class RestrictionService
 
     public CastleActionRuling ValidateAction_AccessRedistributionEngine(Entity actingCharacter, Entity engine)
     {
-        var ruling = Internal_ValidateAction_AccessInteractiveStructure(actingCharacter, engine, RestrictedCastleActions.AccessRedistributionEngine, PermissiblePrivsTo_AccessRedistributionEngine);
+        var ruling = Internal_ValidateAction_AccessInteractiveStructure(
+            actingCharacter,
+            engine,
+            RestrictedCastleActions.AccessRedistributionEngine,
+            PermissiblePrivsTo_AccessRedistributionEngine,
+            isRaidable: false
+        );
         _rulingLoggerService.LogRuling(ruling);
         return ruling;
     }
@@ -952,7 +982,13 @@ public class RestrictionService
 
     public CastleActionRuling ValidateAction_UseTeleporterRed(Entity actingCharacter, Entity teleporter)
     {
-        var ruling = Internal_ValidateAction_AccessInteractiveStructure(actingCharacter, teleporter, RestrictedCastleActions.UseTeleporterRed, PermissiblePrivsTo_AccessTeleporterRed);
+        var ruling = Internal_ValidateAction_AccessInteractiveStructure(
+            actingCharacter,
+            teleporter,
+            RestrictedCastleActions.UseTeleporterRed,
+            PermissiblePrivsTo_AccessTeleporterRed,
+            isRaidable: true
+        );
         _rulingLoggerService.LogRuling(ruling);
         return ruling;
     }
@@ -964,7 +1000,13 @@ public class RestrictionService
 
     public CastleActionRuling ValidateAction_UseTeleporterYellow(Entity actingCharacter, Entity teleporter)
     {
-        var ruling = Internal_ValidateAction_AccessInteractiveStructure(actingCharacter, teleporter, RestrictedCastleActions.UseTeleporterYellow, PermissiblePrivsTo_AccessTeleporterYellow);
+        var ruling = Internal_ValidateAction_AccessInteractiveStructure(
+            actingCharacter,
+            teleporter,
+            RestrictedCastleActions.UseTeleporterYellow,
+            PermissiblePrivsTo_AccessTeleporterYellow,
+            isRaidable: true
+        );
         _rulingLoggerService.LogRuling(ruling);
         return ruling;
     }
@@ -976,7 +1018,13 @@ public class RestrictionService
 
     public CastleActionRuling ValidateAction_UseTeleporterPurple(Entity actingCharacter, Entity teleporter)
     {
-        var ruling = Internal_ValidateAction_AccessInteractiveStructure(actingCharacter, teleporter, RestrictedCastleActions.UseTeleporterPurple, PermissiblePrivsTo_AccessTeleporterPurple);
+        var ruling = Internal_ValidateAction_AccessInteractiveStructure(
+            actingCharacter,
+            teleporter,
+            RestrictedCastleActions.UseTeleporterPurple,
+            PermissiblePrivsTo_AccessTeleporterPurple,
+            isRaidable: true
+        );
         _rulingLoggerService.LogRuling(ruling);
         return ruling;
     }
@@ -988,7 +1036,13 @@ public class RestrictionService
 
     public CastleActionRuling ValidateAction_UseTeleporterBlue(Entity actingCharacter, Entity teleporter)
     {
-        var ruling = Internal_ValidateAction_AccessInteractiveStructure(actingCharacter, teleporter, RestrictedCastleActions.UseTeleporterBlue, PermissiblePrivsTo_AccessTeleporterBlue);
+        var ruling = Internal_ValidateAction_AccessInteractiveStructure(
+            actingCharacter,
+            teleporter,
+            RestrictedCastleActions.UseTeleporterBlue,
+            PermissiblePrivsTo_AccessTeleporterBlue,
+            isRaidable: true
+        );
         _rulingLoggerService.LogRuling(ruling);
         return ruling;
     }
@@ -1000,7 +1054,13 @@ public class RestrictionService
 
     public CastleActionRuling ValidateAction_AccessResearchDeskT1(Entity actingCharacter, Entity teleporter)
     {
-        var ruling = Internal_ValidateAction_AccessInteractiveStructure(actingCharacter, teleporter, RestrictedCastleActions.AccessResearchDeskT1, PermissiblePrivsTo_AccessResearchDeskT1);
+        var ruling = Internal_ValidateAction_AccessInteractiveStructure(
+            actingCharacter,
+            teleporter,
+            RestrictedCastleActions.AccessResearchDeskT1,
+            PermissiblePrivsTo_AccessResearchDeskT1,
+            isRaidable: true
+        );
         _rulingLoggerService.LogRuling(ruling);
         return ruling;
     }
@@ -1012,7 +1072,13 @@ public class RestrictionService
 
     public CastleActionRuling ValidateAction_AccessResearchDeskT2(Entity actingCharacter, Entity teleporter)
     {
-        var ruling = Internal_ValidateAction_AccessInteractiveStructure(actingCharacter, teleporter, RestrictedCastleActions.AccessResearchDeskT2, PermissiblePrivsTo_AccessResearchDeskT2);
+        var ruling = Internal_ValidateAction_AccessInteractiveStructure(
+            actingCharacter,
+            teleporter,
+            RestrictedCastleActions.AccessResearchDeskT2,
+            PermissiblePrivsTo_AccessResearchDeskT2,
+            isRaidable: true
+        );
         _rulingLoggerService.LogRuling(ruling);
         return ruling;
     }
@@ -1024,7 +1090,13 @@ public class RestrictionService
 
     public CastleActionRuling ValidateAction_AccessResearchDeskT3(Entity actingCharacter, Entity teleporter)
     {
-        var ruling = Internal_ValidateAction_AccessInteractiveStructure(actingCharacter, teleporter, RestrictedCastleActions.AccessResearchDeskT3, PermissiblePrivsTo_AccessResearchDeskT3);
+        var ruling = Internal_ValidateAction_AccessInteractiveStructure(
+            actingCharacter,
+            teleporter,
+            RestrictedCastleActions.AccessResearchDeskT3,
+            PermissiblePrivsTo_AccessResearchDeskT3,
+            isRaidable: true
+        );
         _rulingLoggerService.LogRuling(ruling);
         return ruling;
     }
@@ -1036,7 +1108,13 @@ public class RestrictionService
 
     public CastleActionRuling ValidateAction_AccessStygianAltar(Entity actingCharacter, Entity teleporter)
     {
-        var ruling = Internal_ValidateAction_AccessInteractiveStructure(actingCharacter, teleporter, RestrictedCastleActions.AccessStygianAltar, PermissiblePrivsTo_AccessStygianAltar);
+        var ruling = Internal_ValidateAction_AccessInteractiveStructure(
+            actingCharacter,
+            teleporter,
+            RestrictedCastleActions.AccessStygianAltar,
+            PermissiblePrivsTo_AccessStygianAltar,
+            isRaidable: true
+        );
         _rulingLoggerService.LogRuling(ruling);
         return ruling;
     }
@@ -1050,7 +1128,8 @@ public class RestrictionService
         Entity actingCharacter,
         Entity structure,
         RestrictedCastleActions action,
-        CastlePrivileges permittedPrivs
+        CastlePrivileges permittedPrivs,
+        bool isRaidable
     )
     {
         if (!_userService.TryGetUserModel_ForCharacter(actingCharacter, out var actingUser))
@@ -1074,12 +1153,15 @@ public class RestrictionService
         ruling.PermissiblePrivs = permittedPrivs;
         HydrateRuling(ref ruling, actingUser, castleModel);
 
-        // todo: should be able to access research desks/altar when defense disabled
-        // need to rework some of this
-        // if (ruling.IsDefenseDisabled || ruling.IsCastleWithoutOwner)
-        // {
-        //     return ruling.Allowed();
-        // }
+        if (ruling.IsCastleWithoutOwner)
+        {
+            return ruling.Allowed();
+        }
+
+        if (isRaidable && ruling.IsDefenseDisabled)
+        {
+            return ruling.Allowed();
+        }
 
         if (ruling.IsOwnerOfCastle)
         {
