@@ -8,7 +8,7 @@
 - [x] Restrict: Exposing the castle heart.
 - [x] Restrict: Removing blood from the castle heart.
 - [x] Restrict: Relocating the castle.
-- [ ] Priv: `arena.zonePainting`
+- [x] Priv: `arena.zonePainting`
 - [x] Priv: `lockbox`
 - [x] Priv: `servants.terminate`
 - [x] Priv: `servants.gear`

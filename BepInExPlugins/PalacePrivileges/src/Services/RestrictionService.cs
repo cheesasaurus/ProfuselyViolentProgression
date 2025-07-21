@@ -1192,7 +1192,7 @@ public class RestrictionService
         var recipeCategory = _prisonService.DetermineRecipeCategory(recipePrefabGUID);
         RestrictedCastleActions action;
         CastlePrivileges permissiblePrivs;
-        
+
         switch (recipeCategory)
         {
             case PrisonService.PrisonRecipeCategory.ExtractBlood:
@@ -1312,5 +1312,64 @@ public class RestrictionService
 
     #endregion
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    #region arena zone painting
+
+    public CastleActionRuling ValidateAction_ArenaPaintZone(Entity actingCharacter, Entity arenaStation)
+    {
+        var ruling = Internal_ValidateAction_ArenaPaintZone(actingCharacter, arenaStation);
+        _rulingLoggerService.LogRuling(ruling);
+        return ruling;
+    }
+
+    private CastlePrivileges PermissiblePrivsTo_ArenaPaintZone = new()
+    {
+        Arena = ArenaPrivs.ZonePainting,
+    };
+
+    private CastleActionRuling Internal_ValidateAction_ArenaPaintZone(
+        Entity actingCharacter,
+        Entity arenaStation
+    )
+    {
+        if (!_userService.TryGetUserModel_ForCharacter(actingCharacter, out var actingUser))
+        {
+            return CastleActionRuling.NewRuling_NotEnoughDataToDecide(RestrictedCastleActions.ArenaPaintZone, "Failed to get User model for acting character");
+        }
+
+        if (!_entityManager.TryGetComponentData<PrefabGUID>(arenaStation, out var arenaStationPrefabGUID))
+        {
+            return CastleActionRuling.NewRuling_NotEnoughDataToDecide(RestrictedCastleActions.ArenaPaintZone, "Failed to get prefabGUID for arenaStation");
+        }
+
+        if (!_castleService.TryGetCastleModel_ForConnectedEntity(arenaStation, out var castleModel))
+        {
+            return CastleActionRuling.NewRuling_NotEnoughDataToDecide(RestrictedCastleActions.ArenaPaintZone, "Failed to get Castle model");
+        }
+
+        var ruling = new CastleActionRuling();
+        ruling.Action = RestrictedCastleActions.ArenaPaintZone;
+        ruling.TargetPrefabGUID = arenaStationPrefabGUID;
+        ruling.PermissiblePrivs = PermissiblePrivsTo_ArenaPaintZone;
+        HydrateRuling(ref ruling, actingUser, castleModel);
+
+        if (ruling.IsOwnerOfCastle)
+        {
+            return ruling.Allowed();
+        }
+
+        if (!ruling.IsSameClan)
+        {
+            _antiCheatService.Detected_PrisonBreaker(actingUser);
+            return ruling.Disallowed();
+        }
+
+        ruling.IsAllowed = ruling.ActingUserPrivs.Intersects(ruling.PermissiblePrivs);
+        return ruling;
+    }
+
+    #endregion
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    
+    
 
 }

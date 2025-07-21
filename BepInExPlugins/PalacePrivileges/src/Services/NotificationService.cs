@@ -114,8 +114,11 @@ public class NotificationService
             case RestrictedCastleActions.CraftItem:
                 return $"{ownerName} has not given you permission to craft.";
 
-             case RestrictedCastleActions.CraftUseTreasury:
+            case RestrictedCastleActions.CraftUseTreasury:
                 return $"{ownerName} has not given you permission to use the treasury for crafting.";
+
+            case RestrictedCastleActions.ArenaPaintZone:
+                return $"{ownerName} has not given you permission for arena zone painting.";
 
             case RestrictedCastleActions.OpenDoor:
             case RestrictedCastleActions.CloseDoor:

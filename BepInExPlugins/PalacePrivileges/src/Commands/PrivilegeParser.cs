@@ -281,7 +281,7 @@ public class PrivilegeParser
 
         RegisterPrivs("arena.all", ArenaPrivs.All);
         RegisterPrivs("arena.useStation", ArenaPrivs.UseStation);
-        RegisterPrivs("arena.zonePainting", ArenaPrivs.ZonePainting); // planned feature
+        RegisterPrivs("arena.zonePainting", ArenaPrivs.ZonePainting);
 
         RegisterPrivs("research.all", ResearchPrivs.All);
         RegisterPrivs("research.t1", ResearchPrivs.DeskTier1);

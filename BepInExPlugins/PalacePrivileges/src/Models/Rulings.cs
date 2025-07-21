@@ -22,6 +22,7 @@ public enum RestrictedCastleActions
     PlantTree,
     CraftItem,
     CraftUseTreasury,
+    ArenaPaintZone,
     OpenDoor,
     CloseDoor,
     RenameStructure,

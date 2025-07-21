@@ -4,6 +4,7 @@ using HookDOTS.API.Attributes;
 using ProfuselyViolentProgression.Core.Utilities;
 using ProjectM;
 using ProjectM.CastleBuilding;
+using ProjectM.Contest.Arena;
 using ProjectM.Gameplay.Systems;
 using ProjectM.Network;
 using Unity.Collections;
@@ -50,25 +51,9 @@ public unsafe class DebugPatches
         // todo
     }
 
-    [EcsSystemUpdatePrefix(typeof(OpenDoorsSystem))]
+    //[EcsSystemUpdatePrefix(typeof(OpenDoorsSystem))]
     public static void SomePatchThing3()
     {
-        // todo
-    }
-
-    //[HarmonyPatch(typeof(StartCraftingSystem), nameof(StartCraftingSystem.OnUpdate))]
-    //[HarmonyPrefix]
-    public static void SomePatchThing4(StartCraftingSystem __instance)
-    {
-        //LogUtil.LogDebug("start crafting at station");
-        // todo
-    }
-
-    //[HarmonyPatch(typeof(StartCharacterCraftingSystem), nameof(StartCharacterCraftingSystem.OnUpdate))]
-    //[HarmonyPrefix]
-    public static void SomePatchThing5(StartCharacterCraftingSystem __instance)
-    {
-        //LogUtil.LogDebug("start crafting on the go");
         // todo
     }
 
