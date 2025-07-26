@@ -57,3 +57,32 @@ Catchup unlocks for late joiners / slower players. Unlock for everybody on a thr
 ## Chat commands
 
 Chat command to check state of global unlocks. Doesn't need to show the catchup stuff, just what's being gatekept.
+
+
+## Unlock at start
+
+Some QOL things could immediately be unlocked at the start.
+
+- Treasury floors
+
+
+## Configuration
+
+3 main categories
+
+- prefab guids to remove from boss reward sets
+- global progress triggers and associated rewards
+  - global triggers:
+    - killed vblood
+    - unlocked recipe
+    - unlocked shapeshift
+    - unlocked blueprint
+  - rewards:
+    - recipe unlocks
+    - shapeshift unlocks
+    - blueprint unlocks
+    - passive ability unlocks
+    - passive points to add
+    - spell book ability unlocks
+- things to unlock at start
+  - each category that could be a reward, i guess
