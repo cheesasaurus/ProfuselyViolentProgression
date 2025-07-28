@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using BepInEx.Logging;
 using ProfuselyViolentProgression.Core.Utilities;
 using ProfuselyViolentProgression.PalacePrivileges.Models;
 using ProjectM;
@@ -13,13 +14,15 @@ namespace ProfuselyViolentProgression.PalacePrivileges.Services;
 public class CastleDoorService
 {
 
-    private EntityManager _entityManager = WorldUtil.Server.EntityManager;
-    private CastleService _castleService;
+    private readonly EntityManager _entityManager = WorldUtil.Server.EntityManager;
+    private readonly ManualLogSource _log;
+    private readonly CastleService _castleService;
     private Dictionary<PrefabGUID, DoorPrivs> _privsByPrefabGuid = [];
     private Dictionary<byte, DoorPrivs> _dyedPrivsByColorIndex = [];
 
-    public CastleDoorService(CastleService castleService)
+    public CastleDoorService(ManualLogSource log, CastleService castleService)
     {
+        _log = log;
         _castleService = castleService;
         InitPrivsByPrefabGUID();
         InitDyedPrivsByColorIndex();
@@ -31,25 +34,25 @@ public class CastleDoorService
 
         if (!_entityManager.TryGetComponentData<PrefabGUID>(doorEntity, out var prefabGUID))
         {
-            LogUtil.LogWarning("door: no PrefabGUID");
+            _log.LogWarning("door: no PrefabGUID");
             return false;
         }
 
         if (!_entityManager.TryGetComponentData<Door>(doorEntity, out var door))
         {
-            LogUtil.LogWarning("door: no Door");
+            _log.LogWarning("door: no Door");
             return false;
         }
 
         if (!_entityManager.TryGetComponentData<Team>(doorEntity, out var team))
         {
-            LogUtil.LogWarning("door: no Team");
+            _log.LogWarning("door: no Team");
             return false;
         }
 
         if (!_castleService.TryGetCastleModel_ForConnectedEntity(doorEntity, out var castleModel))
         {
-            LogUtil.LogWarning("door: could not build CastleModel");
+            _log.LogWarning("door: could not build CastleModel");
             return false;
         }
 

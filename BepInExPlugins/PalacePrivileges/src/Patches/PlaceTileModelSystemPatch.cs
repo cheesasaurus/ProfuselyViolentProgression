@@ -49,7 +49,7 @@ public unsafe class PlaceTileModelSystemPatch
         for (var i = 0; i < entities.Length; i++)
         {
             var ev = tmEvents[i];
-            LogUtil.LogDebug($"BuildTile: {DebugUtil.LookupPrefabName(ev.PrefabGuid)}");
+            // LogUtil.LogDebug($"BuildTile: {DebugUtil.LookupPrefabName(ev.PrefabGuid)}");
 
             if (!Core.BuildingService.IsStructureOnlyAttachableToOwnedArea(ev.PrefabGuid))
             {
@@ -198,7 +198,6 @@ public unsafe class PlaceTileModelSystemPatch
 
         for (var i = 0; i < entities.Length; i++)
         {
-            LogUtil.LogDebug("SetVariation");
             if (!TryGetDataForExistingTileModel(tmEvents[i].Target, ref networkIdToEntityMap, out var tileModel, out var castleHeartConnection))
             {
                 continue;

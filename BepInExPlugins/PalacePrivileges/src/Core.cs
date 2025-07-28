@@ -41,7 +41,7 @@ public static class Core
         AntiCheatService = new(log);
         CastleTerritoryService = new();
         CastleService = new(log, UserService);
-        CastleDoorService = new(CastleService);
+        CastleDoorService = new(log, CastleService);
         BuildingService = new();
         GardenService = new();
         PrisonService = new();
