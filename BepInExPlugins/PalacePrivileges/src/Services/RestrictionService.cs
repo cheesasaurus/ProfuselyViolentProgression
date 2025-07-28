@@ -565,7 +565,7 @@ public class RestrictionService
 
         if (!_entityManager.TryGetComponentData<PrefabGUID>(structureToRename, out var objectPrefabGUID))
         {
-            return CastleActionRuling.NewRuling_NotEnoughDataToDecide(RestrictedCastleActions.RenameStructure, "Failed to prefabGUID of structureToRename");
+            return CastleActionRuling.NewRuling_NotEnoughDataToDecide(RestrictedCastleActions.RenameStructure, "Failed to get prefabGUID of structureToRename");
         }
 
         var ruling = new CastleActionRuling();
@@ -1525,7 +1525,6 @@ public class RestrictionService
 
         if (!ruling.IsSameClan)
         {
-            _antiCheatService.Detected_PrisonBreaker(actingUser);
             return ruling.Disallowed();
         }
 
