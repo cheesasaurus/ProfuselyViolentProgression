@@ -42,6 +42,7 @@ Power creep to deal with. Stay locked until the threshold is reached, then unloc
 Catchup unlocks for late joiners / slower players. Unlock for everybody on a threshold, but can be immediately unlocked individually.
 
 - Crossbow recipe (from Rufus). Basic ranged weapon.
+- Alchemy table (from Clive). Required for most potion crafting. Boss in a high-traffic area.
 - Blood rose brew (T1 research)
 - Merciless charge (T3 spell point) (from Quincey). Automatically unlock and equip if no ult equipped.
 - Veil of blood (T4 spell point) (from beatrice). Automatically unlock and equip if no dash equipped.
@@ -53,6 +54,9 @@ Catchup unlocks for late joiners / slower players. Unlock for everybody on a thr
 - Shroud of the forest (from Old Wanderer)
 - Rage / Witch pots
 - Slashers recipe (from Jakira)
+
+Maybe every weapon type should be unlocked on a threshold?
+
 
 ## Chat commands
 
@@ -76,13 +80,16 @@ Some QOL things could immediately be unlocked at the start.
     - killed vblood
     - unlocked recipe
     - unlocked shapeshift
-    - unlocked blueprint
+    - unlocked blueprint - not needed for MVP
   - rewards:
     - recipe unlocks
     - shapeshift unlocks
     - blueprint unlocks
-    - passive ability unlocks
     - passive points to add
-    - spell book ability unlocks
+    - passive ability unlocks
+      - and optional auto equip? yes, needed for MVP
+      - and consolation prize if already unlocked? - not needed for MVP    
+    - spell book ability point unlocks
+      - and optional auto spend + equip? - not needed for MVP
 - things to unlock at start
   - each category that could be a reward, i guess
