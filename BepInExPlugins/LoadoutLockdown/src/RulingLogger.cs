@@ -56,6 +56,17 @@ public static class RulingLogger
         LogUtil.LogDebug(sb.ToString());
     }
 
+    public static void LogUnEquipInventorySlottedItemInPlace(RulingUnEquipInventorySlottedItemInPlace ruling)
+    {
+        if (!Enabled) return;
+        var sb = new StringBuilder();
+        sb.AppendLine("Ruling Made.");
+        sb.AppendLine($"  ValidateUnEquipInventorySlottedItemInPlace");
+        sb.AppendLine($"  IsAllowed: {ruling.IsAllowed}");
+        sb.Append($"  Judgement: {ruling.Judgement}");
+        LogUtil.LogDebug(sb.ToString());
+    }
+
     public static void LogItemDropFromInventory(RulingItemDropFromInventory ruling)
     {
         if (!Enabled) return;

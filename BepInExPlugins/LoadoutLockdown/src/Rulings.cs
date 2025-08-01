@@ -147,6 +147,26 @@ public struct RulingUnEquipItemFromDesignatedSlotToInventory
     };
 }
 
+
+public struct RulingUnEquipInventorySlottedItemInPlace
+{
+    public Judgement Judgement;
+    public bool IsAllowed;
+
+    public static RulingUnEquipInventorySlottedItemInPlace Allowed(Judgement judgement) => new()
+    {
+        Judgement = judgement,
+        IsAllowed = true,
+    };
+
+    public static RulingUnEquipInventorySlottedItemInPlace Disallowed(Judgement judgement) => new()
+    {
+        Judgement = judgement,
+        IsAllowed = false,
+    };
+}
+
+
 public struct RulingItemDropFromInventory
 {
     public Judgement Judgement;

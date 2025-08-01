@@ -928,6 +928,19 @@ internal class LoadoutLockdownService
         }
     }
 
+    public RulingUnEquipInventorySlottedItemInPlace ValidateUnEquipInventorySlottedItemInPlace(Entity character, Entity item)
+    {
+        var ruling = _ValidateUnEquipInventorySlottedItemInPlace(character, item);
+        RulingLogger.LogUnEquipInventorySlottedItemInPlace(ruling);
+        return ruling;
+    }
+
+    private RulingUnEquipInventorySlottedItemInPlace _ValidateUnEquipInventorySlottedItemInPlace(Entity character, Entity item)
+    {
+        // todo: configuration option to disallow going unarmed?
+        return RulingUnEquipInventorySlottedItemInPlace.Allowed(Judgement.Allowed_EquipmentCanAlwaysBeUnEquipped);
+    }
+
     public RulingItemDropFromInventory ValidateItemDropFromInventory(Entity character, Entity fromInventory, int slotIndex)
     {
         var ruling = _ValidateItemDropFromInventory(character, fromInventory, slotIndex);

@@ -137,6 +137,8 @@ public static unsafe class Patches
 
     // TryUnEquipAndAddItem covers the case of unequipping an item from a designated slot,
     // and moving it into an inventory. The inventory can be any inventory, not just the player's main inventory.
+    //
+    // It also covers the case of unequipping a weapon via "unequip action".
     [HarmonyPatch(typeof(InventoryUtilitiesServer), nameof(InventoryUtilitiesServer.TryUnEquipAndAddItem))]
     [HarmonyPrefix]
     public static bool TryUnEquipAndAddItem_Prefix(
@@ -158,10 +160,26 @@ public static unsafe class Patches
             return EXECUTE_ORIGINAL_METHOD;
         }
 
-        var ruling = LoadoutService.ValidateUnEquipItemFromDesignatedSlotToInventory(target, item);
-        if (!ruling.IsAllowed)
+        bool isAllowed;
+        Rulings.Judgement judgement;
+
+        if (LoadoutService.HasDesignatedSlot(item))
         {
-            LoadoutService.SendMessageDisallowed(target, ruling.Judgement);
+            var ruling = LoadoutService.ValidateUnEquipItemFromDesignatedSlotToInventory(target, item);
+            isAllowed = ruling.IsAllowed;
+            judgement = ruling.Judgement;
+        }
+        else
+        {
+            // the item is already in the inventory and therefore won't be changing slots
+            var ruling = LoadoutService.ValidateUnEquipInventorySlottedItemInPlace(target, item);
+            isAllowed = ruling.IsAllowed;
+            judgement = ruling.Judgement;
+        }
+
+        if (!isAllowed)
+        {
+            LoadoutService.SendMessageDisallowed(target, judgement);
             __result = false;
             return SKIP_ORIGINAL_METHOD;
         }
