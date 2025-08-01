@@ -19,11 +19,14 @@ public enum Judgement
     Allowed_DropFromWastedSlot,
     Allowed_SwapIntoWastedSlot,
     Allowed_EquipmentCanAlwaysBeSwappedIntoAppropriateSlot,
+    Allowed_UnEquipActionNotRestricted,
     Allowed_TryAutoEquipAlwaysAllowedUnlessEquipmentToEquipIsForbidden,
     Allowed_EquipmentCanAlwaysBeUnEquipped,
     Disallowed_EquipmentToEquipIsForbidden,
     Disallowed_CannotMenuSwapDuringPvPCombat,
     Disallowed_CannotMenuSwapDuringAnyCombat,
+    Disallowed_UnEquipActionDuringPvPCombat,
+    Disallowed_UnEquipActionDuringAnyCombat,
     Disallowed_NoFreeWeaponSlots,
 }
 

@@ -4,7 +4,7 @@
     <TargetFramework>net6.0</TargetFramework>
     <AssemblyName>LoadoutLockdown</AssemblyName>
     <Description>Restrict (or unrestrict) equipping gear, both in and out of combat. Fully customizable.</Description>
-    <Version>1.1.0</Version>
+    <Version>1.2.0</Version>
     <Authors>Nicholas Toby</Authors>
     <Copyright>Copyright (c) Nicholas Toby 2025</Copyright>
     <WebsiteURL>https://github.com/cheesasaurus/ProfuselyViolentProgression</WebsiteURL>

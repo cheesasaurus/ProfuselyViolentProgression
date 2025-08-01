@@ -85,6 +85,19 @@ If you would like specific items to always be moveable into their slot (e.g. sou
 
 `ApplyPvpMenuSwapRulesToPVE` can be enabled to make the FromMenuDuringPVP rules also apply during PVE combat.
 
+### UnEquipAction
+
+`UnEquipAction` - Allowed values:
+  - `NotRestricted` - Default. No restrictions on the "unequip action".
+  - `DisallowDuringPvpCombat` - The "unequip action" cannot be performed during PVP combat.
+  - `DisallowDuringAnyCombat` - The "unequip action" cannot be performed during PVP or PVE combat.
+
+UnEquipAction pertains to the same thing covered by the vanilla setting "Allow Unequip Action", which lets a player directly unequip their handheld item.
+
+In the vanilla game, it's a per-player usability setting which often gets turned off in favor of weapon swapping.
+
+There's usually no reason to globally force it off. Its mainly intended for use with mods changing the "unarmed" moveset. For example, you may want to ensure commitment to a monk class, rather than effectively just granting a ninth slot of weapon abilities.
+
 
 ## Chat commands
 

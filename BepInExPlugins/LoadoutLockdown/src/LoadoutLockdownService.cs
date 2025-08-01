@@ -626,6 +626,8 @@ internal class LoadoutLockdownService
                 CreateSCTMessage(character, SCTMessage_NoFreeActionBarSlots, ColorRed);
                 break;
 
+            case Judgement.Disallowed_UnEquipActionDuringPvPCombat:
+            case Judgement.Disallowed_UnEquipActionDuringAnyCombat:
             case Judgement.Disallowed_CannotMenuSwapDuringAnyCombat:
                 // same message as pvp combat. this is scuffed,
                 // but there isn't any better existing message to use.
@@ -937,8 +939,26 @@ internal class LoadoutLockdownService
 
     private RulingUnEquipInventorySlottedItemInPlace _ValidateUnEquipInventorySlottedItemInPlace(Entity character, Entity item)
     {
-        // todo: configuration option to disallow going unarmed?
-        return RulingUnEquipInventorySlottedItemInPlace.Allowed(Judgement.Allowed_EquipmentCanAlwaysBeUnEquipped);
+        switch (_config.UnEquipAction)
+        {
+            default: // default to not restricted
+            case UnEquipActionRule.NotRestricted:
+                return RulingUnEquipInventorySlottedItemInPlace.Allowed(Judgement.Allowed_UnEquipActionNotRestricted);
+
+            case UnEquipActionRule.DisallowDuringPvpCombat:
+                if (IsInPvPCombat(character))
+                {
+                    return RulingUnEquipInventorySlottedItemInPlace.Disallowed(Judgement.Disallowed_UnEquipActionDuringPvPCombat);
+                }
+                return RulingUnEquipInventorySlottedItemInPlace.Allowed(Judgement.Allowed_NotInRestrictiveCombat);
+
+            case UnEquipActionRule.DisallowDuringAnyCombat:
+                if (IsInCombat(character))
+                {
+                    return RulingUnEquipInventorySlottedItemInPlace.Disallowed(Judgement.Disallowed_UnEquipActionDuringAnyCombat);
+                }
+                return RulingUnEquipInventorySlottedItemInPlace.Allowed(Judgement.Allowed_NotInRestrictiveCombat);
+        }
     }
 
     public RulingItemDropFromInventory ValidateItemDropFromInventory(Entity character, Entity fromInventory, int slotIndex)

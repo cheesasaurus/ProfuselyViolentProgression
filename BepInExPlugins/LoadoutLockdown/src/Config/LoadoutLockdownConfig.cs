@@ -5,11 +5,20 @@ namespace ProfuselyViolentProgression.LoadoutLockdown.Config;
 public class LoadoutLockdownConfig
 {
     public int WeaponSlots { get; set; } = 8;
+    public UnEquipActionRule UnEquipAction { get; set; } = UnEquipActionRule.NotRestricted;
     public bool ApplyPvpMenuSwapRulesToPVE { get; set; } = false;
     public RulesByType RulesByType { get; set; } = new();
     public List<string> ForbiddenByPrefab { get; set; } = new();
     public List<string> NotWaste { get; set; } = new();
     public List<string> AlwaysAllowSwapIntoSlot { get; set; } = new();
+}
+
+
+public enum UnEquipActionRule
+{
+    NotRestricted,
+    DisallowDuringPvpCombat,
+    DisallowDuringAnyCombat
 }
 
 public enum FromMenuDuringPVP

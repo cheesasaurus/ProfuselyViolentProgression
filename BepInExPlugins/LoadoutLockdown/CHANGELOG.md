@@ -1,5 +1,9 @@
-# upcoming release
+# 1.2.0
 - Bugfix: Weapons couldn't be unequipped in PVP combat.
+- Added `UnEquipAction` option for rulesets. Allowed values:
+  - `NotRestricted` - Default. No restrictions on the "unequip action".
+  - `DisallowDuringPvpCombat` - The "unequip action" cannot be performed during PVP combat.
+  - `DisallowDuringAnyCombat` - The "unequip action" cannot be performed during PVP or PVE combat.
 
 # 1.1.0
 - Moving an equipped weapon out of a weapon slot will unequip it. (unless its configured to not require a hotbar slot)

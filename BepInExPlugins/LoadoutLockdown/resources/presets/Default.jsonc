@@ -3,6 +3,8 @@
 {
     "WeaponSlots": 8,
 
+    "UnEquipAction": "NotRestricted",
+
     "ApplyPvpMenuSwapRulesToPVE": false,
 
     "RulesByType": {
