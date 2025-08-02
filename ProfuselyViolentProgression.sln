@@ -27,7 +27,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WallopWarpers", "BepInExPlu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PalacePrivileges", "BepInExPlugins\PalacePrivileges\PalacePrivileges.csproj", "{74744310-B05E-4944-96A4-DE038094929F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BoneBanditsBrandHit", "BepInExPlugins\BoneBanditsBrandHit\BoneBanditsBrandHit.csproj", "{205E6D4E-D99B-48EA-B808-348D7E0583DE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BoneBanditBrandHit", "BepInExPlugins\BoneBanditBrandHit\BoneBanditBrandHit.csproj", "{205E6D4E-D99B-48EA-B808-348D7E0583DE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
