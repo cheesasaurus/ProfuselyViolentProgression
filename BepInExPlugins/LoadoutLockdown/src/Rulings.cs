@@ -23,6 +23,8 @@ public enum Judgement
     Allowed_TryAutoEquipAlwaysAllowedUnlessEquipmentToEquipIsForbidden,
     Allowed_EquipmentCanAlwaysBeUnEquipped,
     Disallowed_EquipmentToEquipIsForbidden,
+    Disallowed_EquipmentToEquipIsShattered,
+    Disallowed_EquipmentToEquipIsBroken,
     Disallowed_CannotMenuSwapDuringPvPCombat,
     Disallowed_CannotMenuSwapDuringAnyCombat,
     Disallowed_UnEquipActionDuringPvPCombat,

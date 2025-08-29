@@ -1,3 +1,6 @@
+# 1.2.1
+- Bugfix: In some circumstances shattered or broken weapons could be equipped.
+
 # 1.2.0
 - Bugfix: Weapons couldn't be unequipped in PVP combat.
 - Added `UnEquipAction` option for rulesets. Allowed values:

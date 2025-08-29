@@ -6,6 +6,7 @@ using ProfuselyViolentProgression.LoadoutLockdown.Rulings;
 using ProjectM;
 using ProjectM.Network;
 using ProjectM.Scripting;
+using ProjectM.Shared;
 using Stunlock.Core;
 using Unity.Collections;
 using Unity.Entities;
@@ -131,6 +132,20 @@ internal class LoadoutLockdownService
         }
         var prefabGUID = EntityManager.GetComponentData<PrefabGUID>(entity);
         return _forbiddenByPrefab.Contains(prefabGUID);
+    }
+
+    public bool IsEquipmentShattered(Entity entity)
+    {
+        return EntityManager.HasComponent<ShatteredItem>(entity);
+    }
+
+    public bool IsEquipmentBroken(Entity entity)
+    {
+        if (!EntityManager.TryGetComponentData<Durability>(entity, out var durability))
+        {
+            return false;
+        }
+        return durability.IsBroken;
     }
 
     public bool IsEquippableWithoutSlot(Entity entity)
@@ -664,6 +679,16 @@ internal class LoadoutLockdownService
         if (IsEquipmentForbidden(candidateItemEntity))
         {
             return RulingItemEquip.Disallowed(Judgement.Disallowed_EquipmentToEquipIsForbidden);
+        }
+
+        if (IsEquipmentShattered(candidateItemEntity))
+        {
+            return RulingItemEquip.Disallowed(Judgement.Disallowed_EquipmentToEquipIsShattered);
+        }
+
+        if (IsEquipmentBroken(candidateItemEntity))
+        {
+            return RulingItemEquip.Disallowed(Judgement.Disallowed_EquipmentToEquipIsBroken);
         }
 
         if (IsEquippableWithoutSlot(candidateItemEntity))
