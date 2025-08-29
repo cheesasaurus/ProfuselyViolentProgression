@@ -1,4 +1,5 @@
-# 1.2.1
+# 1.3.0
+- When deciding if a weapon slot is wasted, shattered and broken weapons will be treated as junk.
 - Bugfix: In some circumstances shattered or broken weapons could be equipped.
 
 # 1.2.0

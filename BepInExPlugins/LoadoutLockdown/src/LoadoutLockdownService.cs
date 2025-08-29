@@ -556,18 +556,19 @@ internal class LoadoutLockdownService
 
     public bool IsWasteInWeaponSlot(InventoryBuffer inventoryBufferEl)
     {
+        var itemEntity = inventoryBufferEl.ItemEntity._Entity;
         var prefabGUID = inventoryBufferEl.ItemType;
         if (_notWaste.Contains(prefabGUID))
         {
             return false;
-        }
-        if (IsEquipmentForbidden(inventoryBufferEl.ItemEntity._Entity))
+        }        
+
+        if (IsEquipmentForbidden(itemEntity) || IsEquipmentShattered(itemEntity) || IsEquipmentBroken(itemEntity))
         {
             // they can't use that weapon, so let them swap it out.
             return true;
         }
-
-        var itemEntity = inventoryBufferEl.ItemEntity._Entity;
+       
         if (EntityManager.HasComponent<EquippableData>(itemEntity))
         {
             var equippableData = EntityManager.GetComponentData<EquippableData>(itemEntity);
